@@ -1,0 +1,20 @@
+Les nomenclatures dans ce projet fonctionnent de la façon suivante:
+
+-Les fichiers:
+    chaque ficher prends exactement le nom de la table sur laquelle les action sont éffectuer.
+     C'est par exemple le nom de la table "users".
+
+        * controllers
+        * models;
+        * routes;
+        * classes
+Les methodes: 
+    add+nom de table
+    getAsingle+nom de table
+    delete + nom de table
+    ....etc
+
+
+
+    le Dossier "classes" sert d'initialiser tous les objets(les valeurs passées à nulles). Ces objets seront invoqués dans le controller afin de recupérer des donnée du body.
+

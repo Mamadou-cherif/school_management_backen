@@ -1,6 +1,6 @@
 const express=require("express")
 const router= express.Router()
-const userController= require("../controllers/user")
+const userController= require("../controllers/users")
 
     router.post("/addUser", userController.addUser)
     router.post("/login", userController.login)
@@ -10,6 +10,5 @@ const userController= require("../controllers/user")
     router.get("/getOneUser/:id", userController.getAsingleUser)
     router.get("/getAllUser", userController.getAllUsers)
     router.put("/activateUser", userController.activateUser)
-
 
 module.exports= router
