@@ -9,10 +9,10 @@ const { reject } = require("bcrypt/promises");
 
  
 
-function checkIfModeAccesExists(theReq){
+function checkIfPrivilegeExists(theReq){
   return new Promise((resolve,reject)=> {
       
-    connection.query("CALL modeaccess_selectBy(?,? ,?,?,?,?,?,?,?,?)",
+    connection.query("CALL privileges_selectBy(?,? ,?,?,?,?,?,?,?,?)",
           [
            theReq.id,
            theReq.libelle,
@@ -37,11 +37,11 @@ function checkIfModeAccesExists(theReq){
 }
 
 
-function addModeAccesInModel(theReq){
+function addPrivilegeInModel(theReq){
   return new Promise((resolve, reject)=>{
 
     
-          connection.query("CALL modeaccess_insert(?,?,?)", 
+          connection.query("CALL privileges_insert(?,?,?)", 
                       [
                         theReq.body.libelle,
                         theReq.body.prestataireId,
@@ -66,10 +66,10 @@ function addModeAccesInModel(theReq){
 }
 
 //supression en logique d'un utilisateur
-function disableModeAccesInModel(theReq, theResponse){
+function disablePrivilegeInModel(theReq, theResponse){
   return new Promise((reject, resolve)=>{
 
-    connection.query("CALL modeaccess_disable(?,?,?)",
+    connection.query("CALL privileges_disable(?,?,?)",
      [  
          theReq.body.id,
          theReq.body.modifUserId,
@@ -86,9 +86,10 @@ function disableModeAccesInModel(theReq, theResponse){
   })
 }
 
+
 module.exports= {
-    checkIfModeAccesExists,
-    addModeAccesInModel,
-    disableModeAccesInModel,
+    checkIfPrivilegeExists,
+    addPrivilegeInModel,
+    disablePrivilegeInModel,
 
 }

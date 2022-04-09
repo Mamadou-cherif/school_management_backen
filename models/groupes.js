@@ -8,7 +8,7 @@ const res = require("express/lib/response");
 const { reject } = require("bcrypt/promises");
 
  
-// revoir les paramètres des fonctions marquée en rouges
+
 function checkIfGroupeExists(theReq){
   return new Promise((resolve,reject)=> {
       

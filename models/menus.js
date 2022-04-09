@@ -9,21 +9,27 @@ const { reject } = require("bcrypt/promises");
 
  
 
-function checkIfModeAccesExists(theReq){
+function checkIfMenuExists(theReq){
   return new Promise((resolve,reject)=> {
       
-    connection.query("CALL modeaccess_selectBy(?,? ,?,?,?,?,?,?,?,?)",
+    connection.query("CALL menus_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           [
-           theReq.id,
-           theReq.libelle,
-           theReq.observations,
-           theReq.estActif,
-           theReq.creationDate,
-           theReq.creationUserId,
-           theReq.modifDate,
-           theReq.modifUserId,
-           theReq.debutDonnees,
-           theReq.finDonnees
+            theReq.id,
+            theReq.reference,
+            theReq.libelle,
+            theReq.descriptions,
+            theReq.url,
+            theReq.menuPerId,
+            theReq.ordre,
+            theReq.typeMenu,
+            theReq.image,
+            theReq.estActif,
+            theReq.creationDate,
+            theReq.creationUserId,
+            theReq.modifDate,
+            theReq.modifUserId,
+            theReq.debutDonnees,
+            theReq.finDonnees
           ],
 
       ((err,results, fields)=>{
@@ -37,15 +43,22 @@ function checkIfModeAccesExists(theReq){
 }
 
 
-function addModeAccesInModel(theReq){
+function addMenuInModel(theReq){
   return new Promise((resolve, reject)=>{
 
     
-          connection.query("CALL modeaccess_insert(?,?,?)", 
+          connection.query("CALL menus_insert(?,?,?,?,?,?,?,?,?)", 
                       [
+                        theReq.body.reference,
                         theReq.body.libelle,
-                        theReq.body.prestataireId,
+                        theReq.body.descriptions,
+                        theReq.body.url,
+                        theReq.body.menuPerId,
+                        theReq.body.ordre,
+                        theReq.body.typeMenu,
+                        theReq.body.image,
                         theReq.body.creationUserId,
+                        
                       
                       ]
                   ,
@@ -66,10 +79,10 @@ function addModeAccesInModel(theReq){
 }
 
 //supression en logique d'un utilisateur
-function disableModeAccesInModel(theReq, theResponse){
+function disableMenuInModel(theReq, theResponse){
   return new Promise((reject, resolve)=>{
 
-    connection.query("CALL modeaccess_disable(?,?,?)",
+    connection.query("CALL menus_disable(?,?,?)",
      [  
          theReq.body.id,
          theReq.body.modifUserId,
@@ -87,8 +100,8 @@ function disableModeAccesInModel(theReq, theResponse){
 }
 
 module.exports= {
-    checkIfModeAccesExists,
-    addModeAccesInModel,
-    disableModeAccesInModel,
+    checkIfMenuExists,
+    addMenuInModel,
+    disableMenuInModel,
 
 }
