@@ -6,4 +6,4 @@ const modeAccesController= require("../controllers/modeacces")
     router.put("/disableModeAcces", modeAccesController.disableModeAcces)
    
 
-module.exports = router
+module.exports = router 

@@ -12,11 +12,10 @@ const { reject } = require("bcrypt/promises");
 function checkIfModeAccesExists(theReq){
   return new Promise((resolve,reject)=> {
       
-    connection.query("CALL modeaccess_selectBy(?,? ,?,?,?,?,?,?,?,?)",
+    connection.query("CALL modeaccess_selectBy(?,? ,?,?,?,?,?,?,?)",
           [
            theReq.id,
            theReq.libelle,
-           theReq.observations,
            theReq.estActif,
            theReq.creationDate,
            theReq.creationUserId,
@@ -41,10 +40,9 @@ function addModeAccesInModel(theReq){
   return new Promise((resolve, reject)=>{
 
     
-          connection.query("CALL modeaccess_insert(?,?,?)", 
+          connection.query("CALL modeaccess_insert(?,?)", 
                       [
                         theReq.body.libelle,
-                        theReq.body.prestataireId,
                         theReq.body.creationUserId,
                       
                       ]
@@ -63,6 +61,26 @@ function addModeAccesInModel(theReq){
    
     })
   
+}
+
+function getAllModeAccessInModel(theReq){
+  return new Promise((resolve,reject)=> {
+    
+    connection.query("CALL modeaccess_selectAll(?,?,?)",
+          [
+            theReq.body.estActif,
+            theReq.body.debut,
+            theReq.body.fin
+          ],
+
+      ((err,results, fields)=>{
+        if(err){
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
 }
 
 //supression en logique d'un utilisateur
@@ -90,5 +108,6 @@ module.exports= {
     checkIfModeAccesExists,
     addModeAccesInModel,
     disableModeAccesInModel,
+    getAllModeAccessInModel
 
 }

@@ -12,19 +12,24 @@ const { reject } = require("bcrypt/promises");
 function checkIfOngletExists(theReq){
   return new Promise((resolve,reject)=> {
       
-    connection.query("CALL onglets_selectBy(? ,?,?,?,?,?,?,?,?)",
+    connection.query("CALL onglets_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           [
-           theReq.body.menuId,
-           theReq.body.reference,
-           theReq.body.libelle,
-           theReq.body.descriptions,
-           theReq.body.type,
-           theReq.body.ordre,
-           theReq.body.url,
-           theReq.body.image,
-           theReq.body.creationUserId,
-           
- 
+           theReq.id,
+           theReq.menuId,
+           theReq.reference,
+           theReq.libelle,
+           theReq.descriptions,
+           theReq.type,
+           theReq.ordre,
+           theReq.url,
+           theReq.image,
+           theReq.estActif, 
+           theReq.creationDate,
+           theReq.creationUserId,
+           theReq.modifDate,
+           theReq.modifUserId,
+           theReq.debutDonnees,
+           theReq.finDonnees
           ],
 
       ((err,results, fields)=>{
@@ -42,11 +47,18 @@ function addOngletInModel(theReq){
   return new Promise((resolve, reject)=>{
 
     
-          connection.query("CALL onglets_insert(?,?,?)", 
+          connection.query("CALL onglets_insert(?,?,?,?,?,?,?,?,?)", 
                       [
+                        theReq.body.menuId,
+                        theReq.body.reference,
                         theReq.body.libelle,
-                        theReq.body.prestataireId,
+                        theReq.body.descriptions,
+                        theReq.body.type,
+                        theReq.body.ordre,
+                        theReq.body.url,
+                        theReq.body.image,
                         theReq.body.creationUserId,
+                        
                       
                       ]
                   ,
@@ -65,6 +77,8 @@ function addOngletInModel(theReq){
     })
   
 }
+
+
 
 //supression en logique d'un utilisateur
 function disableOngletInModel(theReq, theResponse){
@@ -92,5 +106,4 @@ module.exports= {
     checkIfOngletExists,
     addOngletInModel,
     disableOngletInModel,
-
 }

@@ -1,4 +1,4 @@
-const ModeAcces= require("../models/ModeAccess")
+const ModeAcces= require("../models/modeacces")
 const express= require("express") 
 const bodyParser=require("body-parser")
 const app= express()
@@ -10,20 +10,20 @@ const initModeAccesClass= require("../classes/modeaccess")
 
 function addModeAcces(req, res,next){             
         
-        initModeAccesClass.ModeAcces.id= req.body.id
-        initModeAccesClass.ModeAcces.libelle= req.body.libelle
+        initModeAccesClass.modeaccess.id= req.body.id
+        initModeAccesClass.modeaccess.libelle= req.body.libelle
        // initModeAccesClass.ModeAcces.observations= req.body.observations
      //verifie si l'utilisateur existe en base
-     ModeAcces.checkIfModeAccesExists(initModeAccesClass.ModeAcces)
-          .then(ModeAcces=> {
-                if(ModeAcces.length==0){
+     ModeAcces.checkIfModeAccesExists(initModeAccesClass.modeaccess)
+          .then(modeaccess=> {
+                if(modeaccess.length==0){
                       ModeAcces.addModeAccesInModel(req)
                           .then(()=> res.status(201).json({succes: "la création a reussi"}))
                           .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
                 }
                 else
                    {
-                     res.status(500).json({error: "Le ModeAcces existe déjà"})
+                     res.status(500).json({error: "Ce ModeAcces existe déjà"})
                    }
           })
           .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))

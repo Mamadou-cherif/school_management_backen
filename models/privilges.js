@@ -12,11 +12,13 @@ const { reject } = require("bcrypt/promises");
 function checkIfPrivilegeExists(theReq){
   return new Promise((resolve,reject)=> {
       
-    connection.query("CALL privileges_selectBy(?,? ,?,?,?,?,?,?,?,?)",
+    connection.query("CALL privileges_selectBy(?,? ,?,?,?,?,?,?,?,?,?,?)",
           [
            theReq.id,
-           theReq.libelle,
-           theReq.observations,
+           theReq.menuId,
+           theReq.ongletId,
+           theReq.groupeId,
+           theReq.modeAccesId,
            theReq.estActif,
            theReq.creationDate,
            theReq.creationUserId,
@@ -35,18 +37,36 @@ function checkIfPrivilegeExists(theReq){
     )
   })
 }
+  
+function getAllPrivilegesInModel(theReq){
+  return new Promise((resolve,reject)=> {
+    
+    connection.query("CALL privileges_selectAll(?,?,?)",
+          [
+            theReq.body.estActif,
+            theReq.body.debut,
+            theReq.body.fin
+          ],
 
+      ((err,results, fields)=>{
+        if(err){
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
+}
 
 function addPrivilegeInModel(theReq){
-  return new Promise((resolve, reject)=>{
-
-    
-          connection.query("CALL privileges_insert(?,?,?)", 
+  return new Promise((resolve, reject)=>{   
+          connection.query("CALL privileges_insert(?,?,?,?,?)", 
                       [
-                        theReq.body.libelle,
-                        theReq.body.prestataireId,
-                        theReq.body.creationUserId,
-                      
+                        theReq.body.menuId,
+                        theReq.body.ongletId,
+                        theReq.body.groupeId,
+                        theReq.body.modeAccesId,
+                        theReq.body.creationUserId
                       ]
                   ,
                   (err, results, fields)=>{
@@ -65,6 +85,8 @@ function addPrivilegeInModel(theReq){
   
 }
 
+
+
 //supression en logique d'un utilisateur
 function disablePrivilegeInModel(theReq, theResponse){
   return new Promise((reject, resolve)=>{
@@ -75,9 +97,9 @@ function disablePrivilegeInModel(theReq, theResponse){
          theReq.body.modifUserId,
          theReq.body.modifDate
       ],
-      (err, results, fields)=>{
+      (err, results, fields)=>{ 
         if(err){
-          theResponse.status(400).json({succes: "La suppression logique a échoué"})
+          theResponse.status(400).json({error: "La suppression logique a échoué"})
         }
         else{
           theResponse.status(200).json({succes: "La suppression logique a bien reussie"})
@@ -88,6 +110,7 @@ function disablePrivilegeInModel(theReq, theResponse){
 
 
 module.exports= {
+    getAllPrivilegesInModel,
     checkIfPrivilegeExists,
     addPrivilegeInModel,
     disablePrivilegeInModel,
