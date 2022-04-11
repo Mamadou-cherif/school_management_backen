@@ -4,6 +4,7 @@ const privilege={
     ongletId :null,
     groupeId :null,
     modeAccesId :null,
+    estActif: 1,
     creationDate :null,
     creationUserId :null,
     modifDate :null,

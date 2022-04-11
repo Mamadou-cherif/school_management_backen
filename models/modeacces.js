@@ -63,6 +63,45 @@ function addModeAccesInModel(theReq){
   
 }
 
+function getNonAffectedByMenuAndGroupeInModel(theReq){
+  return new Promise((reject, resolve)=>{
+
+    connection.query("CALL modeaccess_getNonAffectedByMenuAndGroupe(?,?)",
+     [  
+         theReq.body.menuId,
+         theReq.body.groupeId
+      ],
+      (err, results, fields)=>{
+        if(err){
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+      })
+  })
+}
+
+function getModeAccessByIdInModel(theReq){
+  return new Promise((resolve,reject)=> {
+    
+    connection.query("CALL `modeaccess_selectById(?)",
+          [
+            theReq.body.id,
+            
+          ],
+
+      ((err,results, fields)=>{
+        if(err){
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
+}
+
+
 function getAllModeAccessInModel(theReq){
   return new Promise((resolve,reject)=> {
     
@@ -104,10 +143,76 @@ function disableModeAccesInModel(theReq, theResponse){
   })
 }
 
+function getFilsAffecteAUnGroupeInModel(theReq){
+  return new Promise((resolve,reject)=> {
+    
+    connection.query("CALL menus_getFilsAffecteAUnGroupe(?,?)",
+          [
+            theReq.body.menuPereId,
+            theReq.body.groupeId,
+
+          ],
+
+      ((err,results, fields)=>{
+        if(err){
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
+}
+
+function getPrincipalAffecteAUnGroupeInModel(theReq){
+  return new Promise((reject, resolve)=>{
+
+    connection.query("CALL menus_getPrincipalAffecteAUnGroupe(?)",
+     [  
+         theReq.body.groupeId
+        
+      ],
+      (err, results, fields)=>{
+        if(err){
+         reject(err)
+        }
+        else{
+         resolve(results[0])
+        }
+      })
+  })
+}
+
+
+function getAffectesByMenuAndGroupeInModel(theReq){
+  return new Promise((reject, resolve)=>{
+
+    connection.query("CALL modeaccess_getAffectesByMenuAndGroupe(?,?)",
+     [  
+         theReq.body.menuId,
+         theReq.body.groupeId
+        
+      ],
+      (err, results, fields)=>{
+        if(err){
+         reject(err)
+        }
+        else{
+         resolve(results[0])
+        }
+      })
+  })
+}
+
+
 module.exports= {
+    getPrincipalAffecteAUnGroupeInModel,
     checkIfModeAccesExists,
+    getModeAccessByIdInModel,
+    getNonAffectedByMenuAndGroupeInModel,
     addModeAccesInModel,
     disableModeAccesInModel,
-    getAllModeAccessInModel
+    getAllModeAccessInModel,
+    getFilsAffecteAUnGroupeInModel,
+    getAffectesByMenuAndGroupeInModel
 
 }

@@ -9,24 +9,9 @@ const initPrivilegeClass= require("../classes/privileges")
 
 
 function addPrivilege(req, res,next){
-
-  initPrivilegeClass.privilege.id= req.body.id
-        initPrivilegeClass.privilege.libelle= req.body.libelle
-       // initPrivilegeClass.Privilege.observations= req.body.observations
-     //verifie si l'utilisateur existe en base
-     Privilege.checkIfPrivilegeExists(initPrivilegeClass.privilege)
-          .then(privilege=> {
-                if(privilege.length==0){
                       Privilege.addPrivilegeInModel(req)
                           .then(()=> res.status(201).json({succes: "la création a reussi"}))
-                          .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
-                }
-                else
-                   {
-                     res.status(500).json({error: "Le Privilege existe déjà"})
-                   }
-          })
-          .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
+                          .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));           
 }
 
 
@@ -42,12 +27,28 @@ function disablePrivilege(req, res, next){
     Privilege.disablePrivilegeInModel(req,res)
 }
 
+function deletePrivilege(req, res,next){
+
+
+    initPrivilegeClass.privilege.menuId= req.body.menuId
+    initPrivilegeClass.privilege.groupeId= req.body.groupeId
+    initPrivilegeClass.privilege.modeAccesId= req.body.modeAccesId
+    
+    Privilege.checkIfPrivilegeExists(initPrivilegeClass.privilege)
+        .then(privilege=>{
+
+            for(let i=0; privilege.length; i++){
+                    Privilege.deletePrivilegeInModel(privilege[i].id)
+            }
+        })
+}
 
  
 module.exports={
     disablePrivilege,
     addPrivilege,
-    getAllPrivileges
+    getAllPrivileges,
+    deletePrivilege
     
    
 }

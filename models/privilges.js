@@ -86,6 +86,25 @@ function addPrivilegeInModel(theReq){
 }
 
 
+function deletePrivilegeInModel(id){
+  return new Promise((reject, resolve)=>{
+
+    connection.query("CALL privileges_delete(?)",
+     [  
+         id,
+         
+      ],
+      (err, results, fields)=>{ 
+        if(err){
+          theResponse.status(400).json({error: "La suppression du privilège a échoué"})
+        }
+        else{
+          theResponse.status(200).json({succes: "Le privilège a été retiré avec succes"})
+        }
+      })
+  })
+}
+
 
 //supression en logique d'un utilisateur
 function disablePrivilegeInModel(theReq, theResponse){
@@ -114,5 +133,6 @@ module.exports= {
     checkIfPrivilegeExists,
     addPrivilegeInModel,
     disablePrivilegeInModel,
+    deletePrivilegeInModel
 
 }

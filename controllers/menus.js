@@ -33,7 +33,11 @@ function addMenu(req, res,next){
 
 
 
-
+function getMenuPere(req, res, next){
+  Menu.getMenuPereInModel()
+  .then(menupere=> res.status(201).json({menupere}))
+  .catch(()=> res.status(400).json({error: "erreur de la selection des menus principaux"}));
+}
 
 //supression logique d'un utilisateur
 function disableMenu(req, res, next){
@@ -41,9 +45,18 @@ function disableMenu(req, res, next){
 }
 
 
+function getMenuFilsByGroupe(req, res, next){
+  Menu.getMenuFilsByGroupeInModel(req)
+  .then(menus=> res.status(201).json({menus}))
+  .catch(()=> res.status(400).json({error: "erreur de la selection des menus principaux"}));
+}
+
+
  
 module.exports={
     disableMenu,
     addMenu,
+    getMenuPere,
+    getMenuFilsByGroupe
    
 }

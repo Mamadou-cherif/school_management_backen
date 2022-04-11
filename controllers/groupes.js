@@ -72,8 +72,8 @@ function getAsingleGroupe(req, res, next){
 }
 
 
-function getAllGroupes(req,res, next){
-
+function getAllGroupes(req,res, next){ 
+ 
      Groupe.getAllGroupesInModel(req)
         .then(groupes=> res.status(200).json(groupes))
         .catch(error=> res.status(400).json(error))

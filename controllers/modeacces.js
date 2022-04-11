@@ -29,19 +29,79 @@ function addModeAcces(req, res,next){
           .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
 }
 
+function getAffectesByMenuAndGroupe(req, res, next){
+ ModeAcces.getAffectesByMenuAndGroupeInModel()
+      .then(modeaccess=>res.status(200).json(modeaccess))
+      .catch(error=> res.status(400).json(error))
+}
 
+////////////////////////
 
+function getNonAffectedByMenuAndGroupe(req, res, next){
+   const pereOuFils= req.body.pereOuFils;
+   const listeModeAcces= []
+   if(pereOuFils==1){
+          ModeAcces.getNonAffectedByMenuAndGroupeInModel(req)
+          .then(data=> {
+              for(let i; i< data.length; i++){
+                if(data[i].libelle=='Consultation'){
+                 
+                  ModeAcces.getModeAccessByIdInModel(data[i].id)
+                    .then(data2=> {
+                             listeModeAcces=data2
+                    })
+                    .catch(error=> res.status(400).json({error}))
+                  
+                }
+                else{
+                  res.status(200).json({listeModeAcces})
+                }
+              }
+          })
+   }
+   else{
+    ModeAcces.getNonAffectedByMenuAndGroupeInModel(req)
+    .then(data=> {
+        listeModeAcces= data
+    })
+   }
+  
+}
 
+function getPrincipalAffecteAUnGroupe(req, res, next){
+  ModeAcces.getPrincipalAffecteAUnGroupeInModel(req)
+    .then(modeaccess=>res.status(200).json(modeaccess))
+    .catch(error=> res.status(400).json(error))
+}
+
+function getModeAccessById(req, res, next){
+  ModeAcces.getModeAccessByIdInModel(req)
+    .then(modeaccess=> res.status(200).json({modeaccess}))
+    .catch(error=> res.status(400).json({error}))
+}
 
 //supression logique d'un utilisateur
 function disableModeAcces(req, res, next){
     ModeAcces.disableModeAccesInModel(req,res)
 }
 
+function getPrincipalAffecteAUnGroupe(req, res, next){
+  ModeAcces.getPrincipalAffecteAUnGroupeInModel()
+  .then(modeaccess=> res.status(200).json({modeaccess}))
+  .catch(error=> res.status(400).json({error}))
+}
+ 
+////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
  
 module.exports={
+    getAffectesByMenuAndGroupe,
+    getModeAccessById,
     disableModeAcces,
+    getNonAffectedByMenuAndGroupe,
     addModeAcces,
+    getPrincipalAffecteAUnGroupe,
    
 }

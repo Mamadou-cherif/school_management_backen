@@ -42,6 +42,30 @@ function checkIfMenuExists(theReq){
   })
 }
 
+function getMenuPereInModel(){
+  return new Promise((resolve, reject)=>{
+
+    
+          connection.query("CALL menus_getMenuPere()", 
+                      [
+                       
+                      ]
+                  ,
+                  (err, results, fields)=>{
+                    if(err){
+
+                      reject(err)
+                      //connection.end();
+                    }
+                    else{
+                    resolve(results);}
+                    // connection.end()
+            
+          })
+   
+    })
+  
+}
 
 function addMenuInModel(theReq){
   return new Promise((resolve, reject)=>{
@@ -99,9 +123,30 @@ function disableMenuInModel(theReq, theResponse){
   })
 }
 
+
+function getMenuFilsByGroupeInModel(theReq){
+  return new Promise((reject, resolve)=>{
+
+    connection.query("CALL menus_getMenuFilsByGroupe(?,?)",
+     [  
+         theReq.body.menuPereId,
+         theReq.body.groupeId
+      ],
+      (err, results, fields)=>{
+        if(err){
+          reject(err)
+        }
+        else{
+           resolve(results[0])
+        }
+      })
+  })
+}
+
 module.exports= {
     checkIfMenuExists,
     addMenuInModel,
     disableMenuInModel,
-
+    getMenuPereInModel,
+    getMenuFilsByGroupeInModel
 }
