@@ -12,7 +12,6 @@ function addUserGroupe(req, res,next){
       
          
         
-        initUserGroupeClass.userGroupe.id= req.body.id
         initUserGroupeClass.userGroupe.userId= req.body.userId
         initUserGroupeClass.userGroupe.groupeId= req.body.groupeId
      //verifie si l'utilisateur existe en base

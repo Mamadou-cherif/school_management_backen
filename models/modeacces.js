@@ -203,6 +203,45 @@ function getAffectesByMenuAndGroupeInModel(theReq){
   })
 }
 
+function getNotAffectedByOngletAndGroupeInModel(theReq){
+  return new Promise((reject, resolve)=>{
+
+    connection.query("CALL modeaccess_getNotAffectedByOngletAndGroupe(?,?)",
+     [  
+         theReq.body.menuId,
+         theReq.body.groupeId
+        
+      ],
+      (err, results, fields)=>{
+        if(err){
+         reject(err)
+        }
+        else{
+         resolve(results[0])
+        }
+      })
+  })
+}
+
+function getAffectedByOngletAndGroupeInGroupeModel(theReq){
+  return new Promise((reject, resolve)=>{
+
+    connection.query("CALL modeaccess_getNotAffectedByOngletAndGroupe(?,?)",
+     [  
+         theReq.body.menuId,
+         theReq.body.groupeId
+        
+      ],
+      (err, results, fields)=>{
+        if(err){
+         reject(err)
+        }
+        else{
+         resolve(results[0])
+        }
+      })
+  })
+}
 
 module.exports= {
     getPrincipalAffecteAUnGroupeInModel,
@@ -213,6 +252,8 @@ module.exports= {
     disableModeAccesInModel,
     getAllModeAccessInModel,
     getFilsAffecteAUnGroupeInModel,
-    getAffectesByMenuAndGroupeInModel
+    getAffectesByMenuAndGroupeInModel,
+    getNotAffectedByOngletAndGroupeInModel, 
+    getAffectedByOngletAndGroupeInGroupeModel
 
 }

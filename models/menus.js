@@ -143,10 +143,32 @@ function getMenuFilsByGroupeInModel(theReq){
   })
 }
 
+function getWithOngletsInModels(theReq){
+  return new Promise((reject, resolve)=>{  
+
+    connection.query("CALL menus_getWithOnglets(?)",
+     [  
+         theReq.body.typeMenu
+      ],
+      (err, results, fields)=>{
+        if(err){
+          reject(err)
+        }
+        else{
+           resolve(results[0])
+        }
+      })
+  })
+}
+
+
+
 module.exports= {
+    getWithOngletsInModels,
     checkIfMenuExists,
     addMenuInModel,
     disableMenuInModel,
     getMenuPereInModel,
-    getMenuFilsByGroupeInModel
+    getMenuFilsByGroupeInModel,
+    
 }

@@ -35,7 +35,7 @@ function getAffectesByMenuAndGroupe(req, res, next){
       .catch(error=> res.status(400).json(error))
 }
 
-////////////////////////
+/////////////////////////////////////////////////////
 
 function getNonAffectedByMenuAndGroupe(req, res, next){
    const pereOuFils= req.body.pereOuFils;
@@ -94,14 +94,34 @@ function getPrincipalAffecteAUnGroupe(req, res, next){
 ////////////////////////////////////////////////////////////////////////////////////////////
 
 
+function getNotAffectedByOngletAndGroupe(req, res, next){
+  ModeAcces.getNotAffectedByOngletAndGroupeInModel(req)
+  .then(modeaccess=> res.status(200).json({modeaccess}))
+  .catch(error=> res.status(400).json({error}))
+}
 
+function getAffectedByOngletAndGroupe(req, res, next){
+  ModeAcces.getAffectedByOngletAndGroupeInModel(req)
+  .then(modeaccess=> res.status(200).json({modeaccess}))
+  .catch(error=> res.status(400).json({error}))
+}
  
+
+
+
+
+
+
 module.exports={
+    getAffectedByOngletAndGroupe,
     getAffectesByMenuAndGroupe,
     getModeAccessById,
     disableModeAcces,
     getNonAffectedByMenuAndGroupe,
     addModeAcces,
     getPrincipalAffecteAUnGroupe,
+    getNotAffectedByOngletAndGroupe,
+    
+    
    
 }

@@ -44,19 +44,27 @@ function disableMenu(req, res, next){
     Menu.disableMenuInModel(req,res)
 }
 
-
+// ramene tous les menus d'un groupe donné
 function getMenuFilsByGroupe(req, res, next){
   Menu.getMenuFilsByGroupeInModel(req)
   .then(menus=> res.status(201).json({menus}))
   .catch(()=> res.status(400).json({error: "erreur de la selection des menus principaux"}));
 }
 
-
+// ramene tous les menus qui ont des onglets
+function getWithOnglets(theReq){
+  Menu.getWithOngletsInModels(theReq)
+    .then(menus=> res.status(201).json({menus}))
+    .catch(()=> res.status(400).json({error: "erreur de la selection des menus principaux"}));
+}
  
+
 module.exports={
     disableMenu,
     addMenu,
     getMenuPere,
-    getMenuFilsByGroupe
+    getMenuFilsByGroupe,
+    getWithOnglets,
+    
    
 }

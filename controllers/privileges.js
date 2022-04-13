@@ -38,7 +38,7 @@ function deletePrivilege(req, res,next){
         .then(privilege=>{
 
             for(let i=0; privilege.length; i++){
-                    Privilege.deletePrivilegeInModel(privilege[i].id)
+                    Privilege.deletePrivilegeInModel(privilege[i].id, res)
             }
         })
 }

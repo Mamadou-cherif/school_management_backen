@@ -102,8 +102,71 @@ function disableOngletInModel(theReq, theResponse){
 }
 
 
+function getOngletByGroupeModel(theReq){
+  return new Promise((reject, resolve)=>{
+
+    connection.query("CALL onglets_getOngletByGroupe(?,?)",
+     [  
+         theReq.body.menuId,
+         theReq.body.groupeId
+        
+      ],
+      (err, results, fields)=>{
+        if(err){
+         reject(err)
+        }
+        else{
+         resolve(results[0])
+        }
+      })
+  })
+}
+
+function getAffectesByGroupeAndMenuInModel(theReq){
+  return new Promise((reject, resolve)=>{
+
+    connection.query("CALL onglets_getAffectesByGroupeAndMenu(?,?)",
+     [  
+         theReq.body.menuId,
+         theReq.body.groupeId
+        
+      ],
+      (err, results, fields)=>{
+        if(err){
+         reject(err)
+        }
+        else{
+         resolve(results[0])
+        }
+      })
+  })
+}
+
+function getOngletsAffecteAUnGroupeInModel(req, res, next){
+  return new Promise((reject, resolve)=>{  
+
+    connection.query("CALL menus_getOngletsAffecteAUnGroupe(?,?)",
+     [  
+          theReq.body.menuId,
+          theReq.body.groupeId
+      ],
+      (err, results, fields)=>{
+        if(err){
+          reject(err)
+        }
+        else{
+           resolve(results[0])
+        }
+      })
+  })
+} 
+
+
 module.exports= {
     checkIfOngletExists,
     addOngletInModel,
     disableOngletInModel,
+    getOngletByGroupeModel,
+    getAffectesByGroupeAndMenuInModel,
+    getOngletsAffecteAUnGroupeInModel
 }

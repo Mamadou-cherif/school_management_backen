@@ -13,6 +13,8 @@
 		creationUserId: null,
 		modifDate: null,
 		modifUserId: null,
+		debutDonnees: null,
+		finDonnees: null
      }   
 
       

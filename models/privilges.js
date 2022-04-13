@@ -86,7 +86,7 @@ function addPrivilegeInModel(theReq){
 }
 
 
-function deletePrivilegeInModel(id){
+function deletePrivilegeInModel(id, theResponse){
   return new Promise((reject, resolve)=>{
 
     connection.query("CALL privileges_delete(?)",
