@@ -10,6 +10,13 @@ const ongletRoute= require("./routes/onglets")
 const modeAccesRoute= require("./routes/modeacces")
 const privilegeRoute= require("./routes/privileges")
 const paysRoute= require("./routes/pays")
+const prestaireRoute= require("./routes/prestataire")
+const structureRoute= require("./routes/structure")
+const regionsRoute= require("./routes/regions")
+
+const a= require("./a")
+
+
 app.use(bodyParser.json())
 
     app.use((req, res, next) => {
@@ -20,8 +27,6 @@ app.use(bodyParser.json())
 
         next();
     });
-
-
     app.use("/api", bienvenueRoute)
     app.use("/api", userRoute)
     app.use("/api", groupeRoute)
@@ -31,6 +36,9 @@ app.use(bodyParser.json())
     app.use("/api", modeAccesRoute)
     app.use("/api", privilegeRoute)
     app.use("/api", paysRoute)
+    app.use("/api", prestaireRoute)
+    app.use("/api", structureRoute)
+    app.use("/api", regionsRoute)
 
 
 module.exports= app

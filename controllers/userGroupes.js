@@ -38,6 +38,31 @@ function addUserGroupe(req, res,next){
 function deleteUserGroupe(req, res, next){
     
    UserGroupe.deleteUserGroupeInModel(req,res)
+
+}
+
+
+function deleteUserGroupe(req, res,next){
+
+    const usergroupe={
+        userId: req.body.userId,
+        groupeId: req.body.groupeId
+    }
+    
+    UserGroupe.checkIfUserGroupeExists(usergroupe)
+        .then(usergroupe=>{
+            
+            if(usergroupe.length>0){
+                
+                UserGroupe.deleteUserGroupeInModel(usergroupe[0].id)
+                        .then(()=>res.status(200).json({succes: "suppression succes"}))
+                        .catch(error=>res.status(400).json({error}))
+            }
+            else{
+                return res.status(400).json({error: "cet utilisateur n'existe pas dans ce groupe Choisi"})
+            }
+           
+        })
 }
 
 //supression logique d'un utilisateur

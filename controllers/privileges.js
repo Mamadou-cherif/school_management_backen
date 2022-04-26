@@ -33,22 +33,35 @@ function deletePrivilege(req, res,next){
     initPrivilegeClass.privilege.menuId= req.body.menuId
     initPrivilegeClass.privilege.groupeId= req.body.groupeId
     initPrivilegeClass.privilege.modeAccesId= req.body.modeAccesId
-    
+    console.log(req.body)
     Privilege.checkIfPrivilegeExists(initPrivilegeClass.privilege)
         .then(privilege=>{
-
-            for(let i=0; privilege.length; i++){
-                    Privilege.deletePrivilegeInModel(privilege[i].id, res)
-            }
+            
+                    Privilege.deletePrivilegeInModel(privilege[0].id)
+                        .then(()=>res.status(200).json({succes: "suppression succes"}))
+                        .catch(error=>res.status(400).json({error}))
         })
 }
 
+
+function checkIfPrivilegeExists(req, res, next){
+    const obj={
+        menuId: req.body.menuId,
+        groupeId: req.body.groupeId,
+        modeAccesId: req.body.modeAccesId,
+    }
+    Privilege.checkIfPrivilegeExists(obj)
+        .then(privilege=> res.status(201).json(privilege))
+        .catch(()=> res.status(400).json({error: "erreur de la procédure stockée de suppression"}));           
+
+}
  
 module.exports={
     disablePrivilege,
     addPrivilege,
     getAllPrivileges,
-    deletePrivilege
+    deletePrivilege,
+    checkIfPrivilegeExists
     
    
 }

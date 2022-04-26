@@ -10,6 +10,7 @@ const { reject } = require("bcrypt/promises");
  
 
 function checkIfOngletExists(theReq){
+  console.log(theReq)
   return new Promise((resolve,reject)=> {
       
     connection.query("CALL onglets_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -22,7 +23,7 @@ function checkIfOngletExists(theReq){
            theReq.type,
            theReq.ordre,
            theReq.url,
-           theReq.image,
+           theReq.image, 
            theReq.estActif, 
            theReq.creationDate,
            theReq.creationUserId,
@@ -49,11 +50,12 @@ function addOngletInModel(theReq){
     
           connection.query("CALL onglets_insert(?,?,?,?,?,?,?,?,?)", 
                       [
+
                         theReq.body.menuId,
                         theReq.body.reference,
                         theReq.body.libelle,
                         theReq.body.descriptions,
-                        theReq.body.type,
+                        theReq.body.typeOnglet,
                         theReq.body.ordre,
                         theReq.body.url,
                         theReq.body.image,
@@ -78,7 +80,23 @@ function addOngletInModel(theReq){
   
 }
 
+function getOngletByIdInModel(theReq){
+  return new Promise((resolve,reject)=> {
+    connection.query("CALL onglets_selectById(?)",
+          [
+            theReq.params.id
+          ],
 
+      ((err,results, fields)=>{
+        if(err){
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
+
+}
 
 //supression en logique d'un utilisateur
 function disableOngletInModel(theReq, theResponse){
@@ -101,66 +119,134 @@ function disableOngletInModel(theReq, theResponse){
   })
 }
 
-
 function getOngletByGroupeModel(theReq){
-  return new Promise((reject, resolve)=>{
-
+  console.log(theReq.body)
+  return new Promise((resolve,reject)=> {
+    
     connection.query("CALL onglets_getOngletByGroupe(?,?)",
-     [  
-         theReq.body.menuId,
-         theReq.body.groupeId
-        
-      ],
-      (err, results, fields)=>{
-        if(err){
-         reject(err)
-        }
-        else{
-         resolve(results[0])
-        }
-      })
+          [ 
+            theReq.body.menuId,
+            theReq.body.groupeId
+          ],
+
+          ((err,results, fields)=>{
+            if(err){
+              reject(err)
+            }
+            resolve(results[0])
+          })
+        )
   })
 }
+  
 
 function getAffectesByGroupeAndMenuInModel(theReq){
-  return new Promise((reject, resolve)=>{
-
+  return new Promise((resolve,reject)=> {
+    
     connection.query("CALL onglets_getAffectesByGroupeAndMenu(?,?)",
-     [  
-         theReq.body.menuId,
-         theReq.body.groupeId
-        
-      ],
-      (err, results, fields)=>{
-        if(err){
-         reject(err)
-        }
-        else{
-         resolve(results[0])
-        }
-      })
-  })
-}
+          [ 
+            theReq.body.groupeId,
+            theReq.body.menuId
+            
+            
+          ],
 
-function getOngletsAffecteAUnGroupeInModel(req, res, next){
-  return new Promise((reject, resolve)=>{  
-
-    connection.query("CALL menus_getOngletsAffecteAUnGroupe(?,?)",
-     [  
-          theReq.body.menuId,
-          theReq.body.groupeId
-      ],
-      (err, results, fields)=>{
+      ((err,results, fields)=>{
         if(err){
           reject(err)
         }
-        else{
-           resolve(results[0])
-        }
+        resolve(results[0])
       })
+    )
   })
-} 
+}
 
+
+
+
+function getOngletsAffecteAUnGroupeInModel(theReq){
+  return new Promise((resolve,reject)=> {
+    
+    connection.query("CALL menus_getOngletsAffecteAUnGroupe(?)",
+          [ 
+           
+            theReq.body.groupeId,
+            
+          ],
+
+      ((err,results, fields)=>{
+        if(err){
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
+}
+
+  function updateOngletInModel(theReq){
+    console.log(theReq.body)
+    return new Promise((resolve,reject)=> {
+      
+      connection.query("CALL onglets_update(?,?,?,?,?,?,?,?,?,?,?)",
+            [ 
+                theReq.body.id,
+                  theReq.body.menuId,
+                  theReq.body.reference,
+                  theReq.body.libelle,
+                  theReq.body.descriptions,
+                  theReq.body.type,
+                  theReq.body.ordre,
+                  theReq.body.url,
+                  theReq.body.image,
+                  theReq.body.modifDate,
+                  theReq.body.modifUserId
+            ],
+
+        ((err,results, fields)=>{
+          if(err){
+            reject(err)
+          }
+          resolve(results[0])
+        })
+      )
+   })
+ }
+
+
+
+
+// function updateOngletInModel(theReq){
+//   console.log(theReq.body)
+//   return new Promise((resolve, reject)=>{
+  
+      
+//           connection.query("CALL onglets_update(?,?,?,?,?,?,?,?,?,?,?)", 
+//                       [
+//                         theReq.body.id,
+//                         theReq.body.menuId,
+//                         theReq.body.reference,
+//                         theReq.body.libelle,
+//                         theReq.body.descriptions,
+//                         theReq.body.type,
+//                         theReq.body.ordre,
+//                         theReq.body.url,
+//                         theReq.body.image,
+//                         theReq.body.modifDate,
+//                         theReq.body.modifUserId
+//                       ]
+//                   ,
+//                          ((err,results, fields)=>{
+//                                 if(err){
+//                                   reject(err)
+//                                 }
+//                                 resolve(results[0])
+//                               })
+//      )
+      
+//     })
+
+// }
 
 module.exports= {
     checkIfOngletExists,
@@ -168,5 +254,7 @@ module.exports= {
     disableOngletInModel,
     getOngletByGroupeModel,
     getAffectesByGroupeAndMenuInModel,
-    getOngletsAffecteAUnGroupeInModel
+    getOngletsAffecteAUnGroupeInModel,
+    getOngletByIdInModel,
+    updateOngletInModel
 }

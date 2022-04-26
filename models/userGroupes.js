@@ -63,23 +63,26 @@ function addUserGroupeInModel(theReq){
   
 }
 
-//supression en dur
-function deleteUserGroupeInModel(theReq, theResponse){
-  return new Promise((reject, resolve)=>{
+//supression en du
 
+function deleteUserGroupeInModel(id){
+  return new Promise((resolve,reject)=> {
+    
     connection.query("CALL usergroupes_delete(?)",
-     [
-       theReq.body.id
-     ],
-      (err, results, fields)=>{
+          [ 
+            id        
+          ],
+
+      ((err,results, fields)=>{
         if(err){
-          theResponse.status(400).json({succes: "La suppression en dur a échoué"})
-        }         
-          theResponse.status(200).json({succes: "La suppression en dur a bien reussie"})
+          reject(err)
+        }
+       // console.log(results[0])
+        resolve(results[0])
       })
+    )
   })
 }
-
 //supression en logique d'un utilisateur
 function disableUserGroupeInModel(theReq, theResponse){
   return new Promise((reject, resolve)=>{

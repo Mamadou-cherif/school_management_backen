@@ -85,25 +85,25 @@ function addPrivilegeInModel(theReq){
   
 }
 
-
-function deletePrivilegeInModel(id, theResponse){
-  return new Promise((reject, resolve)=>{
-
+function deletePrivilegeInModel(id){
+  return new Promise((resolve,reject)=> {
+    
     connection.query("CALL privileges_delete(?)",
-     [  
-         id,
-         
-      ],
-      (err, results, fields)=>{ 
+          [ 
+            id,
+            
+          ],
+
+      ((err,results, fields)=>{
         if(err){
-          theResponse.status(400).json({error: "La suppression du privilège a échoué"})
+          reject(err)
         }
-        else{
-          theResponse.status(200).json({succes: "Le privilège a été retiré avec succes"})
-        }
+        resolve(results[0])
       })
+    )
   })
 }
+
 
 
 //supression en logique d'un utilisateur

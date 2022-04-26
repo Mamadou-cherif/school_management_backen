@@ -84,6 +84,7 @@ function deleteGroupeInModel(theReq, theResponse){
 
 //supression en logique d'un utilisateur
 function disableGroupeInModel(theReq, theResponse){
+ 
   return new Promise((reject, resolve)=>{
 
     connection.query("CALL groupes_disable(?,?,?)",
@@ -103,12 +104,21 @@ function disableGroupeInModel(theReq, theResponse){
   })
 }
 
+
+
+
+
 function updateGroupeInModel(theReq, theResponse){
   return new Promise((resolve, reject)=>{
 
-    connection.query("CALL groupes_update(?,?,?,?)", 
+    connection.query("CALL groupes_update(?,?,?,?,?)", 
                       [
                       
+                        theReq.body.id,
+                        theReq.body.libelle,
+                        theReq.body.observations,
+                        theReq.body.modifUserId,
+                        theReq.body.modifDate
                       ]
                   ,
                   (err, results, fields)=>{

@@ -9,6 +9,7 @@
 		ordre: null,
 		url: null,
 		image: null,
+		estActif: 1,
 		creationDate: null,
 		creationUserId: null,
 		modifDate: null,

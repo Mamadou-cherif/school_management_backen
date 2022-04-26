@@ -67,7 +67,7 @@ function checkIfUserExists(theReq){
             theReq.estAlerte,
             theReq.estSuspendu,
             theReq.estActif,
-            theReq.creationDate,
+            theReq.creationDate, 
             theReq.creationUserId,
             theReq.modifDate,
             theReq.modifUserId,
@@ -86,28 +86,64 @@ function checkIfUserExists(theReq){
 }
 
 
+function getNbAuthenticateInModel(theReq){
+  return new Promise((resolve,reject)=> {
+    connection.query("CALL users_getNbAuthenticate(?,?)",
+          [
+            theReq.telephone1,
+            theReq.motDePasse
+          ],
+
+      ((err,results, fields)=>{
+        if(err){
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
+}
+
+function getAuthenticateInModel(theReq){
+  return new Promise((resolve,reject)=> {
+    
+    connection.query("CALL users_getAuthenticate(?,?)",
+          [
+            theReq.telephone1,
+            theReq.motDePasse
+          ],
+
+      ((err,results, fields)=>{
+        if(err){
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
+}
+
+
 function addUserInModel(theReq){
   return new Promise((resolve, reject)=>{
 
-    bcrypt.hash(theReq.body.password,8)
-    .then(hash=>{
           connection.query("CALL users_insert(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", 
                       [
-                        theReq.body.structureId,
-                        theReq.body.prestataireId,
-                        theReq.body.nom,
-                        theReq.body.prenoms,
-                        theReq.body.fonction,
-                        theReq.body.telephone1,
-                        theReq.body.telephone2,
-                        theReq.body.email,
-                        theReq.body.photo,
-                        hash,
-                        theReq.body.quartierdistrictId,
-                        theReq.body.observations,
-                        theReq.body.estAlerte,
-                        theReq.body.estSuspendu,
-                        theReq.body.creationUserId
+                        theReq.structureId,
+                        theReq.prestataireId,
+                        theReq.nom,
+                        theReq.prenoms,
+                        theReq.fonction,
+                        theReq.telephone1,
+                        theReq.telephone2,
+                        theReq.email,
+                        theReq.photo,
+                        theReq.password,
+                        theReq.quartierdistrictId,
+                        theReq.observations,
+                        theReq.estAlerte,
+                        theReq.estSuspendu,
+                        theReq.creationUserId
                       ]
                   ,
                   (err, results, fields)=>{
@@ -117,12 +153,11 @@ function addUserInModel(theReq){
                       //connection.end();
                     }
                     else{
-                    resolve(results);}
+                    resolve(results[0]);}
                     // connection.end()
             
           })
-      })
-      .catch(error=>res.status(400).json({error}))
+     
     })
   
 }
@@ -262,29 +297,9 @@ function activateUser(theReq, theResponse){
         }
       }) 
   })
-}
+} 
 
-function addAuserConnexionInstance(theReq){
-  return new Promise((reject, resolve)=>{
-    
-    connection.query("CALL userconnexions_insert(?,?,?,?)",
-     [  
-         theReq.userId,
-         theReq.adressIp,
-         theReq.fin,
-         theReq.creationUserId
-         
-      ],
-      (err, results, fields)=>{
-        if(err){
-          resolve(err)
-        }
-        else{
-          resolve(results)
-        }
-      }) 
-  })
-}
+
 
 function UpdateUserConnexionInstance(theReq){
   
@@ -307,9 +322,30 @@ function UpdateUserConnexionInstance(theReq){
       }) 
   })
 }
+ 
+function userUpdatePasswordInModel(theReq, theRes){
+  return new Promise((reject, resolve)=>{
+    connection.query("CALL users_updatePassword(?,?,?)",
+     [  
+         theReq.id,
+         theReq.newMotDePasse,
+         theReq.modifUserId
+         
+      ],
+      (err, results, fields)=>{
+        if(err){
+          
+          theRes.status(400).json({error: "mise à jour echec"})
+        }
+        else{
+          
+          theRes.status(200).json({succes: "mise à jour faite avec succes"})
+        }
+      })
+  })
+}
 
 module.exports= {
-    addAuserConnexionInstance,
     updateUserInModel,
     checkIfUserExists,
     addUserInModel,
@@ -318,6 +354,8 @@ module.exports= {
     getAsingleUserInModel,
     getAllUsersInModel,
     activateUser,
-    addAuserConnexionInstance,
-    UpdateUserConnexionInstance
+    UpdateUserConnexionInstance,
+    getNbAuthenticateInModel,
+    getAuthenticateInModel,
+    userUpdatePasswordInModel
 }

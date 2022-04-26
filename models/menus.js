@@ -9,6 +9,41 @@ const { reject } = require("bcrypt/promises");
 
  
 
+function addAMenu(theObject){
+
+  return new Promise((resolve, reject)=>{
+    connection.query("CALL menus_insert(?,?,?,?,?,?,?,?,?)", 
+    [
+      theObject.reference,
+      theObject.libelle,
+      theObject.descriptions,
+      theObject.url,
+      theObject.menuPereId,
+      theObject.ordre,
+      theObject.typeMenu,
+      theObject.image,
+      theObject.creationUserId,
+    ]
+,
+  (err, results, fields)=>{
+      if(err){
+
+        reject(err)
+        //connection.end();
+      }
+      else{
+      resolve(results[0]);
+        // connection.end()
+    }
+  
+
+})
+  })
+
+
+}
+
+
 function checkIfMenuExists(theReq){
   return new Promise((resolve,reject)=> {
       
@@ -42,6 +77,7 @@ function checkIfMenuExists(theReq){
   })
 }
 
+
 function getMenuPereInModel(){
   return new Promise((resolve, reject)=>{
 
@@ -58,7 +94,7 @@ function getMenuPereInModel(){
                       //connection.end();
                     }
                     else{
-                    resolve(results);}
+                    resolve(results[0]);}
                     // connection.end()
             
           })
@@ -67,10 +103,32 @@ function getMenuPereInModel(){
   
 }
 
-function addMenuInModel(theReq){
+function getMenuFilsInModel(){
   return new Promise((resolve, reject)=>{
 
     
+          connection.query("CALL menus_getMenuFils()", 
+                      [
+                       
+                      ]
+                  ,
+                  (err, results, fields)=>{
+                    if(err){
+
+                      reject(err)
+                      //connection.end();
+                    }
+                    else{
+                    resolve(results[0]);}
+                    // connection.end()
+            
+          })
+   
+    })
+  
+}
+function addMenuInModel(theReq, theRes){
+  return new Promise((resolve, reject)=>{
           connection.query("CALL menus_insert(?,?,?,?,?,?,?,?,?)", 
                       [
                         theReq.body.reference,
@@ -82,8 +140,6 @@ function addMenuInModel(theReq){
                         theReq.body.typeMenu,
                         theReq.body.image,
                         theReq.body.creationUserId,
-                        
-                      
                       ]
                   ,
                   (err, results, fields)=>{
@@ -93,7 +149,8 @@ function addMenuInModel(theReq){
                       //connection.end();
                     }
                     else{
-                    resolve(results);}
+                     resolve(results[0]);
+                  }
                     // connection.end()
             
           })
@@ -124,31 +181,72 @@ function disableMenuInModel(theReq, theResponse){
 }
 
 
-function getMenuFilsByGroupeInModel(theReq){
-  return new Promise((reject, resolve)=>{
 
-    connection.query("CALL menus_getMenuFilsByGroupe(?,?)",
-     [  
-         theReq.body.menuPereId,
-         theReq.body.groupeId
-      ],
-      (err, results, fields)=>{
-        if(err){
-          reject(err)
-        }
-        else{
-           resolve(results[0])
-        }
-      })
-  })
-}
+
+
 
 function getWithOngletsInModels(theReq){
-  return new Promise((reject, resolve)=>{  
-
+  return new Promise((resolve,reject)=> {
+    
     connection.query("CALL menus_getWithOnglets(?)",
-     [  
-         theReq.body.typeMenu
+          [ 
+            theReq.body.typeMenu
+          ],
+
+      ((err,results, fields)=>{
+        if(err){
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
+}
+
+function getMenuFilsByGroupeInModel(theReq){
+  return new Promise((resolve,reject)=> {
+    
+    connection.query("CALL menus_getMenuFilsByGroupe(?,?)",
+          [ 
+            theReq.body.menuPereId,
+            theReq.body.groupeId
+            
+          ],
+
+      ((err,results, fields)=>{
+        if(err){
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
+}
+function getAllMenusInModel(theReq){
+  return new Promise((resolve,reject)=> {
+    
+    connection.query("CALL menus_selectAll(?,?,?)",
+          [ 
+            1,
+            null,
+            null
+          ],
+
+      ((err,results, fields)=>{
+        if(err){
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
+}
+
+function menus_getMenuPrincipalByUser(theReq){
+  return new Promise((reject, resolve)=>{ 
+    connection.query("CALL menus_getMenuPrincipalByUser(?)",
+      [  
+       theReq.userId
       ],
       (err, results, fields)=>{
         if(err){
@@ -161,7 +259,118 @@ function getWithOngletsInModels(theReq){
   })
 }
 
+function menus_getMenuPrincipalByUser(theReq){
+  return new Promise((resolve,reject)=> {
+    
+    connection.query("CALL menus_getMenuPrincipalByUser(?)",
+          [
+            theReq.userId
+          ],
 
+      ((err,results, fields)=>{
+        if(err){
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+}
+
+function menus_getMenuFilsByUserReference(theReq){
+  return new Promise((resolve,reject)=> {
+    
+    connection.query("CALL menus_getMenuFilsByUserReference(?,?)",
+          [
+            theReq.userId,
+            theReq.referenceMenu
+          ],
+
+      ((err,results, fields)=>{
+        if(err){
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+}
+
+
+function updatatMenuInModel(objMenu){
+    return new Promise((resolve, reject)=>{
+          console.log(objMenu)
+        
+            connection.query("CALL menus_update(?,?,?,?,?,?,?,?,?,?,?)", 
+                        [
+                          objMenu.id,
+                          objMenu.reference,
+                          objMenu.libelle,
+                          objMenu.descriptions,
+                          objMenu.url,
+                          objMenu.menuPereId,
+                          objMenu.ordre,
+                          objMenu.typeMenu,
+                          objMenu.image,
+                          objMenu.modifDate,
+                          objMenu.modifUserId
+                        ]
+                    ,
+                    (err, results, fields)=>{
+                      if(err){
+  
+                       reject(err)
+                      }
+                      resolve(results)
+              
+            })
+        
+      })
+  
+}
+
+function getAsingleMenuInModel(theReq){
+  return new Promise((resolve,reject)=> {
+    connection.query("CALL menus_selectById(?)",
+          [
+            theReq.params.id
+          ],
+
+      ((err,results, fields)=>{
+        if(err){
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
+
+}
+
+function getFilsByPereInModel(theReq){
+  return new Promise((resolve,reject)=> {
+    
+    connection.query("CALL menus_getFilsByPere(?)",
+          [ 
+            theReq.body.pereId           
+          ],
+
+      ((err,results, fields)=>{
+        if(err){
+          reject(err)
+        }
+       // console.log(results[0])
+        resolve(results[0])
+      })
+    )
+  })
+}
 
 module.exports= {
     getWithOngletsInModels,
@@ -170,5 +379,13 @@ module.exports= {
     disableMenuInModel,
     getMenuPereInModel,
     getMenuFilsByGroupeInModel,
-    
+    getAllMenusInModel,
+    menus_getMenuPrincipalByUser,
+    updatatMenuInModel,
+    menus_getMenuFilsByUserReference,
+    getMenuFilsInModel,
+    addAMenu,
+    getAsingleMenuInModel,
+    getFilsByPereInModel
+
 }
