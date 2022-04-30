@@ -12,19 +12,26 @@ const userConnexion= require("../models/userConnexion")
 const userPassword= require("../models/userPassword")
 const initUserPassword= require("../classes/userPassword")
 const jwt= require("../services/jwt")
+
 function addUser(req, res,next){
-    initUserClass.user.telephone1= req.body.indicatifTel + req.body.telephone1
+    initUserClass.user.telephone1= req.body.indicatifTel.toString() + req.body.telephone1
+    if(req.body.telephone2){
+
+        initUserClass.user.telephone2= req.body.indicatifTel.toString() + req.body.telephone2
+    }else{
+        initUserClass.user.telephone2= null
+    }
+
      //verifie si l'utilisateur existe en base
      User.checkIfUserExists(initUserClass.user)
           .then(user=> {
               
                 if(user.length==0){ 
 
-                                initUserClass.user.structureId=  null
-                                initUserClass.user.prestataireId = null  
+                                initUserClass.user.structureId=  req.body.structureId
+                                initUserClass.user.prestataireId = req.body.prestataireId  
                                 initUserClass.user.nom=  req.body.nom
                                 initUserClass.user.prenoms=  req.body.prenoms
-                                initUserClass.user.telephone2= req.body.indicatifTel + req.body.telephone2
                                 initUserClass.user.email=  req.body.email
                                 initUserClass.user.photo=  ""
                                 initUserClass.user.password=  md5(req.body.password)
@@ -34,6 +41,7 @@ function addUser(req, res,next){
                                 initUserClass.user.estSuspendu= 0;
                                 initUserClass.user.creationUserId=  req.body.creationUserId
                                 initUserClass.user.fonction=  req.body.fonction
+                                initUserClass.signature= req.body.signature
 
 
                       User.addUserInModel(initUserClass.user)
@@ -57,7 +65,8 @@ function addUser(req, res,next){
                    }
           })
           .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stocké"}))
-}
+
+   }
 
 
 
@@ -138,12 +147,12 @@ function login(req, res, next){
                                                                         .then(()=>{ })
                                                                         .catch(()=>{})
                                                                         user.telephone2=undefined
-                                                            res.status(200).json({  
+                                                                       res.status(200).json({  
                                                                                 customisePassword: false,                                                  
                                                                                 user,
                                                                                 token: jwt.createtoken(user)
-                                                            })
-                                                                }
+                                                                        })
+                                                                    }
                                                             })
                                                     }
                                                     else{
@@ -194,8 +203,8 @@ function updateUser(req,res, next){
         prenoms:null,
         fonction:null,
         telephone1: req.body.telephone1,
-        telephone2 :req.body.telephone2,
-        email: req.body.email,
+        telephone2 :null,
+        email: null,
         photo:null,
         password:null,
         quartierdistrictId:null,
@@ -213,14 +222,13 @@ function updateUser(req,res, next){
      User.checkIfUserExists(user)
          .then(data=>{
                   if(data.length==0){
-                   User.updateUserInModel(req, res)
+                   User.updateUserInModel(req)
                       .then(()=>res.status(200).json({succes: "La modification de l'utilisateur a réussi"}))
                       .catch(error=> res.status(400).json(error))
+                  
                   }
-                  else{
-                      res.status(400).json({error: "numero ou email existe deja dans notre systeme"});
-                  }
-             })
+                    })
+             .catch()
 
 
 }

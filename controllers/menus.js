@@ -55,7 +55,6 @@ function getAsingleMenu(req, res, next){
   .catch(error=> res.status(400).json({error}))
 }
 
-//don't work with the front
 
 
 function updatatMenu(req, res, next){

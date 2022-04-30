@@ -1,8 +1,7 @@
 const express=require("express")
 const router= express.Router()
-const communesController= require("../controllers/commune")
+const communeController= require("../controllers/commune")
 
-    router.get("/getAllCommunes", communesController.getAllCommune)
-    router.post("/getCommunesById", communesController.getCommuneById)
+    router.post("/communeSelectBy", communeController.communeSelectBy)
 
     module.exports= router

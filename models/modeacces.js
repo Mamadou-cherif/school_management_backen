@@ -84,13 +84,13 @@ console.log(theReq.body)
 }
 
 
-function getModeAccessByIdInModel(id){
+function getModeAccessByIdInModel(theReq){
   return new Promise((resolve,reject)=> {
     
     connection.query("CALL modeaccess_selectById(?)",
           [
-            id
-          ],
+            theReq.params.id
+          ], 
 
       ((err,results, fields)=>{
         if(err){

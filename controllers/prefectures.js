@@ -1,4 +1,4 @@
-const Prefectures= require("../models/prefecture")
+const Prefectures= require("../models/prefectures")
 const express= require("express") 
 const bodyParser=require("body-parser")
 const app= express()

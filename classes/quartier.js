@@ -1,6 +1,7 @@
-const commune={
+
+const quartier={
     id:  null,
-    prefectureId:  null,
+    communeId:  null,
     libelle:  null,
     code:  null,
     estActif:  null,
@@ -10,7 +11,6 @@ const commune={
     modifUserId:  null,
     debutDonnees: null,
     finDonnees: null
-
 }
 
-module.exports=commune
+module.exports=quartier

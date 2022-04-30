@@ -13,6 +13,9 @@ const paysRoute= require("./routes/pays")
 const prestaireRoute= require("./routes/prestataire")
 const structureRoute= require("./routes/structure")
 const regionsRoute= require("./routes/regions")
+const prefectureRoutes= require("./routes/prefectures")
+const quartiersRoutes= require("./routes/quartier")
+const communesRoutes= require("./routes/communes")
 
 const a= require("./a")
 
@@ -39,6 +42,10 @@ app.use(bodyParser.json())
     app.use("/api", prestaireRoute)
     app.use("/api", structureRoute)
     app.use("/api", regionsRoute)
+    app.use("/api", prefectureRoutes)
+    app.use("/api", quartiersRoutes)
+    app.use("/api", communesRoutes)
+    
 
 
 module.exports= app

@@ -7,13 +7,12 @@ const bcrypt= require("bcrypt");
 const res = require("express/lib/response");
 const { reject } = require("bcrypt/promises");
 
-function communeSelectByInModel(data){
-    console.log(data)
+function quartierSelectByInModel(data){
     return new Promise((resolve,reject)=> {
-      connection.query("CALL communes_selectBy(?,? ,?,?,?,?,?,?,?,?,?)",
+      connection.query("CALL quartierdistricts_selectBy(?,? ,?,?,?,?,?,?,?,?,?)",
             [
              data.id,
-             data.prefectureId,
+             data.communeId,
              data.libelle,
              data.code,
              data.estActif,
@@ -38,5 +37,5 @@ function communeSelectByInModel(data){
 
  
   module.exports={
-    communeSelectByInModel
+    quartierSelectByInModel
   }

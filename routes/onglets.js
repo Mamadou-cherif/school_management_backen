@@ -1,7 +1,7 @@
 const express=require("express")
 const router= express.Router()
 const ongletController= require("../controllers/onglets")
-
+ 
     router.post("/addOnglet", ongletController.addOnglet)
     router.put("/disableOnglet", ongletController.disableOnglet)
     //ramene tous les onglets qu'un groupe ne possède pas en "tout"

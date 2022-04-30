@@ -34,7 +34,7 @@ function getAllPaysInModel(theReq){
       
       connection.query("CALL payss_selectById(?)",
             [ 
-              theReq.body.id
+              theReq.params.id
             ],
   
         ((err,results, fields)=>{

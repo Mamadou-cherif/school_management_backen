@@ -200,45 +200,42 @@ function disableUserInModel(theReq, theResponse){
   })
 }
 
-function updateUserInModel(theReq, theResponse){
-  return new Promise((resolve, reject)=>{
-  
-    bcrypt.hash(theReq.body.password,8)
-    .then(hash=>{
-      
-          connection.query("CALL users_update(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", 
-                      [
-                        theReq.body.id,
-                        theReq.body.structureId,
-                        theReq.body.prestataireId,
-                        theReq.body.nom,
-                        theReq.body.prenoms,
-                        theReq.body.fonction,
-                        theReq.body.telephone1,
-                        theReq.body.telephone2,
-                        theReq.body.email,
-                        theReq.body.photo,
-                        hash,
-                        theReq.body.quartierdistrictId,
-                        theReq.body.observations,
-                        theReq.body.estAlerte,
-                        theReq.body.estSuspendu,
-                        theReq.body.modifDate,
-                        theReq.body.creationUserId
-                      ]
-                  ,
-                  (err, results, fields)=>{
-                    if(err){
+function updateUserInModel(theReq){
+  return new Promise((resolve,reject)=> {
+    
+    connection.query("CALL users_update(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          [ 
+                      theReq.body.id,
+                      theReq.body.structureId,
+                      theReq.body.prestataireId,
+                      theReq.body.nom,
+                      theReq.body.prenoms,
+                      theReq.body.fonction,
+                      theReq.body.telephone1,
+                      theReq.body.telephone2,
+                      theReq.body.email,
+                      theReq.body.photo,
+                      theReq.body.password,
+                      theReq.body.quartierdistrictId,
+                      theReq.body.observations,
+                      theReq.body.estAlerte,
+                      theReq.body.estSuspendu,
+                      theReq.body.modifDate,
+                      theReq.body.modifUserId          
+          ],
 
-                     reject(err)
-                    }
-                    resolve(results)
-            
-          })
+      ((err,results, fields)=>{
+        if(err){
+          reject(err)
+        }
+       // console.log(results[0])
+        resolve(results[0])
       })
-      .catch(error=>res.status(400).json({error}))
-    })
+    )
+  })
 }
+
+
 
 
 function getAsingleUserInModel(theReq){
