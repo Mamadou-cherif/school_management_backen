@@ -33,7 +33,6 @@ function deletePrivilege(req, res,next){
     initPrivilegeClass.privilege.menuId= req.body.menuId
     initPrivilegeClass.privilege.groupeId= req.body.groupeId
     initPrivilegeClass.privilege.modeAccesId= req.body.modeAccesId
-    console.log(req.body)
     Privilege.checkIfPrivilegeExists(initPrivilegeClass.privilege)
         .then(privilege=>{
             

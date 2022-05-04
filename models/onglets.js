@@ -10,7 +10,6 @@ const { reject } = require("bcrypt/promises");
  
 
 function checkIfOngletExists(theReq){
-  console.log(theReq)
   return new Promise((resolve,reject)=> {
       
     connection.query("CALL onglets_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -120,7 +119,6 @@ function disableOngletInModel(theReq, theResponse){
 }
 
 function getOngletByGroupeModel(theReq){
-  console.log(theReq.body)
   return new Promise((resolve,reject)=> {
     
     connection.query("CALL onglets_getOngletByGroupe(?,?)",
@@ -185,7 +183,6 @@ function getOngletsAffecteAUnGroupeInModel(theReq){
 }
 
   function updateOngletInModel(theReq){
-    console.log(theReq.body)
     return new Promise((resolve,reject)=> {
       
       connection.query("CALL onglets_update(?,?,?,?,?,?,?,?,?,?,?)",
@@ -195,7 +192,7 @@ function getOngletsAffecteAUnGroupeInModel(theReq){
                   theReq.body.reference,
                   theReq.body.libelle,
                   theReq.body.descriptions,
-                  theReq.body.type,
+                  theReq.body.typeOnglet,
                   theReq.body.ordre,
                   theReq.body.url,
                   theReq.body.image,
@@ -217,7 +214,6 @@ function getOngletsAffecteAUnGroupeInModel(theReq){
 
 
 // function updateOngletInModel(theReq){
-//   console.log(theReq.body)
 //   return new Promise((resolve, reject)=>{
   
       

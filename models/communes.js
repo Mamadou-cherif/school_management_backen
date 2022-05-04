@@ -8,7 +8,6 @@ const res = require("express/lib/response");
 const { reject } = require("bcrypt/promises");
 
 function communeSelectByInModel(data){
-    console.log(data)
     return new Promise((resolve,reject)=> {
       connection.query("CALL communes_selectBy(?,? ,?,?,?,?,?,?,?,?,?)",
             [

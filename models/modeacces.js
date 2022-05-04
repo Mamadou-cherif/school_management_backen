@@ -64,7 +64,6 @@ function addModeAccesInModel(theReq){
 }
 
 function getNonAffectedByMenuAndGroupeInModel(theReq){
-console.log(theReq.body)
   return new Promise((resolve,reject)=> {
     
     connection.query("CALL modeaccess_getNonAffectedByMenuAndGroupe(?,?)",
@@ -127,7 +126,6 @@ function getAllModeAccessInModel(theReq){
 
 function updateModeAccesInModel(theReq){
   return new Promise((resolve, reject)=>{
-    console.log(theReq)
     connection.query("CALL modeaccess_update(?,?,?,?)", 
                 [
                   theReq.id,
@@ -187,7 +185,6 @@ function getFilsAffecteAUnGroupeInModel(theReq){
         if(err){
           reject(err)
         }
-        console.log(results[0])
         resolve(results[0])
       })
     )
@@ -195,7 +192,6 @@ function getFilsAffecteAUnGroupeInModel(theReq){
 } 
 
 function getPrincipalAffecteAUnGroupeInModel(theReq){
-  console.log(theReq.body)
   return new Promise((resolve,reject)=> {
     
     connection.query("CALL menus_getPrincipalAffecteAUnGroupe(?)",
@@ -227,7 +223,6 @@ function getAffectesByMenuAndGroupeInModel(theReq){
         if(err){
           reject(err)
         }
-        console.log(results[0])
         resolve(results[0])
       })
     )
@@ -255,7 +250,6 @@ function getAffectesByMenuAndGroupeInModel(theReq){
 
 
 function getNotAffectedByOngletAndGroupeInModel(theReq){
-  console.log(theReq.body)
   return new Promise((resolve,reject)=> {
     
     connection.query("CALL modeaccess_getNotAffectedByOngletAndGroupe(?,?)",
@@ -276,7 +270,6 @@ function getNotAffectedByOngletAndGroupeInModel(theReq){
 }
 
 function getAffectedByOngletAndGroupeInModel(theReq){
-  console.log(theReq.body)
   return new Promise((resolve,reject)=> {
     
     connection.query("CALL modeaccess_getAffectedByOngletAndGroupe(?,?)",

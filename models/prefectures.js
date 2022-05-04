@@ -8,7 +8,6 @@ const res = require("express/lib/response");
 const { reject } = require("bcrypt/promises");
 
 function prefectureSelectByInModel(data){
-    console.log(data)
     return new Promise((resolve,reject)=> {
       connection.query("CALL prefectures_selectBy(?,? ,?,?,?,?,?,?,?,?,?)",
             [

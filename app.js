@@ -16,6 +16,15 @@ const regionsRoute= require("./routes/regions")
 const prefectureRoutes= require("./routes/prefectures")
 const quartiersRoutes= require("./routes/quartier")
 const communesRoutes= require("./routes/communes")
+const axeRoutes= require("./routes/axe")
+const programmeRoutes= require("./routes/programme")
+const prioriteRoutes= require("./routes/priorite")
+const projetRoutes= require("./routes/projet")
+const financementRoutes= require("./routes/financement")
+const actionRoutes= require("./routes/actions")
+const statuProjetRoutes= require("./routes/statutprojet")
+const serviceConcerneRoutes= require("./routes/serviceconcerne")
+const serviceRoutes= require("./routes/service")
 
 const a= require("./a")
 
@@ -45,6 +54,16 @@ app.use(bodyParser.json())
     app.use("/api", prefectureRoutes)
     app.use("/api", quartiersRoutes)
     app.use("/api", communesRoutes)
+    app.use("/api", axeRoutes)
+    app.use("/api", programmeRoutes)
+    app.use("/api", prioriteRoutes)
+    app.use("/api", financementRoutes)
+    app.use("/api", projetRoutes)
+    app.use("/api", actionRoutes)
+    app.use("/api", statuProjetRoutes) 
+    app.use("/api", serviceConcerneRoutes)
+    app.use("/api", serviceRoutes)
+
     
 
 

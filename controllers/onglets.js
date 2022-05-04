@@ -9,23 +9,33 @@ const initOngletClass= require("../classes/onglets")
 
 
 function addOnglet(req, res,next){
-      
-          
-        
         initOngletClass.onglet.libelle= req.body.libelle
-       // initOngletClass.Onglet.observations= req.body.observations
-     //verifie si l'utilisateur existe en base
+        initOngletClass.onglet.menuId= req.body.menuId
      Onglet.checkIfOngletExists(initOngletClass.onglet) 
           .then(onglet=> {
                 if(onglet.length==0){
-                      Onglet.addOngletInModel(req)
-                          .then(()=> res.status(201).json({succes: "la création a reussi"}))
-                          .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
+                  initOngletClass.onglet.libelle= null
+                  initOngletClass.onglet.menuId= null
+                  initOngletClass.onglet.reference= req.body.reference
+                  Onglet.checkIfOngletExists(initOngletClass.onglet) 
+                  .then(ongletReference=> {
+                        if(ongletReference.length==0){
+                              Onglet.addOngletInModel(req)
+                                  .then(()=> res.status(201).json({succes: "la création a reussi"}))
+                                  .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
+                        }
+                        else
+                        {
+                            res.status(500).json({error: "cette reference existe déjà"})
+                        }
+                  })
+                  .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectByReference"}))
+ 
                 }
                 else
-                   {
+                {
                      res.status(500).json({error: "cet onglet existe déjà"})
-                   }
+                }
           })
           .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
 }
@@ -74,21 +84,23 @@ function checkIfOngletExists(req, res, next){
 }
 
 function updateOnglet(req, res, next){
-    
+    console.log(req.body)
   initOngletClass.onglet.libelle= req.body.libelle
+  initOngletClass.onglet.menuId= req.body.menuId
+  
   
   // initMenuClass.Menu.observations= req.body.observations
 //verifie si l'utilisateur existe en base
 Onglet.checkIfOngletExists(initOngletClass.onglet) 
     .then(onglet=> {
-          if(onglet.length==0){ 
+          if(onglet.length==0 || (onglet[0].id== req.body.id)){ 
                 Onglet.updateOngletInModel(req)
                     .then(()=> res.status(201).json({succes: "la modification a reussi"}))
                     .catch(()=> res.status(400).json({error: "erreur de la procédure stocké de modification"}));
           }
           else
               {
-                res.status(500).json({error: "Ce Menu existe déjà"})
+                res.status(500).json({error: "Cet onglet existe déjà"})
               }
     })
     .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))

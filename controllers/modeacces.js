@@ -41,7 +41,6 @@ function getAffectesByMenuAndGroupe(req, res, next){
 }
 
 function getFilsAffecteAUnGroupe(req, res, next){
-  console.log(req.body)
   ModeAcces.getFilsAffecteAUnGroupeInModel(req)
        .then(modeaccess=>res.status(200).json(modeaccess))
        .catch(error=> res.status(400).json(error))
@@ -74,7 +73,6 @@ function getNonAffectedByMenuAndGroupe(req, res, next){
           
    }
    else{
-     console.log("bonjour")
     ModeAcces.getNonAffectedByMenuAndGroupeInModel(req)
     .then(data=> {
         listeModeAcces= data
@@ -138,7 +136,6 @@ function updateModeAcces(req, res, next){
   initModeAccesClass.modeaccess.libelle= req.body.libelle
   initModeAccesClass.modeaccess.modifDate= req.body.modifDate
   initModeAccesClass.modeaccess.modifUserId= req.body.modifUserId
-  console.log(initModeAccesClass.modeaccess)
     ModeAcces.updateModeAccesInModel(initModeAccesClass.modeaccess)
         .then(()=> res.status(201).json({succes: "la modification a reussi"}))
         .catch(()=> res.status(400).json({error: "erreur de la procédure stockée de modification"}));

@@ -54,7 +54,7 @@ function checkIfMenuExists(theReq){
             theReq.libelle,
             theReq.descriptions,
             theReq.url,
-            theReq.menuPerId,
+            theReq.menuPereId,
             theReq.ordre,
             theReq.typeMenu,
             theReq.image,
@@ -127,37 +127,7 @@ function getMenuFilsInModel(){
     })
   
 }
-function addMenuInModel(theReq, theRes){
-  return new Promise((resolve, reject)=>{
-          connection.query("CALL menus_insert(?,?,?,?,?,?,?,?,?)", 
-                      [
-                        theReq.body.reference,
-                        theReq.body.libelle,
-                        theReq.body.descriptions,
-                        theReq.body.url,
-                        theReq.body.menuPerId,
-                        theReq.body.ordre,
-                        theReq.body.typeMenu,
-                        theReq.body.image,
-                        theReq.body.creationUserId,
-                      ]
-                  ,
-                  (err, results, fields)=>{
-                    if(err){
 
-                      reject(err)
-                      //connection.end();
-                    }
-                    else{
-                     resolve(results[0]);
-                  }
-                    // connection.end()
-            
-          })
-   
-    })
-  
-}
 
 //supression en logique d'un utilisateur
 function disableMenuInModel(theReq, theResponse){
@@ -305,7 +275,6 @@ function menus_getMenuFilsByUserReference(theReq){
 
 function updatatMenuInModel(objMenu){
     return new Promise((resolve, reject)=>{
-          console.log(objMenu)
         
             connection.query("CALL menus_update(?,?,?,?,?,?,?,?,?,?,?)", 
                         [
@@ -365,7 +334,6 @@ function getFilsByPereInModel(theReq){
         if(err){
           reject(err)
         }
-       // console.log(results[0])
         resolve(results[0])
       })
     )
@@ -375,7 +343,6 @@ function getFilsByPereInModel(theReq){
 module.exports= {
     getWithOngletsInModels,
     checkIfMenuExists,
-    addMenuInModel,
     disableMenuInModel,
     getMenuPereInModel,
     getMenuFilsByGroupeInModel,

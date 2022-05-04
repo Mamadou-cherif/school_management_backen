@@ -202,26 +202,25 @@ function disableUserInModel(theReq, theResponse){
 
 function updateUserInModel(theReq){
   return new Promise((resolve,reject)=> {
-    
     connection.query("CALL users_update(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           [ 
-                      theReq.body.id,
-                      theReq.body.structureId,
-                      theReq.body.prestataireId,
-                      theReq.body.nom,
-                      theReq.body.prenoms,
-                      theReq.body.fonction,
-                      theReq.body.telephone1,
-                      theReq.body.telephone2,
-                      theReq.body.email,
-                      theReq.body.photo,
-                      theReq.body.password,
-                      theReq.body.quartierdistrictId,
-                      theReq.body.observations,
-                      theReq.body.estAlerte,
-                      theReq.body.estSuspendu,
-                      theReq.body.modifDate,
-                      theReq.body.modifUserId          
+                      theReq.id,
+                      theReq.structureId,
+                      theReq.prestataireId,
+                      theReq.nom,
+                      theReq.prenoms,
+                      theReq.fonction,
+                      theReq.telephone1,
+                      theReq.telephone2,
+                      theReq.email,
+                      theReq.photo,
+                      theReq.password,
+                      theReq.quartierdistrictId,
+                      theReq.observations,
+                      theReq.estAlerte,
+                      theReq.estSuspendu,
+                      theReq.modifDate,
+                      theReq.modifUserId          
           ],
 
       ((err,results, fields)=>{

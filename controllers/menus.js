@@ -11,37 +11,45 @@ const { init } = require("express/lib/application")
 
 function addaMenu(req, res, next) {
 
-  const menuObj={
-    reference: null,
+  const menuObjlib={
     libelle: req.body.libelle,
-    descriptions: null,
-    url: null,
-    menuPereId: null,
-    ordre: null,
-    typeMenu: null,
-    image: null,
-    creationUserId: null
+    menuPereId: req.body.menuPereId
   }
-  Menu.checkIfMenuExists(menuObj)
+ 
+  Menu.checkIfMenuExists(menuObjlib)
     .then(menu=>{
       if(menu.length==0){
-        const menuObj={
-          reference: req.body.reference,
-          libelle: req.body.libelle,
-          descriptions: req.body.descriptions,
-          url: req.body.url,
-          menuPereId: req.body.menuPereId,
-          ordre: req.body.ordre,
-          typeMenu: req.body.typeMenu,
-          image: req.body.image,
-          creationUserId: req.body.creationUserId
-        }
-            Menu.addAMenu(menuObj)
-            .then(()=> res.status(201).json({succes: "la création a reussi"}))
-            .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
-      }
+            const menuObjRef={
+              reference: req.body.reference,
+            }
+            Menu.checkIfMenuExists(menuObjRef)
+            .then(menuByReference=>{
+              if(menuByReference.length==0){
+                const menuObj={
+                  reference: req.body.reference,
+                  libelle: req.body.libelle,
+                  descriptions: req.body.descriptions,
+                  url: req.body.url,
+                  menuPereId: req.body.menuPereId,
+                  ordre: req.body.ordre,
+                  typeMenu: req.body.typeMenu,
+                  image: req.body.image,
+                  creationUserId: req.body.creationUserId
+                }
+                    Menu.addAMenu(menuObj)
+                    .then(()=> res.status(201).json({succes: "la création a reussi"}))
+                    .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
+              }
+              else{
+                return res.status(400).json({error: "Cette reference existe déjà"})
+              }
+                
+            })
+            .catch(()=>res.status(400).json({error}))
+        
+       }
       else{
-        return res.status(400).json({error: "ce Menu existe déjà"})
+        return res.status(400).json({error: "Ce menu existe déjà"})
       }
          
     })
@@ -64,6 +72,7 @@ function updatatMenu(req, res, next){
       reference: null,
       libelle: req.body.libelle,
       descriptions: null,
+      menuPereId: req.body.menuPereId,
       url: null,
       ordre: null,
       typeMenu: null,
@@ -75,7 +84,7 @@ function updatatMenu(req, res, next){
    
     Menu.checkIfMenuExists(objMenu) 
         .then(menu=> {
-              if(menu.length==0){ 
+              if((menu.length==0 ) || (menu[0].id== req.body.id)){ 
                 const objMenu={
                   id:req.params.id,
                   reference: req.body.reference,

@@ -1,0 +1,24 @@
+const projet={
+   id: null,
+   programmeId: null,
+   code: null,
+   titre: null,
+   description: null,
+   prioriteId: null,
+   nature: null,
+   modalites: null,
+   duree: null,
+   debut: null,
+   fin: null,
+   statutId: null,
+   observations: null,
+   estActif: null,
+   creationDate: null,
+   creationUserId: null,
+   modifDate: null,
+   modifUserId: null,
+   debut: null,
+   fin: null
+}
+
+module.exports= projet

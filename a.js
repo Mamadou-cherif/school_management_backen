@@ -13,7 +13,6 @@ let a = class {
        this.method2= method2;
      }
      ajout(){
-         console.log("fuck you cherif")
      }
    }
 

@@ -221,14 +221,37 @@ function updateUser(req,res, next){
     }
      User.checkIfUserExists(user)
          .then(data=>{
-                  if(data.length==0){
-                   User.updateUserInModel(req)
-                      .then(()=>res.status(200).json({succes: "La modification de l'utilisateur a réussi"}))
+                  if((data.length==0) || (data[0].id== req.body.id)){
+                
+                      const objUser={
+                        id:  req.body.id,                     
+                        structureId: req.body.structureId,                     
+                        prestataireId: req.body.prestataireId ,                     
+                        nom:  req.body.nom,
+                        prenoms:  req.body.prenoms,
+                        fonction:  req.body.fonction,
+                        telephone1: req.body.telephone1,
+                        telephone2: req.body.telephone2,
+                        email:  req.body.email,
+                        photo:  "",
+                        password:req.body.password,
+                        quartierdistrictId:  req.body.quartierdistrictId,
+                        observations:  req.body.observations,
+                        estAlerte:  1,
+                        estSuspendu: 0,
+                        modifDate: req.body.modifDate,
+                        modifUserId: req.body.modifUserId
+                      }
+                   
+                    console.log(objUser)
+                   User.updateUserInModel(objUser)
+                      .then(()=> { return res.status(200).json({succes: "La modification de l'utilisateur a réussi"})})
                       .catch(error=> res.status(400).json(error))
                   
                   }
-                    })
-             .catch()
+                  
+                })
+             .catch(error=> res.status(400).json(error))
 
 
 }
