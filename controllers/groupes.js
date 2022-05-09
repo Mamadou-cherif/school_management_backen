@@ -54,7 +54,7 @@ function updateGroupe(req,res, next){
 
      Groupe.checkIfGroupeExists(initGroupeClass.groupe)
          .then(data=>{
-                  if(data.length==0){
+                  if((data.length==0) || (data[0].id== req.body.id)){
                    Groupe.updateGroupeInModel(req, res)
                       .then(()=>res.status(200).json({succes: "La modification du groupe a réussi"}))
                       .catch(error=> res.status(400).json(error))

@@ -61,7 +61,7 @@ function updatePriorite(req,res, next){
     //verifie si l'utilisateur existe en base
     Priorite.checkIfPrioriteExists(initPrioriteClass)
          .then(priorite=> {
-               if(priorite.length==0){
+               if((priorite.length==0) || (priorite[0].id== req.body.id) ){
                 initPrioriteClass.id= req.body.id
                 initPrioriteClass.libelle= req.body.libelle
                 initPrioriteClass.code= req.body.code                   

@@ -63,7 +63,7 @@ function updateAxe(req,res, next){
     //verifie si l'utilisateur existe en base
     Axe.checkIfAxeExists(initAxeClass)
          .then(axe=> {
-               if(axe.length==0){
+               if((axe.length==0) || (axe[0].id== req.body.id) ){
                    initAxeClass.id= req.body.id
                    initAxeClass.code= req.body.code
                    initAxeClass.libelle= req.body.libelle

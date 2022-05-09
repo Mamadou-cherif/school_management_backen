@@ -21,7 +21,7 @@ function checkIfUserGroupeExists(theReq){
            theReq.modifDate,
            theReq.modifUserId,
            theReq.debutDonnees,
-           theReq.finDonnees
+           theReq.finDonnees 
           ],
 
       ((err,results, fields)=>{

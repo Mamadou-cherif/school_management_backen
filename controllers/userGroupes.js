@@ -41,6 +41,13 @@ function deleteUserGroupe(req, res, next){
 
 }
 
+function checkIfUserGroupeExists(req,res, next){
+     initUserGroupeClass.userGroupe.groupeId= req.body.groupeId
+
+    UserGroupe.checkIfUserGroupeExists(initUserGroupeClass.userGroupe)
+       .then(userGroupes=> res.status(200).json(userGroupes))
+       .catch(error=> res.status(400).json(error))
+}
 
 function deleteUserGroupe(req, res,next){
 
@@ -115,6 +122,7 @@ function getAllUserGroupes(req,res, next){
 
  
 module.exports={
+    checkIfUserGroupeExists,
     disableUserGroupe,
     deleteUserGroupe,
     addUserGroupe,

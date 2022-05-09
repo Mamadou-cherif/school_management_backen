@@ -43,9 +43,9 @@ function getAllPrivilegesInModel(theReq){
     
     connection.query("CALL privileges_selectAll(?,?,?)",
           [
-            theReq.body.estActif,
-            theReq.body.debut,
-            theReq.body.fin
+            1,
+            null,
+            null
           ],
 
       ((err,results, fields)=>{

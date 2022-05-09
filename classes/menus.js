@@ -8,6 +8,7 @@
 		ordre :null,
 		typeMenu :null,
 		image :null,
+		estActif: null,
 		creationDate :null,
 		creationUserId :null,
 		modifDate :null,

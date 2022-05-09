@@ -2,7 +2,7 @@ const express=require("express")
 const router= express.Router()
 const menuController= require("../controllers/menus")
  
-router.post("/addAMenu", menuController.addaMenu)
+    router.post("/addAMenu", menuController.addaMenu)
     router.get("/getAllMenus", menuController.getAllMenu)
     router.get("/getOneMenu/:id", menuController.getAsingleMenu)
     router.put("/disableMenu", menuController.disableMenu)
