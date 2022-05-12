@@ -16,9 +16,8 @@ exports.createtoken = function (user) {
         telephone2: user.telephone2,
         email: user.email,
         quartierdistrictId: user.quartierdistrictId,
-        observations: user.observations,
         iat: moment().unix(),
-        expired: moment().add(15, 'minutes').unix()
+        expired: moment().add(24, 'h').unix()
     };
     return jwt.sign(payload, secret);
 };

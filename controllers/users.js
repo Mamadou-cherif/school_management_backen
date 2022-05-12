@@ -6,7 +6,7 @@ const app= express()
 app.use(bodyParser.json())
 const bcrypt= require("bcrypt")
 const initUserClass= require("../classes/users")
-const md5= require("md5")
+const md5= require("md5") 
 const initUserConnexion= require("../classes/userConnexion")
 const userConnexion= require("../models/userConnexion")
 const userPassword= require("../models/userPassword")
@@ -14,8 +14,8 @@ const initUserPassword= require("../classes/userPassword")
 const jwt= require("../services/jwt")
 
 function addUser(req, res,next){
-    initUserClass.user.telephone1= req.body.indicatifTel.toString() + req.body.telephone1
     if(req.body.telephone2){
+    initUserClass.user.telephone1= req.body.indicatifTel.toString() + req.body.telephone1
 
         initUserClass.user.telephone2= req.body.indicatifTel.toString() + req.body.telephone2
     }else{
@@ -48,10 +48,10 @@ function addUser(req, res,next){
                           .then(donnee=>{
 
                              const userIstPwt={
-                            userId: donnee[0].lastId,
-                            type: "Auto",
-                            creationUserId: req.body.creationUserId
-                        }
+                                    userId: donnee[0].lastId,
+                                    type: "Auto",
+                                    creationUserId: req.body.creationUserId
+                                }
                         userPassword.userPasswordInsertInModel(userIstPwt,res)
                             .then(()=>{})
                             .catch(()=>{})
@@ -135,7 +135,7 @@ function login(req, res, next){
                                                                 return res.status(200).json({customisePassword:true})
                                                                 }
                                                                 else{
-                                                                    
+                                                                    console.log(user)
                                                                     const userconnect={
                                                                         userId:user[0].id,
                                                                         creationUserId: user[0].creationUserId,
@@ -301,9 +301,20 @@ function getAllUsers(req,res, next){
     
 }
 
-
+function getNonAffecteByGroup(req, res, next){
+    User.getNonAffecteByGroupInModel(req)
+        .then(users=> res.status(200).json(users))
+        .catch(error=> res.status(400).json(error))
+}
  
+function getAffecteByGroup(req, res, next){
+    User.getAffecteByGroupInModel(req)
+        .then(users=> res.status(200).json(users))
+        .catch(error=> res.status(400).json(error))
+}
 module.exports={
+    getAffecteByGroup,
+    getNonAffecteByGroup,
     disableUser,
     deleteUser,
     login,

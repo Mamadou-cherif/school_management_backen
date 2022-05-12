@@ -35,15 +35,6 @@ function addAxe(req, res,next){
           .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
 }
 
-
-
-
-
-
-
-
-
-
 //supression logique d'un axe
 function disableAxe(req, res, next){
     initAxeClass.id= req.body.id

@@ -35,8 +35,118 @@ function regionSelectByInModel(data){
     })
   }
 
-
+  function selectByIdRegionInModel(id){
+    return new Promise((resolve,reject)=> {
+      connection.query("CALL regions_selectById(?)",
+            [
+              id
+            ],
+  
+        ((err,results, fields)=>{
+          if(err){
+            reject(err)
+          }
+          resolve(results[0])
+        })
+      )
+    })
+  
+  }
+  
+  function selectAllRegionInModel(theReq){
+    return new Promise((resolve,reject)=> {
+      connection.query("CALL regions_selectAll(?,?,?)",
+            [
+              1,
+              null,
+              null
+            ],
+  
+        ((err,results, fields)=>{
+          if(err){
+            reject(err)
+          }
+          resolve(results[0])
+        })
+      )
+    })
+  }
+  
+  function addRegionInModel(data){
+    return new Promise((resolve,reject)=> {
+      connection.query("CALL regions_insert(?,?,?,?)",
+            [
+             data.paysId,
+             data.libelle,
+             data.code,
+             data.creationUserId,
+            ],
+  
+        ((err,results, fields)=>{
+          if(err){
+  
+            reject(err)
+            //connection.end();
+          }
+          else{
+          resolve(results);
+          }
+         
+        })
+      )
+    })
+  }
+  
+  function updateRegionInModel(data){
+    return new Promise((resolve,reject)=> {
+      connection.query("CALL regions_update(?,?,?,?,?,?)",
+            [
+              data.id, 
+              data.paysId,
+              data.libelle,
+              data.code,
+              data.modifDate,
+              data.modifUserId,
+            ],
+  
+        ((err,results, fields)=>{
+          if(err){
+  
+            reject(err)
+            //connection.end();
+          }
+          else{
+          resolve(results);
+          }
+         
+        })
+      )
+    })
+  }
+  function deleteRegionInModel(id){
+    return new Promise((resolve,reject)=> {
+      
+      connection.query("CALL regions_delete(?)",
+            [ 
+              id,
+              
+            ],
+  
+        ((err,results, fields)=>{
+          if(err){
+            reject(err)
+          }
+          resolve(results[0])
+        })
+      )
+    })
+  }
  
   module.exports={
-    regionSelectByInModel
+    regionSelectByInModel,
+    addRegionInModel,
+    updateRegionInModel,
+    selectByIdRegionInModel,
+    selectAllRegionInModel,
+    deleteRegionInModel
   }

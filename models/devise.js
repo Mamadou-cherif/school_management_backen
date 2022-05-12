@@ -11,9 +11,9 @@ const { reject } = require("bcrypt/promises");
 
 
 
-function selectByIdCommuneInModel(id){
+function selectByIdDeviseInModel(id){
   return new Promise((resolve,reject)=> {
-    connection.query("CALL communes_selectById(?)",
+    connection.query("CALL devises_selectById(?)",
           [
             id
           ],
@@ -29,13 +29,13 @@ function selectByIdCommuneInModel(id){
 
 }
 
-function selectAllCommuneInModel(theReq){
+function selectAllDeviseInModel(theReq){
   return new Promise((resolve,reject)=> {
-    connection.query("CALL communes_selectAll(?,?,?)",
+    connection.query("CALL devises_selectAll(?,?,?)",
           [
-            theReq.body.estActif,
-            theReq.body.debut,
-            theReq.body.fin
+            1,
+            null,
+            null
           ],
 
       ((err,results, fields)=>{
@@ -48,13 +48,12 @@ function selectAllCommuneInModel(theReq){
   })
 }
 
-function addCommuneInModel(data){
+function addDeviseInModel(data){
   return new Promise((resolve,reject)=> {
-    connection.query("CALL communes_insert(?,?,?,?)",
+    connection.query("CALL devises_insert(?,?,?)",
           [
-           data.prefectureId,
            data.libelle,
-           data.code,
+           data.symbole,
            data.creationUserId,
           ],
 
@@ -73,14 +72,13 @@ function addCommuneInModel(data){
   })
 }
 
-function updateCommuneInModel(data){
+function updateDeviseInModel(data){
   return new Promise((resolve,reject)=> {
-    connection.query("CALL communes_update(?,?,?,?,?,?)",
+    connection.query("CALL devises_update(?,?,?,?,?)",
           [
             data.id, 
-            data.prefectureId,
             data.libelle,
-            data.code,
+            data.symbole,
             data.modifDate,
             data.modifUserId,
           ],
@@ -99,10 +97,10 @@ function updateCommuneInModel(data){
     )
   })
 }
-function deleteCommuneInModel(id){
+function deleteDeviseInModel(id){
   return new Promise((resolve,reject)=> {
     
-    connection.query("CALL communes_delete(?)",
+    connection.query("CALL devises_delete(?)",
           [ 
             id,
             
@@ -119,12 +117,11 @@ function deleteCommuneInModel(id){
 }
 function communeSelectByInModel(data){
     return new Promise((resolve,reject)=> {
-      connection.query("CALL communes_selectBy(?,? ,?,?,?,?,?,?,?,?,?)",
+      connection.query("CALL devises_selectBy(? ,?,?,?,?,?,?,?,?,?)",
             [
              data.id,
-             data.prefectureId,
              data.libelle,
-             data.code,
+              data.symbole,
              data.estActif,
              data.creationDate,
              data.creationUserId,
@@ -149,9 +146,9 @@ function communeSelectByInModel(data){
  
   module.exports={
     communeSelectByInModel,
-    addCommuneInModel,
-    updateCommuneInModel,
-    selectByIdCommuneInModel,
-    selectAllCommuneInModel,
-    deleteCommuneInModel
+    addDeviseInModel,
+    updateDeviseInModel,
+    selectByIdDeviseInModel,
+    selectAllDeviseInModel,
+    deleteDeviseInModel
   }

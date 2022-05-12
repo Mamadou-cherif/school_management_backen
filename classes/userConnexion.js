@@ -3,7 +3,7 @@ const userConnexion={
 		userId: null,
 		adressIp: null,
 		fin: null,
-		estActif: null,
+		estActif: 1,
 		creationDate: null,
 		creationUserId: null,
 		modifDate: null,

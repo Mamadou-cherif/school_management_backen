@@ -83,12 +83,12 @@ function getNonAffectedByMenuAndGroupeInModel(theReq){
 }
 
 
-function getModeAccessByIdInModel(theReq){
+function getModeAccessByIdInModel(id){
   return new Promise((resolve,reject)=> {
     
     connection.query("CALL modeaccess_selectById(?)",
           [
-            theReq.params.id
+            id
           ], 
 
       ((err,results, fields)=>{

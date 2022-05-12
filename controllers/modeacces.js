@@ -57,8 +57,10 @@ function getNonAffectedByMenuAndGroupe(req, res, next){
           .then(data=> {
               for(var i=0; i<data.length; i++){
                 if(data[i].libelle=='Consultation'){
+                  // return res.status(200).json(data[i])
                   ModeAcces.getModeAccessByIdInModel(data[i].id)
-                    .then(data2=> {  
+                    .then(data2=> { 
+
                       return res.status(200).json(data2)    
                     })
                     .catch(error=> res.status(400).json({error}))

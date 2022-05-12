@@ -3,7 +3,7 @@ const axe={
 		libelle:null,
 		code   :null,
 		description:null,
-		estActif   :null,
+		estActif   :1,
 		creationDate   :null,
 		creationUserId :null,
 		modifDate  :null,

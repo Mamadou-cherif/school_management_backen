@@ -18,7 +18,7 @@ const menuController= require("../controllers/menus")
     router.post("/getFilsByPere", menuController.getFilsByPere);
 
     router.get("/getMenuPrincipalByUser/:id", menuController.menus_getMenuPrincipalByUser);
-    router.get("/getMenuFilsByUserReference/:id", menuController.menus_getMenuFilsByUserReference);
+    router.post("/getMenuFilsByUserReference", menuController.menus_getMenuFilsByUserReference);
     
     
 
