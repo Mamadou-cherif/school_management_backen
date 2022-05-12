@@ -12,7 +12,7 @@ const projet={
    fin: null,
    statutId: null,
    observations: null,
-   estActif: null,
+   estActif: 1,
    creationDate: null,
    creationUserId: null,
    modifDate: null,

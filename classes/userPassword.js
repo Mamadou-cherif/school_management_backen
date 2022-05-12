@@ -2,7 +2,7 @@ const userPassword={
     id:null,
    userId :null,
    type   :null,
-   estActif   :null,
+   estActif   :1,
    creationDate   :null,
    creationUserId :null,
    modifDate  :null,

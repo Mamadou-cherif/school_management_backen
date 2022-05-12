@@ -7,7 +7,7 @@ const userGroupeController= require("../controllers/userGroupes")
     router.put("/disableUserGroupe", userGroupeController.disableUserGroupe)
     router.put("/updateUserGroupe", userGroupeController.updateUserGroupe)
     router.get("/getOneUserGroupe/:id", userGroupeController.getAsingleUserGroupe)
-    router.get("/getAllUserGroupe", userGroupeController.getAllUserGroupes)
+    router.post("/getAllUserGroupe", userGroupeController.getAllUserGroupes)
     router.put("/activateUserGroupe", userGroupeController.activateUserGroupe)
-
+    router.post("/checkIfUserGroupeExists", userGroupeController.checkIfUserGroupeExists)
 module.exports= router

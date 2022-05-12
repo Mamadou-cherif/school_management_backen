@@ -4,7 +4,7 @@ const programme={
 		code: null,
 		libelle: null,
 		description: null,
-		estActif: null,
+		estActif: 1,
 		creationDate: null,
 		creationUserId: null,
 		modifDate: null,

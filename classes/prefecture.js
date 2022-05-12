@@ -3,7 +3,7 @@ const prefecture={
 		regionId:  null,
 		libelle:  null,
 		code:  null,
-		estActif:  null,
+		estActif:  1,
 		creationDate:  null,
 		creationUserId:  null,
 		modifDate:  null,

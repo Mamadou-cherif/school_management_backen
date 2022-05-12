@@ -11,7 +11,7 @@ const actions={
 		 cout: null,
 		 deviseId: null,
 		 observations: null,
-		 estActif: null,
+		 estActif: 1,
 		 creationDate: null,
 		 creationUserId: null,
 		 modifDate: null,

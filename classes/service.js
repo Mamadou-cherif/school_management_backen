@@ -6,7 +6,7 @@ const service={
     telephone: null,
     email: null,
     observations: null,
-    estActif: null,
+    estActif: 1,
     creationDate: null,
     creationUserId: null,
     modifDate: null,

@@ -36,6 +36,119 @@ function quartierSelectByInModel(data){
 
 
  
-  module.exports={
-    quartierSelectByInModel
+  function selectByIdQuartierInModel(id){
+    return new Promise((resolve,reject)=> {
+      connection.query("CALL quartierdistricts_selectById(?)",
+            [
+             id
+            ],
+  
+        ((err,results, fields)=>{
+          if(err){
+            reject(err)
+          }
+          resolve(results[0])
+        })
+      )
+    })
+  
   }
+  
+  function selectAllQuartierInModel(theReq){
+    return new Promise((resolve,reject)=> {
+      connection.query("CALL quartierdistricts_selectAll(?,?,?)",
+            [
+              1,
+             null,
+             null
+            ],
+  
+        ((err,results, fields)=>{
+          if(err){
+            reject(err)
+          }
+          resolve(results[0])
+        })
+      )
+    })
+  }
+  
+  function addQuartierInModel(data){
+    return new Promise((resolve,reject)=> {
+      connection.query("CALL quartierdistricts_insert(?,?,?,?)",
+            [
+             data.communeId,
+             data.libelle,
+             data.code,
+             data.creationUserId,
+            ],
+  
+        ((err,results, fields)=>{
+          if(err){
+  
+            reject(err)
+            //connection.end();
+          }
+          else{
+          resolve(results);
+          }
+         
+        })
+      )
+    })
+  }
+  
+  function updateQuartierInModel(data){
+    return new Promise((resolve,reject)=> {
+      connection.query("CALL quartierdistricts_update(?,?,?,?,?,?)",
+            [
+              data.id, 
+              data.communeId,
+              data.libelle,
+              data.code,
+              data.modifDate,
+              data.modifUserId,
+            ],
+  
+        ((err,results, fields)=>{
+          if(err){
+  
+            reject(err)
+            //connection.end();
+          }
+          else{
+          resolve(results);
+          }
+         
+        })
+      )
+    })
+  }
+  function deleteQuartierInModel(id){
+    return new Promise((resolve,reject)=> {
+      
+      connection.query("CALL quartierdistricts_delete(?)",
+            [ 
+              id,
+              
+            ],
+  
+        ((err,results, fields)=>{
+          if(err){
+            reject(err)
+          }
+          resolve(results[0])
+        })
+      )
+    })
+  }
+ 
+  module.exports={
+    quartierSelectByInModel,
+    addQuartierInModel,
+    updateQuartierInModel,
+    selectByIdQuartierInModel,
+    selectAllQuartierInModel,
+    deleteQuartierInModel
+  }
+ 

@@ -15,7 +15,7 @@ function addFinancement(req, res,next){
      //verifie si l'utilisateur existe en base
      Financement.checkIfFinancementExists(initFinancementClass)
           .then(financement=> {
-                if(financement.length==0){
+                if((financement.length==0) || (financement[0].id== req.body.id)){
                     
                     initFinancementClass.projetId= req.body.projetId
                     initFinancementClass.structureId= req.body.structureId                   

@@ -341,7 +341,47 @@ function userUpdatePasswordInModel(theReq, theRes){
   })
 }
 
+
+function getAffecteByGroupInModel(theReq){
+  return new Promise((resolve,reject)=> {
+    
+    connection.query("CALL users_getAffecteByGroupe(?)",
+          [             
+            theReq.body.groupeId
+            
+          ],
+
+      ((err,results, fields)=>{
+        if(err){
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
+}
+
+function getNonAffecteByGroupInModel(theReq){
+  return new Promise((resolve,reject)=> {
+    
+    connection.query("CALL users_getNonAffecteByGroupe(?)",
+          [             
+            theReq.body.groupeId
+            
+          ],
+
+      ((err,results, fields)=>{
+        if(err){
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
+}
 module.exports= {
+    getAffecteByGroupInModel,
+    getNonAffecteByGroupInModel,
     updateUserInModel,
     checkIfUserExists,
     addUserInModel,

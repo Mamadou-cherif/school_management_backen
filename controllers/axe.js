@@ -35,15 +35,6 @@ function addAxe(req, res,next){
           .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
 }
 
-
-
-
-
-
-
-
-
-
 //supression logique d'un axe
 function disableAxe(req, res, next){
     initAxeClass.id= req.body.id
@@ -63,7 +54,7 @@ function updateAxe(req,res, next){
     //verifie si l'utilisateur existe en base
     Axe.checkIfAxeExists(initAxeClass)
          .then(axe=> {
-               if(axe.length==0){
+               if((axe.length==0) || (axe[0].id== req.body.id) ){
                    initAxeClass.id= req.body.id
                    initAxeClass.code= req.body.code
                    initAxeClass.libelle= req.body.libelle

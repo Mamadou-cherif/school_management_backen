@@ -56,8 +56,9 @@ function addGroupeInModel(theReq){
                       //connection.end();
                     }
                     else{
-                    resolve(results);}
-                    // connection.end()
+                    resolve(results);
+                  }
+                  
             
           })
    

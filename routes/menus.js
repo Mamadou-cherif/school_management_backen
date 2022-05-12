@@ -2,7 +2,7 @@ const express=require("express")
 const router= express.Router()
 const menuController= require("../controllers/menus")
  
-router.post("/addAMenu", menuController.addaMenu)
+    router.post("/addAMenu", menuController.addaMenu)
     router.get("/getAllMenus", menuController.getAllMenu)
     router.get("/getOneMenu/:id", menuController.getAsingleMenu)
     router.put("/disableMenu", menuController.disableMenu)
@@ -18,7 +18,7 @@ router.post("/addAMenu", menuController.addaMenu)
     router.post("/getFilsByPere", menuController.getFilsByPere);
 
     router.get("/getMenuPrincipalByUser/:id", menuController.menus_getMenuPrincipalByUser);
-    router.get("/getMenuFilsByUserReference/:id", menuController.menus_getMenuFilsByUserReference);
+    router.post("/getMenuFilsByUserReference", menuController.menus_getMenuFilsByUserReference);
     
     
 

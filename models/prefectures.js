@@ -35,7 +35,119 @@ function prefectureSelectByInModel(data){
   }
 
 
+  function selectByIdPrefectureInModel(id){
+    return new Promise((resolve,reject)=> {
+      connection.query("CALL prefectures_selectById(?)",
+            [
+              id
+            ],
+  
+        ((err,results, fields)=>{
+          if(err){
+            reject(err)
+          }
+          resolve(results[0])
+        })
+      )
+    })
+  
+  }
+  
+  function selectAllPrefectureInModel(theReq){
+    return new Promise((resolve,reject)=> {
+      connection.query("CALL prefectures_selectAll(?,?,?)",
+            [
+              1,
+              null,
+              null
+            ],
+  
+        ((err,results, fields)=>{
+          if(err){
+            reject(err)
+          }
+          resolve(results[0])
+        })
+      )
+    })
+  }
+  
+  function addPrefectureInModel(data){
+    return new Promise((resolve,reject)=> {
+      connection.query("CALL prefectures_insert(?,?,?,?)",
+            [
+             data.regionId,
+             data.libelle,
+             data.code, 
+             data.creationUserId,
+            ],
+  
+        ((err,results, fields)=>{
+          if(err){
+  
+            reject(err)
+            //connection.end();
+          }
+          else{
+          resolve(results);
+          }
+         
+        })
+      )
+    })
+  }
+  
+  function updatePrefectureInModel(data){
+    return new Promise((resolve,reject)=> {
+      connection.query("CALL prefectures_update(?,?,?,?,?,?)",
+            [
+              data.id, 
+              data.regionId,
+              data.libelle,
+              data.code,
+              data.modifDate,
+              data.modifUserId,
+            ],
+  
+        ((err,results, fields)=>{
+          if(err){
+  
+            reject(err)
+            //connection.end();
+          }
+          else{
+          resolve(results);
+          }
+         
+        })
+      )
+    })
+  }
+  function deletePrefectureInModel(id){
+    return new Promise((resolve,reject)=> {
+      
+      connection.query("CALL prefectures_delete(?)",
+            [ 
+              id,
+              
+            ],
+  
+        ((err,results, fields)=>{
+          if(err){
+            reject(err)
+          }
+          resolve(results[0])
+        })
+      )
+    })
+  }
  
   module.exports={
-    prefectureSelectByInModel
+    prefectureSelectByInModel,
+    addPrefectureInModel,
+    updatePrefectureInModel,
+    selectByIdPrefectureInModel,
+    selectAllPrefectureInModel,
+    deletePrefectureInModel
   }
+ 

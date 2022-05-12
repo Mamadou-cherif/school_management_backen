@@ -166,8 +166,8 @@ function menus_getMenuPrincipalByUser(req, res, next){
  
 function menus_getMenuFilsByUserReference(req, res, next){
   const user= {
-     userId: req.params.id,
-     referenceMenu: "admintechnique"
+     userId: req.body.id,
+     referenceMenu: req.body.reference
   }
   Menu.menus_getMenuFilsByUserReference(user)
         .then(sousmenus=> res.status(200).json({sousmenus})) 

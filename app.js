@@ -4,6 +4,7 @@ const bienvenueRoute= require("./routes/bienvenue")
 const userRoute= require("./routes/user")
 const bodyParser= require("body-parser")
 const  groupeRoute= require("./routes/groupes")
+const  deviseRoute= require("./routes/devise")
 const userGroupeRoute= require("./routes/userGroupes")
 const menuRoute= require("./routes/menus")
 const ongletRoute= require("./routes/onglets")
@@ -25,6 +26,7 @@ const actionRoutes= require("./routes/actions")
 const statuProjetRoutes= require("./routes/statutprojet")
 const serviceConcerneRoutes= require("./routes/serviceconcerne")
 const serviceRoutes= require("./routes/service")
+const checktokenexpire= require("./routes/checktokenexpire")
 
 const a= require("./a")
 
@@ -39,6 +41,8 @@ app.use(bodyParser.json())
 
         next();
     });
+
+    app.use("/api",checktokenexpire)
     app.use("/api", bienvenueRoute)
     app.use("/api", userRoute)
     app.use("/api", groupeRoute)
@@ -55,6 +59,7 @@ app.use(bodyParser.json())
     app.use("/api", quartiersRoutes)
     app.use("/api", communesRoutes)
     app.use("/api", axeRoutes)
+    app.use("/api", deviseRoute)
     app.use("/api", programmeRoutes)
     app.use("/api", prioriteRoutes)
     app.use("/api", financementRoutes)

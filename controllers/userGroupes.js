@@ -10,24 +10,9 @@ const initUserGroupeClass= require("../classes/userGroupes")
 
 function addUserGroupe(req, res,next){
       
-         
-        
-        initUserGroupeClass.userGroupe.userId= req.body.userId
-        initUserGroupeClass.userGroupe.groupeId= req.body.groupeId
-     //verifie si l'utilisateur existe en base
-     UserGroupe.checkIfUserGroupeExists(initUserGroupeClass.userGroupe)
-          .then(userGroupe=> {
-                if(userGroupe.length==0){
                       UserGroupe.addUserGroupeInModel(req)
                           .then(()=> res.status(201).json({succes: "la création a reussi"}))
                           .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
-                }
-                else
-                   {
-                     res.status(500).json({error: "Le userGroupe existe déjà"})
-                   }
-          })
-          .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
 }
 
 
@@ -41,6 +26,13 @@ function deleteUserGroupe(req, res, next){
 
 }
 
+function checkIfUserGroupeExists(req,res, next){
+     initUserGroupeClass.userGroupe.groupeId= req.body.groupeId
+
+    UserGroupe.checkIfUserGroupeExists(initUserGroupeClass.userGroupe)
+       .then(userGroupes=> res.status(200).json(userGroupes))
+       .catch(error=> res.status(400).json(error))
+}
 
 function deleteUserGroupe(req, res,next){
 
@@ -115,6 +107,7 @@ function getAllUserGroupes(req,res, next){
 
  
 module.exports={
+    checkIfUserGroupeExists,
     disableUserGroupe,
     deleteUserGroupe,
     addUserGroupe,

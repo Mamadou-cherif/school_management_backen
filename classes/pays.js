@@ -3,7 +3,7 @@ const pays={
 		libelle :null,
 		indicatifTel :null,
 		deviseId :null,
-		estActif :null,
+		estActif :1,
 		creationDate :null,
 		creationUserId :null,
 		modifDate :null,
@@ -12,6 +12,5 @@ const pays={
 		finDonnees: null,
 }
 
-module.exports={
-    pays
-}
+module.exports = pays
+    

@@ -2,7 +2,7 @@ const priorite={
         id: null,
 		libelle: null,
 		code: null,
-		estActif: null,
+		estActif: 1,
 		creationDate: null,
 		creationUserId: null,
 		modifDate: null,
