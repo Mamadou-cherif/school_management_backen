@@ -72,5 +72,4 @@ app.use("/api", serviceConcerneRoutes)
 app.use("/api", serviceRoutes)
 
 
-
 module.exports = app

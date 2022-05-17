@@ -14,7 +14,6 @@ const initUserPassword = require("../classes/userPassword")
 const jwt = require("../services/jwt")
 
 function addUser(req, res, next) {
-
     initUserClass.user.telephone1 = req.body.indicatifTel.toString() + req.body.telephone1
 
     if (req.body.telephone2) {
@@ -22,33 +21,33 @@ function addUser(req, res, next) {
         initUserClass.user.telephone2 = req.body.indicatifTel.toString() + req.body.telephone2
     } else {
         initUserClass.user.telephone2 = null
-
     }
 
     //verifie si l'utilisateur existe en base
-
-
     User.checkIfUserExists(initUserClass.user)
         .then(user => {
+            if (user.length == 0) {
 
-            if (user.length === 0) {
+                const userInsert = {
+                    structureId: req.body.structureId,
+                    prestataireId: req.body.prestataireId,
+                    nom: req.body.nom,
+                    prenoms: req.body.prenoms,
+                    fonction: req.body.fonction,
+                    telephone1: initUserClass.user.telephone1,
+                    telephone2: initUserClass.user.telephone2,
+                    email: req.body.email,
+                    photo: "",
+                    password: md5(req.body.password),
+                    quartierdistrictId: req.body.quartierdistrictId,
+                    observations: req.body.observations,
+                    estAlerte: 0,
+                    estSuspendu: 0,
+                    creationUserId: req.body.creationUserId
 
-                initUserClass.user.structureId = req.body.structureId
-                initUserClass.user.prestataireId = req.body.prestataireId
-                initUserClass.user.nom = req.body.nom
-                initUserClass.user.prenoms = req.body.prenoms
-                initUserClass.user.email = req.body.email
-                initUserClass.user.photo = ""
-                initUserClass.user.password = md5(req.body.password)
-                initUserClass.user.quartierdistrictId = req.body.quartierdistrictId
-                initUserClass.user.observations = req.body.observations
-                initUserClass.user.estAlerte = 1;
-                initUserClass.user.estSuspendu = 0;
-                initUserClass.user.creationUserId = req.body.creationUserId
-                initUserClass.user.fonction = req.body.fonction
-                initUserClass.signature = req.body.signature
+                }
 
-                User.addUserInModel(initUserClass.user)
+                User.addUserInModel(userInsert)
                     .then(donnee => {
 
                         const userIstPwt = {
