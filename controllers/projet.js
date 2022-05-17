@@ -13,32 +13,24 @@ function addProjet(req, res,next){
     initProjetClass.libelle= req.body.libelle
        
      //verifie si l'utilisateur existe en base
-     Projet.checkIfProjetExists(initProjetClass)
-          .then(projet=> {
-                if(projet.length==0){
-                    initProjetClass.programmeId= req.body.programmeId
-                    initProjetClass.titre= req.body.titre
-                    initProjetClass.code = req.body.code 
-                    initProjetClass.description= req.body.description
-                    initProjetClass.prioriteId= req.body.prioriteId
-                    initProjetClass.nature= req.body.nature
-                    initProjetClass.modalites= req.body.modalites
-                    initProjetClass.duree= req.body.duree
-                    initProjetClass.debut= req.body.debut 
-                    initProjetClass.fin= req.body.fin
-                    initProjetClass.statutId= req.body.statutId 
-                    initProjetClass.observations= req.body.observations
-                    initProjetClass.creationUserId= req.body.creationUserId
-                      Projet.addProjetInModel(initProjetClass)
-                          .then(()=> res.status(201).json({succes: "la création a reussi"}))
-                          .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
-                }
-                else
-                   {
-                     res.status(500).json({error: "cet projet existe déjà"})
-                   }
-          })
-          .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
+    
+    initProjetClass.programmeId= req.body.programmeId
+    initProjetClass.titre= req.body.titre
+    initProjetClass.code = req.body.code 
+    initProjetClass.description= req.body.description
+    initProjetClass.prioriteId= req.body.prioriteId
+    initProjetClass.nature= req.body.nature
+    initProjetClass.modalites= req.body.modalites
+    initProjetClass.duree= req.body.duree
+    initProjetClass.debut= req.body.debut 
+    initProjetClass.fin= req.body.fin
+    initProjetClass.statutId= req.body.statutId 
+    initProjetClass.observations= req.body.observations
+    initProjetClass.creationUserId= req.body.creationUserId
+    Projet.addProjetInModel(initProjetClass)
+    .then(()=> res.status(201).json({succes: "la création a reussi"}))
+    .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
+               
 }
 
 
