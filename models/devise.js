@@ -9,7 +9,37 @@ const { reject } = require("bcrypt/promises");
 
 
 
+function checkIfDeviseExists(theReq) {
 
+}
+
+function checkIfDeviseExists(theReq) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL devises_selectBy(?,?,?,?,?,?,?,?,?,?)",
+      [
+        theReq.id,
+        theReq.libelle,
+        theReq.symbole,
+        theReq.estActif,
+        theReq.creationDate,
+        theReq.creationUserId,
+        theReq.modifDate,
+        theReq.modifUserId,
+        theReq.debutDonnees,
+        theReq.finDonnees
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
+}
 
 function selectByIdDeviseInModel(id) {
   return new Promise((resolve, reject) => {
@@ -145,6 +175,7 @@ function communeSelectByInModel(data) {
 
 
 module.exports = {
+  checkIfDeviseExists,
   communeSelectByInModel,
   addDeviseInModel,
   updateDeviseInModel,

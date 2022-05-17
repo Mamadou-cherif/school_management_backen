@@ -124,42 +124,46 @@ function getAuthenticateInModel(theReq) {
 }
 
 
-function addUserInModel(theReq) {
-  return new Promise((resolve, reject) => {
 
+function addUserInModel(theObject) {
+
+  return new Promise((resolve, reject) => {
     connection.query("CALL users_insert(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
-        theReq.structureId,
-        theReq.prestataireId,
-        theReq.nom,
-        theReq.prenoms,
-        theReq.fonction,
-        theReq.telephone1,
-        theReq.telephone2,
-        theReq.email,
-        theReq.photo,
-        theReq.password,
-        theReq.quartierdistrictId,
-        theReq.observations,
-        theReq.estAlerte,
-        theReq.estSuspendu,
-        theReq.creationUserId
+        theObject.structureId,
+        theObject.prestataireId,
+        theObject.nom,
+        theObject.prenoms,
+        theObject.fonction,
+        theObject.telephone1,
+        theObject.telephone2,
+        theObject.email,
+        theObject.photo,
+        theObject.password,
+        theObject.quartierdistrictId,
+        theObject.observations,
+        theObject.estAlerte,
+        theObject.estSuspendu,
+        theObject.creationUserId
       ]
       ,
       (err, results, fields) => {
         if (err) {
-
+          console.log('if bon')
           reject(err)
           //connection.end();
         }
         else {
+          console.log('else bon')
+
           resolve(results[0]);
+          // connection.end()
         }
-        // connection.end()
+
 
       })
-
   })
+
 
 }
 

@@ -33,8 +33,7 @@ const initDeviseClass= require("../classes/devise")
 
     initDeviseClass.libelle= req.body.libelle
        
-     //verifie si l'utilisateur existe en base
-     Devise.deviseSelectByInModel(initDeviseClass)
+     Devise.checkIfDeviseExists(initDeviseClass)
           .then(devises=> {
                 if(devises.length==0){
                     initDeviseClass.symbole= req.body.symbole

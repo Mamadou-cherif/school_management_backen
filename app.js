@@ -29,6 +29,8 @@ const statuProjetRoutes = require("./routes/statutprojet")
 const serviceConcerneRoutes = require("./routes/serviceconcerne")
 const serviceRoutes = require("./routes/service")
 const checktokenexpire = require("./routes/checktokenexpire")
+const categorieactionRoute = require("./routes/categorieaction");
+const categorieinvestRoute = require("./routes/categorieinves");
 
 
 
@@ -70,6 +72,9 @@ app.use("/api", actionRoutes)
 app.use("/api", statuProjetRoutes)
 app.use("/api", serviceConcerneRoutes)
 app.use("/api", serviceRoutes)
+app.use("/api", categorieactionRoute)
+app.use("/api", categorieinvestRoute)
+
 
 
 module.exports = app
