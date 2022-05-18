@@ -31,6 +31,7 @@ const serviceRoutes = require("./routes/service")
 const checktokenexpire = require("./routes/checktokenexpire")
 const categorieactionRoute = require("./routes/categorieaction");
 const categorieinvestRoute = require("./routes/categorieinves");
+const couleurRoute = require("./routes/couleur");
 
 
 
@@ -56,6 +57,7 @@ app.use("/api", menuRoute),
 app.use("/api", modeAccesRoute)
 app.use("/api", privilegeRoute)
 app.use("/api", paysRoute)
+app.use("/api", couleurRoute)
 app.use("/api", prestaireRoute)
 app.use("/api", structureRoute)
 app.use("/api", regionsRoute)
