@@ -9,11 +9,12 @@ const initActionClass= require("../classes/actions")
 
 
 function addAction(req, res,next){
-
-    initActionClass.libelle= req.body.libelle
-       
+    const objAction={
+        libelle: req.body.libelle,
+        estActif:1
+    }
      //verifie si l'utilisateur existe en base
-     Action.checkIfActionExists(initActionClass)
+     Action.checkIfActionExists(objAction)
           .then(action=> {
                 if(action.length==0){
                     
@@ -65,10 +66,12 @@ function disableAction(req, res, next){
 function updateAction(req,res, next){
         
        
-    initActionClass.libelle= req.body.libelle
-       
+    const objAction={
+        libelle: req.body.libelle,
+        estActif:1
+    }
     //verifie si l'utilisateur existe en base
-    Action.checkIfActionExists(initActionClass)
+    Action.checkIfActionExists(objAction)
          .then(action=> {
                if(action.length==0){
                     initActionClass.id= req.body.id

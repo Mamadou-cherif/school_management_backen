@@ -2,18 +2,12 @@ const mysql= require("mysql2");
 const config= require("../configs/dbconfig")
 let connection= mysql.createConnection(config)
 const express= require("express")
-const app= express();
-const bcrypt= require("bcrypt");
 const res = require("express/lib/response");
 const { reject } = require("bcrypt/promises");
 
-
-
-
-
-function selectByIdCommuneInModel(id){
+function selectByIdRubriqueEvaluationInModel(id){
   return new Promise((resolve,reject)=> {
-    connection.query("CALL communes_selectById(?)",
+    connection.query("CALL rubriqueevaluations_selectById(?)",
           [
             id
           ],
@@ -29,13 +23,13 @@ function selectByIdCommuneInModel(id){
 
 }
 
-function selectAllCommuneInModel(theReq){
+function selectAllRubriqueEvaluationInModel(theReq){
   return new Promise((resolve,reject)=> {
-    connection.query("CALL communes_selectAll(?,?,?)",
+    connection.query("CALL rubriqueevaluations_selectAll(?,?,?)",
           [
-            theReq.body.estActif,
-            theReq.body.debut,
-            theReq.body.fin
+           1,
+            null,
+            null
           ],
 
       ((err,results, fields)=>{
@@ -48,11 +42,10 @@ function selectAllCommuneInModel(theReq){
   })
 }
 
-function addCommuneInModel(data){
+function addRubriqueEvaluationInModel(data){
   return new Promise((resolve,reject)=> {
-    connection.query("CALL communes_insert(?,?,?,?)",
+    connection.query("CALL rubriqueevaluations_insert(?,?,?)",
           [
-           data.prefectureId,
            data.libelle,
            data.code,
            data.creationUserId,
@@ -60,9 +53,7 @@ function addCommuneInModel(data){
 
       ((err,results, fields)=>{
         if(err){
-
           reject(err)
-          //connection.end();
         }
         else{
         resolve(results);
@@ -73,12 +64,11 @@ function addCommuneInModel(data){
   })
 }
 
-function updateCommuneInModel(data){
+function updateRubriqueEvaluationInModel(data){
   return new Promise((resolve,reject)=> {
-    connection.query("CALL communes_update(?,?,?,?,?,?)",
+    connection.query("CALL rubriqueevaluations_update(?,?,?,?,?)",
           [
             data.id, 
-            data.prefectureId,
             data.libelle,
             data.code,
             data.modifDate,
@@ -99,10 +89,10 @@ function updateCommuneInModel(data){
     )
   })
 }
-function deleteCommuneInModel(id){
+function deleteRubriqueEvaluationInModel(id){
   return new Promise((resolve,reject)=> {
     
-    connection.query("CALL communes_delete(?)",
+    connection.query("CALL rubriqueevaluations_delete(?)",
           [ 
             id,
             
@@ -112,18 +102,18 @@ function deleteCommuneInModel(id){
         if(err){
           reject(err)
         }else{
-          resolve(results[0])
+           resolve(results[0])
         }
+       
       })
     )
   })
 }
-function communeSelectByInModel(data){
+function rubriqueEvaluationSelectByInModel(data){
     return new Promise((resolve,reject)=> {
-      connection.query("CALL communes_selectBy(?,? ,?,?,?,?,?,?,?,?,?)",
+      connection.query("CALL rubriqueevaluations_selectBy(? ,?,?,?,?,?,?,?,?,?)",
             [
              data.id,
-             data.prefectureId,
              data.libelle,
              data.code,
              data.estActif,
@@ -149,10 +139,10 @@ function communeSelectByInModel(data){
 
  
   module.exports={
-    communeSelectByInModel,
-    addCommuneInModel,
-    updateCommuneInModel,
-    selectByIdCommuneInModel,
-    selectAllCommuneInModel,
-    deleteCommuneInModel
+    rubriqueEvaluationSelectByInModel,
+    addRubriqueEvaluationInModel,
+    updateRubriqueEvaluationInModel,
+    selectByIdRubriqueEvaluationInModel,
+    selectAllRubriqueEvaluationInModel,
+    deleteRubriqueEvaluationInModel
   }

@@ -2,18 +2,12 @@ const mysql= require("mysql2");
 const config= require("../configs/dbconfig")
 let connection= mysql.createConnection(config)
 const express= require("express")
-const app= express();
-const bcrypt= require("bcrypt");
 const res = require("express/lib/response");
 const { reject } = require("bcrypt/promises");
 
-
-
-
-
-function selectByIdCommuneInModel(id){
+function selectByIdTypeDocumentInModel(id){
   return new Promise((resolve,reject)=> {
-    connection.query("CALL communes_selectById(?)",
+    connection.query("CALL typedocuments_selectById(?)",
           [
             id
           ],
@@ -29,13 +23,13 @@ function selectByIdCommuneInModel(id){
 
 }
 
-function selectAllCommuneInModel(theReq){
+function selectAllTypeDocumentInModel(theReq){
   return new Promise((resolve,reject)=> {
-    connection.query("CALL communes_selectAll(?,?,?)",
+    connection.query("CALL typedocuments_selectAll(?,?,?)",
           [
-            theReq.body.estActif,
-            theReq.body.debut,
-            theReq.body.fin
+           1,
+            null,
+            null
           ],
 
       ((err,results, fields)=>{
@@ -48,13 +42,12 @@ function selectAllCommuneInModel(theReq){
   })
 }
 
-function addCommuneInModel(data){
+function addTypeDocumentInModel(data){
   return new Promise((resolve,reject)=> {
-    connection.query("CALL communes_insert(?,?,?,?)",
+    connection.query("CALL typedocuments_insert(?,?,?)",
           [
-           data.prefectureId,
            data.libelle,
-           data.code,
+           data.categorie,
            data.creationUserId,
           ],
 
@@ -73,14 +66,13 @@ function addCommuneInModel(data){
   })
 }
 
-function updateCommuneInModel(data){
+function updateTypeDocumentInModel(data){
   return new Promise((resolve,reject)=> {
-    connection.query("CALL communes_update(?,?,?,?,?,?)",
+    connection.query("CALL typedocuments_update(?,?,?,?,?)",
           [
             data.id, 
-            data.prefectureId,
             data.libelle,
-            data.code,
+            data.categorie,
             data.modifDate,
             data.modifUserId,
           ],
@@ -99,10 +91,10 @@ function updateCommuneInModel(data){
     )
   })
 }
-function deleteCommuneInModel(id){
+function deleteTypeDocumentInModel(id){
   return new Promise((resolve,reject)=> {
     
-    connection.query("CALL communes_delete(?)",
+    connection.query("CALL typedocuments_delete(?)",
           [ 
             id,
             
@@ -112,20 +104,20 @@ function deleteCommuneInModel(id){
         if(err){
           reject(err)
         }else{
-          resolve(results[0])
+           resolve(results[0])
         }
+       
       })
     )
   })
 }
-function communeSelectByInModel(data){
+function typeDocumentSelectByInModel(data){
     return new Promise((resolve,reject)=> {
-      connection.query("CALL communes_selectBy(?,? ,?,?,?,?,?,?,?,?,?)",
+      connection.query("CALL typedocuments_selectBy(? ,?,?,?,?,?,?,?,?,?)",
             [
              data.id,
-             data.prefectureId,
              data.libelle,
-             data.code,
+             data.categorie,
              data.estActif,
              data.creationDate,
              data.creationUserId,
@@ -149,10 +141,10 @@ function communeSelectByInModel(data){
 
  
   module.exports={
-    communeSelectByInModel,
-    addCommuneInModel,
-    updateCommuneInModel,
-    selectByIdCommuneInModel,
-    selectAllCommuneInModel,
-    deleteCommuneInModel
+    typeDocumentSelectByInModel,
+    addTypeDocumentInModel,
+    updateTypeDocumentInModel,
+    selectByIdTypeDocumentInModel,
+    selectAllTypeDocumentInModel,
+    deleteTypeDocumentInModel
   }

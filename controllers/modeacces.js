@@ -10,10 +10,11 @@ const initModeAccesClass= require("../classes/modeaccess")
 
 function addModeAcces(req, res,next){             
         
-        initModeAccesClass.modeaccess.libelle= req.body.libelle
-       // initModeAccesClass.ModeAcces.observations= req.body.observations
-     //verifie si l'utilisateur existe en base
-     ModeAcces.checkIfModeAccesExists(initModeAccesClass.modeaccess)
+  const objModeAcces={
+    libelle:req.body.libelle,
+    estActif:1
+}
+     ModeAcces.checkIfModeAccesExists(objModeAcces)
           .then(modeaccess=> {
                 if(modeaccess.length==0){
                       ModeAcces.addModeAccesInModel(req)
@@ -92,7 +93,7 @@ function getPrincipalAffecteAUnGroupe(req, res, next){
 
 function getModeAccessById(req, res, next){
     
-   ModeAcces.getModeAccessByIdInModel(req)
+   ModeAcces.getModeAccessByIdInModel(req.params.id)
      .then(modeaccess=> res.status(200).json({modeaccess}))
      .catch(error=> res.status(400).json({error}))
 }
@@ -134,16 +135,30 @@ function selectModeAccesById(req, res, next){
 
 function updateModeAcces(req, res, next){
   
-  initModeAccesClass.modeaccess.id= req.body.id
-  initModeAccesClass.modeaccess.libelle= req.body.libelle
-  initModeAccesClass.modeaccess.modifDate= req.body.modifDate
-  initModeAccesClass.modeaccess.modifUserId= req.body.modifUserId
-    ModeAcces.updateModeAccesInModel(initModeAccesClass.modeaccess)
-        .then(()=> res.status(201).json({succes: "la modification a reussi"}))
-        .catch(()=> res.status(400).json({error: "erreur de la procédure stockée de modification"}));
-
-      
-         
+ 
+        const objModeAcces={
+          libelle:req.body.libelle,
+          estActif:1
+        }
+        ModeAcces.checkIfModeAccesExists(objModeAcces)
+            .then(modeaccess=> {
+                  if((modeaccess.length==0) || (modeaccess[0].id== req.body.id)){
+                    initModeAccesClass.modeaccess.id= req.body.id
+                    initModeAccesClass.modeaccess.libelle= req.body.libelle
+                    initModeAccesClass.modeaccess.modifDate= req.body.modifDate
+                    initModeAccesClass.modeaccess.modifUserId= req.body.modifUserId
+                      ModeAcces.updateModeAccesInModel(initModeAccesClass.modeaccess)
+                          .then(()=> res.status(201).json({succes: "la modification a reussi"}))
+                          .catch(()=> res.status(400).json({error: "erreur de la procédure stockée de modification"}));
+                  
+                  }
+                  else
+                      {
+                        res.status(500).json({error: "Ce ModeAcces existe déjà"})
+                      }
+            })
+            .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
+        
       
  
 }

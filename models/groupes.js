@@ -43,9 +43,9 @@ function addGroupeInModel(theReq){
     
           connection.query("CALL groupes_insert(?,?,?)", 
                       [
-                        theReq.body.libelle,
-                        theReq.body.prestataireId,
-                        theReq.body.creationUserId,
+                        theReq.libelle,
+                        theReq.prestataireId,
+                        theReq.creationUserId,
                       
                       ]
                   ,
@@ -115,11 +115,11 @@ function updateGroupeInModel(theReq, theResponse){
     connection.query("CALL groupes_update(?,?,?,?,?)", 
                       [
                       
-                        theReq.body.id,
-                        theReq.body.libelle,
-                        theReq.body.observations,
-                        theReq.body.modifUserId,
-                        theReq.body.modifDate
+                        theReq.id,
+                        theReq.libelle,
+                        theReq.observations,
+                        theReq.modifUserId,
+                        theReq.modifDate
                       ]
                   ,
                   (err, results, fields)=>{

@@ -15,19 +15,22 @@ const jwt= require("../services/jwt")
 
 function addUser(req, res,next){
     initUserClass.user.telephone1= req.body.indicatifTel.toString() + req.body.telephone1
-
-    if(req.body.telephone2){
-
-        initUserClass.user.telephone2= req.body.indicatifTel.toString() + req.body.telephone2
-    }else{
-        initUserClass.user.telephone2= null
+     const  objUser1={
+        telephone1:req.body.indicatifTel.toString() + req.body.telephone1,
+        estActif:1
     }
+   
 
      //verifie si l'utilisateur existe en base
-     User.checkIfUserExists(initUserClass.user)
+     User.checkIfUserExists(objUser1)
           .then(user=> {
                 if(user.length==0){ 
-                    
+                    if(req.body.telephone2){
+
+                        initUserClass.user.telephone2= req.body.indicatifTel.toString() + req.body.telephone2
+                    }else{
+                        initUserClass.user.telephone2= null
+                    }
                     const userInsert={
                         structureId:req.body.structureId,
                         prestataireId: req.body.prestataireId,
@@ -199,28 +202,8 @@ function disableUser(req, res, next){
 
 function updateUser(req,res, next){
     const user={
-        id:null,
-        structureId:null,
-        prestataireId:null,
-        nom:null,
-        prenoms:null,
-        fonction:null,
         telephone1: req.body.telephone1,
-        telephone2 :null,
-        email: null,
-        photo:null,
-        password:null,
-        quartierdistrictId:null,
-        observations:null,
-        estAlerte:null,
-        estSuspendu:null,
-        estActif:1,
-        creationDate:null,
-        creationUserId:null,
-        modifDate:null,
-        modifUserId:null,
-        debutDonnees:null,
-        finDonnees:null
+        estActif:1
     }
      User.checkIfUserExists(user)
          .then(data=>{

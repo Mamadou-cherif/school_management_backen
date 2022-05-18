@@ -9,15 +9,21 @@ const initOngletClass = require("../classes/onglets")
 
 
 function addOnglet(req, res, next) {
-  initOngletClass.onglet.libelle = req.body.libelle
-  initOngletClass.onglet.menuId = req.body.menuId
-  Onglet.checkIfOngletExists(initOngletClass.onglet)
+  const objOnglet1={
+    libelle: req.body.libelle,
+    menuId: req.body.menuId,
+    estActif: 1
+  }
+ 
+  Onglet.checkIfOngletExists(objOnglet1)
     .then(onglet => {
       if (onglet.length == 0) {
-        initOngletClass.onglet.libelle = null
-        initOngletClass.onglet.menuId = req.body.menuId
-        initOngletClass.onglet.reference = req.body.reference
-        Onglet.checkIfOngletExists(initOngletClass.onglet)
+        const objOnglet2={
+          libelle: req.body.libelle,
+          reference: req.body.reference,
+          estActif: 1
+        }
+        Onglet.checkIfOngletExists(objOnglet2)
           .then(ongletReference => {
             if (ongletReference.length == 0) {
               Onglet.addOngletInModel(req)
@@ -82,14 +88,14 @@ function checkIfOngletExists(req, res, next) {
 }
 
 function updateOnglet(req, res, next) {
-  console.log(req.body)
-  initOngletClass.onglet.libelle = req.body.libelle
-  initOngletClass.onglet.menuId = req.body.menuId
-
-
+  const objOnglet1={
+    libelle: req.body.libelle,
+    menuId: req.body.menuId,
+    estActif: 1
+  }
   // initMenuClass.Menu.observations= req.body.observations
   //verifie si l'utilisateur existe en base
-  Onglet.checkIfOngletExists(initOngletClass.onglet)
+  Onglet.checkIfOngletExists(objOnglet1)
     .then(onglet => {
       if (onglet.length == 0 || (onglet[0].id == req.body.id)) {
         Onglet.updateOngletInModel(req)

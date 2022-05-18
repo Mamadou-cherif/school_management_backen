@@ -135,8 +135,10 @@ function regionSelectByInModel(data){
         ((err,results, fields)=>{
           if(err){
             reject(err)
+          }else{
+            resolve(results[0])
+
           }
-          resolve(results[0])
         })
       )
     })
