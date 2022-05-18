@@ -27,15 +27,26 @@ const initDeviseClass= require("../classes/devise")
     .then(devise=> res.status(200).json(devise))
     .catch(error=> res.status(400).json(error))
   }
-
+ 
 
   function addDevise(req, res,next){
-
-    initDeviseClass.libelle= req.body.libelle
+    const deviseObj={
+      id:null,
+      libelle:req.body.libelle,
+      symbole:null,
+      estActif:1,
+      creationDate:null,
+      creationUserId:null,
+      modifDate:null,
+      modifUserId:null,
+      debutDonnees:null,
+      finDonnees:null
+    }
        
-     Devise.checkIfDeviseExists(initDeviseClass)
+     Devise.checkIfDeviseExists(deviseObj)
           .then(devises=> {
                 if(devises.length==0){
+                    initDeviseClass.libelle= req.body.libelle
                     initDeviseClass.symbole= req.body.symbole
                     initDeviseClass.creationUserId= req.body.creationUserId
                     Devise.addDeviseInModel(initDeviseClass)
@@ -52,11 +63,22 @@ const initDeviseClass= require("../classes/devise")
 
 
 function updateDevise(req, res,next){
-
+  const deviseObj={
+    id:null,
+    libelle:req.body.libelle,
+    symbole:null,
+    estActif:1,
+    creationDate:null,
+    creationUserId:null,
+    modifDate:null,
+    modifUserId:null,
+    debutDonnees:null,
+    finDonnees:null
+  }
   initDeviseClass.libelle= req.body.libelle
      
    //verifie si l'utilisateur existe en base
-   Devise.deviseSelectByInModel(initDeviseClass)
+   Devise.checkIfDeviseExists(deviseObj)
         .then(devises=> {
               if((devises.length==0) || (devises[0].id== req.body.id)){
                   initDeviseClass.symbole= req.body.symbole
@@ -78,9 +100,12 @@ function updateDevise(req, res,next){
 
 //supression logique d'un axe
 function deleteDevise(req, res, next){
-  Devise.deleteDeviseInModel(req.body.id)
+    Devise.deleteDeviseInModel(req.params.id)
     .then(()=> res.status(201).json({succes: "Suppression effectuée avec succès"}))
-    .catch(()=> res.status(400).json({error: "Suppression impossible car cette commune appartient dans une autre table"}));
+    .catch(()=> res.status(400).json({error: "Impossible de supprimer cet élément car il est lié à une autre table"}));
+  
+  
+  
 }
  
 

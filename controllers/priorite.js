@@ -9,14 +9,24 @@ const initPrioriteClass= require("../classes/priorite")
 
 
 function addPriorite(req, res,next){
-
-    initPrioriteClass.libelle= req.body.libelle
+    const prioriteObj={
+        id: null,
+		libelle: req.body.libelle,
+		code: null,
+		estActif: 1,
+		creationDate: null,
+		creationUserId: null,
+		modifDate: null,
+		modifUserId: null,
+        debut: null,
+        fin: null
+}
+    
        
      //verifie si l'utilisateur existe en base
-     Priorite.checkIfPrioriteExists(initPrioriteClass)
+     Priorite.checkIfPrioriteExists(prioriteObj)
           .then(priorite=> {
                 if(priorite.length==0){
-                    
                     initPrioriteClass.libelle= req.body.libelle
                     initPrioriteClass.code= req.body.code                   
                     initPrioriteClass.creationUserId= req.body.creationUserId
@@ -55,11 +65,20 @@ function disablePriorite(req, res, next){
  
 function updatePriorite(req,res, next){
         
-       
-    initPrioriteClass.libelle= req.body.libelle
-       
-    //verifie si l'utilisateur existe en base
-    Priorite.checkIfPrioriteExists(initPrioriteClass)
+    const prioriteObj={
+        id: null,
+		libelle: req.body.libelle,
+		code: null,
+		estActif: 1,
+		creationDate: null,
+		creationUserId: null,
+		modifDate: null,
+		modifUserId: null,
+        debut: null,
+        fin: null
+}
+
+    Priorite.checkIfPrioriteExists(prioriteObj)
          .then(priorite=> {
                if((priorite.length==0) || (priorite[0].id== req.body.id) ){
                 initPrioriteClass.id= req.body.id

@@ -9,14 +9,14 @@ const { reject } = require("bcrypt/promises");
 
 
 
-function checkIfDeviseExists(theReq){
+function checkIfUniteExists(theReq){
 
 }
 
-function checkIfDeviseExists(theReq){
+function checkIfUniteExists(theReq){
   return new Promise((resolve,reject)=> {
   
-      connection.query("CALL devises_selectBy(?,?,?,?,?,?,?,?,?,?)",
+      connection.query("CALL unites_selectBy(?,?,?,?,?,?,?,?,?,?)",
             [ 
               theReq.id,
               theReq.libelle,
@@ -41,9 +41,9 @@ function checkIfDeviseExists(theReq){
     })
 }
 
-function selectByIdDeviseInModel(id){
+function selectByIdUniteInModel(id){
   return new Promise((resolve,reject)=> {
-    connection.query("CALL devises_selectById(?)",
+    connection.query("CALL unites_selectById(?)",
           [
             id
           ],
@@ -59,9 +59,9 @@ function selectByIdDeviseInModel(id){
 
 }
 
-function selectAllDeviseInModel(theReq){
+function selectAllUniteInModel(theReq){
   return new Promise((resolve,reject)=> {
-    connection.query("CALL devises_selectAll(?,?,?)",
+    connection.query("CALL unites_selectAll(?,?,?)",
           [
             1,
             null,
@@ -78,9 +78,9 @@ function selectAllDeviseInModel(theReq){
   })
 }
 
-function addDeviseInModel(data){
+function addUniteInModel(data){
   return new Promise((resolve,reject)=> {
-    connection.query("CALL devises_insert(?,?,?)",
+    connection.query("CALL unites_insert(?,?,?)",
           [
            data.libelle,
            data.symbole,
@@ -102,9 +102,9 @@ function addDeviseInModel(data){
   })
 }
 
-function updateDeviseInModel(data){
+function updateUniteInModel(data){
   return new Promise((resolve,reject)=> {
-    connection.query("CALL devises_update(?,?,?,?,?)",
+    connection.query("CALL unites_update(?,?,?,?,?)",
           [
             data.id, 
             data.libelle,
@@ -127,10 +127,10 @@ function updateDeviseInModel(data){
     )
   })
 }
-function deleteDeviseInModel(id){
+function deleteUniteInModel(id){
   return new Promise((resolve,reject)=> {
     
-    connection.query("CALL devises_delete(?)",
+    connection.query("CALL unites_delete(?)",
           [ 
             id,
             
@@ -150,7 +150,7 @@ function deleteDeviseInModel(id){
 }
 function communeSelectByInModel(data){
     return new Promise((resolve,reject)=> {
-      connection.query("CALL devises_selectBy(? ,?,?,?,?,?,?,?,?,?)",
+      connection.query("CALL unites_selectBy(? ,?,?,?,?,?,?,?,?,?)",
             [
              data.id,
              data.libelle,
@@ -178,11 +178,11 @@ function communeSelectByInModel(data){
 
  
   module.exports={
-    checkIfDeviseExists,
+    checkIfUniteExists,
     communeSelectByInModel,
-    addDeviseInModel,
-    updateDeviseInModel,
-    selectByIdDeviseInModel,
-    selectAllDeviseInModel,
-    deleteDeviseInModel
+    addUniteInModel,
+    updateUniteInModel,
+    selectByIdUniteInModel,
+    selectAllUniteInModel,
+    deleteUniteInModel
   }

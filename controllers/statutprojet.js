@@ -9,14 +9,25 @@ const initStatutProjetClass= require("../classes/statutprojet")
 
 
 function addStatutProjet(req, res,next){
-
-    initStatutProjetClass.libelle= req.body.libelle
+    const statutprojet={
+        id: null,
+        libelle: null,
+        code: null,
+        estActif: 1,
+        creationDate: null,
+        creationUserId: null,
+        modifDate: null,
+        modifUserId: null,
+        debut: null,
+        fin: null
+    
+    }
        
      //verifie si l'utilisateur existe en base
-     StatutProjet.checkIfStatutProjetExists(initStatutProjetClass)
+     StatutProjet.checkIfStatutProjetExists(statutprojet)
           .then(statutprojet=> {
                 if(statutprojet.length==0){
-                    
+                    initStatutProjetClass.libelle= req.body.libelle
                     initStatutProjetClass.libelle= req.body.libelle
                     initStatutProjetClass.code= req.body.code                   
                     initStatutProjetClass.creationUserId= req.body.creationUserId
@@ -54,14 +65,25 @@ function disableStatutProjet(req, res, next){
 }
  
 function updateStatutProjet(req,res, next){
-        
-       
-    initStatutProjetClass.libelle= req.body.libelle
-       
+    const statutprojetObj={
+        id: null,
+        libelle: req.body.libelle,
+        code: null,
+        estActif: 1,
+        creationDate: null,
+        creationUserId: null,
+        modifDate: null,
+        modifUserId: null,
+        debut: null,
+        fin: null
+    
+    }
+              
     //verifie si l'utilisateur existe en base
-    StatutProjet.checkIfStatutProjetExists(initStatutProjetClass)
+    StatutProjet.checkIfStatutProjetExists(statutprojetObj)
          .then(statutprojet=> {
                if(statutprojet.length==0){
+                initStatutProjetClass.libelle= req.body.libelle
                 initStatutProjetClass.id= req.body.id
                 initStatutProjetClass.libelle= req.body.libelle
                 initStatutProjetClass.code= req.body.code                   

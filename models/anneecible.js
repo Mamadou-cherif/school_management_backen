@@ -6,15 +6,14 @@ const app= express();
 
 
 
-function addCategorieActionInModel(theReq){
+function addAnneeCibleInModel(theReq){
     return new Promise((resolve,reject)=> {
     
-        connection.query("CALL categorieactions_insert(?,?,?)",
+        connection.query("CALL anneecibles_insert(?,?,?)",
               [ 
                 theReq.libelle,
                 theReq.code,
-                theReq.creationUserId,
-                
+                theReq.creationUserId
               ],
     
           ((err,results, fields)=>{
@@ -27,15 +26,14 @@ function addCategorieActionInModel(theReq){
       })
 }
 
-function checkIfCategorieActionExists(theReq){
+function AnneeCibleSelectByInModel(theReq){
     return new Promise((resolve,reject)=> {
     
-        connection.query("CALL categorieactions_selectBy(?,?,?,?,?,?,?,?,?,?,?)",
+        connection.query("CALL anneecibles_selectBy(?,?,?,?,?,?,?,?,?,?)",
               [ 
                 theReq.id,
                 theReq.libelle,
                 theReq.code,
-                theReq.description,
                 theReq.estActif,
                 theReq.creationDate,
                 theReq.creationUserId,
@@ -56,10 +54,10 @@ function checkIfCategorieActionExists(theReq){
       })
 }
 
-function getCategorieActionByIdInModel(id){
+function anneCibleSelectById(id){
     return new Promise((resolve,reject)=> {
     
-        connection.query("CALL categorieactions_selectById(?)",
+        connection.query("CALL anneecibles_selectById(?)",
               [ 
                 id
                 
@@ -76,10 +74,10 @@ function getCategorieActionByIdInModel(id){
 }
 
 
-function disableCategorieActionInModel(theReq){
+function disableAnneeCibleInModel(theReq){
     return new Promise((resolve,reject)=> {
     
-        connection.query("CALL categorieactions_disable(?,?,?)",
+        connection.query("CALL anneecibles_disable(?,?,?)",
               [ 
                 theReq.id,
                 theReq.modifUserId,
@@ -98,18 +96,15 @@ function disableCategorieActionInModel(theReq){
 }
  
 
-function updateCategorieActionInModel(theReq){
+function updateAnneeCibleInModel(theReq){
     return new Promise((resolve,reject)=> {
-    
-        connection.query("CALL categorieactions_update(?,?,?,?,?,?)",
+        connection.query("CALL anneecibles_update(?,?,?,?,?)",
               [ 
                 theReq.id,
                 theReq.libelle,
                 theReq.code,
-                theReq.description,
                 theReq.modifDate,
                 theReq.modifUserId
-                
               ],
     
           ((err,results, fields)=>{
@@ -122,14 +117,14 @@ function updateCategorieActionInModel(theReq){
       })
 }
 
-function getAllCategorieActionInModel(theReq){
+function getAllAnneeCibleInModel(theReq){
     return new Promise((resolve,reject)=> {
     
-        connection.query("CALL categorieactions_selectAll(?,?,?)",
+        connection.query("CALL anneecibles_selectAll(?,?,?)",
               [ 
-                theReq.estActif,
-                theReq.debut,
-                theReq.fin,
+                1,
+                null,
+                null,
                 
               ],
     
@@ -144,12 +139,12 @@ function getAllCategorieActionInModel(theReq){
 }
 
 
-function deleteCategorieActionInModel(id){
+function deleteAnneeCibleInModel(id){
     return new Promise((resolve,reject)=> {
       
-      connection.query("CALL categorieactionss_delete(?)",
+      connection.query("CALL anneecibles_delete(?)",
             [ 
-              id,
+              id
               
             ],
   
@@ -157,18 +152,21 @@ function deleteCategorieActionInModel(id){
           if(err){
             reject(err)
           }
-          resolve(results[0])
+          else{
+            resolve(results[0])
+          }
+          
         })
       )
     })
   }
 
 module.exports={
-    deleteCategorieActionInModel,
-    addCategorieActionInModel,
-    disableCategorieActionInModel,
-    updateCategorieActionInModel,
-    getCategorieActionByIdInModel,
-    getAllCategorieActionInModel,
-    checkIfCategorieActionExists
+    deleteAnneeCibleInModel,
+    addAnneeCibleInModel,
+    disableAnneeCibleInModel,
+    updateAnneeCibleInModel,
+    anneCibleSelectById,
+    getAllAnneeCibleInModel,
+    AnneeCibleSelectByInModel
 }

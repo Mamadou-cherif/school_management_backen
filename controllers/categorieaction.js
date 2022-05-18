@@ -10,11 +10,24 @@ const initCategorieActionClass= require("../classes/categorieaction")
 
 function addCategorieAction(req, res,next){
 
-    initCategorieActionClass.libelle= req.body.libelle
+
+    const categorieactionObj={
+        id: null,
+		libelle: req.body.libelle,
+		code: null,
+		estActif: null,
+		creationDate: null,
+		creationUserId: null,
+		modifDate: null,
+		modifUserId: null,
+        debut: null,
+        fin: null
+}
      //verifie si l'utilisateur existe en base
-     CategorieAction.checkIfCategorieActionExists(initCategorieActionClass)
+     CategorieAction.checkIfCategorieActionExists(categorieactionObj)
           .then(categorieaction=> {
                 if(categorieaction.length==0){
+                    initCategorieActionClass.libelle= req.body.libelle
                     initCategorieActionClass.code= req.body.code
                     initCategorieActionClass.libelle= req.body.libelle
                     initCategorieActionClass.creationUserId= req.body.creationUserId
@@ -44,12 +57,23 @@ function disableCategorieAction(req, res, next){
 function updateCategorieAction(req,res, next){
         
        
-    initCategorieActionClass.libelle= req.body.libelle
-       
-    //verifie si l'utilisateur existe en base
-    CategorieAction.checkIfCategorieActionExists(initCategorieActionClass)
+    const categorieactionObj={
+        id: null,
+		libelle: req.body.libelle,
+		code: null,
+		estActif: null,
+		creationDate: null,
+		creationUserId: null,
+		modifDate: null,
+		modifUserId: null,
+        debut: null,
+        fin: null
+}
+   
+    CategorieAction.checkIfCategorieActionExists(categorieactionObj)
          .then(categorieaction=> {
                if((categorieaction.length==0) || (categorieaction[0].id== req.body.id) ){
+                   initCategorieActionClass.libelle= req.body.libelle
                    initCategorieActionClass.id= req.body.id
                    initCategorieActionClass.code= req.body.code
                    initCategorieActionClass.libelle= req.body.libelle

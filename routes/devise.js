@@ -7,5 +7,5 @@ const deviseController= require("../controllers/devise")
     router.get("/selectByIdDevise/:id", deviseController.selectByIdDevise)
     router.post("/addDevise", deviseController.addDevise)
     router.put("/updateDevise", deviseController.updateDevise)
-    router.delete("/deleteDevise", deviseController.deleteDevise)
-    module.exports= router
+    router.delete("/deleteDevise/:id", deviseController.deleteDevise)
+    module.exports= router 

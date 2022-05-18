@@ -31,6 +31,8 @@ const serviceRoutes = require("./routes/service")
 const checktokenexpire = require("./routes/checktokenexpire")
 const categorieactionRoute = require("./routes/categorieaction");
 const categorieinvestRoute = require("./routes/categorieinves");
+const uniteRoute= require("./routes/unite")
+const anneecibleRoute= require("./routes/anneecible")
 
 const a = require("./a")
 
@@ -73,9 +75,11 @@ app.use("/api", projetRoutes)
 app.use("/api", actionRoutes)
 app.use("/api", statuProjetRoutes)
 app.use("/api", serviceConcerneRoutes)
-app.use("/api", serviceRoutes)
+app.use("/api", serviceRoutes) 
 app.use("/api", categorieactionRoute)
 app.use("/api", categorieinvestRoute)
+app.use("/api", uniteRoute)
+app.use("/api", anneecibleRoute)
 
 
 

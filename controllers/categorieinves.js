@@ -9,12 +9,23 @@ const initCategorieInvestClass= require("../classes/categorieinves")
 
 
 function addCategorieInvest(req, res,next){
-
-    initCategorieInvestClass.libelle= req.body.libelle
-       
-     CategorieInvest.checkIfCategorieInvestExists(initCategorieInvestClass)
+    const categorieinvestObj={
+        id: null,
+        libelle: req.body.libelle,
+        code: null,
+        estActif: null,
+        creationDate: null,
+        creationUserId: null,
+        modifDate: null,
+        modifUserId: null,
+        debut: null,
+        fin: null
+    }
+        
+     CategorieInvest.checkIfCategorieInvestExists(categorieinvestObj)
           .then(categorieinvest=> {
                 if(categorieinvest.length==0){
+                    initCategorieInvestClass.libelle= req.body.libelle
                     initCategorieInvestClass.code= req.body.code
                     initCategorieInvestClass.libelle= req.body.libelle
                     initCategorieInvestClass.creationUserId= req.body.creationUserId
@@ -41,12 +52,24 @@ function disableCategorieInvest(req, res, next){
 }
  
 function updateCategorieInvest(req,res, next){
-
-    initCategorieInvestClass.libelle= req.body.libelle
+    const categorieinvest={
+        id: null,
+        libelle: req.body.libelle,
+        code: null,
+        estActif: null,
+        creationDate: null,
+        creationUserId: null,
+        modifDate: null,
+        modifUserId: null,
+        debut: null,
+        fin: null
+    }
+    
        
-    CategorieInvest.checkIfCategorieInvestExists(initCategorieInvestClass)
+    CategorieInvest.checkIfCategorieInvestExists(categorieinvest)
          .then(categorieinvest=> {
                if((categorieinvest.length==0) || (categorieinvest[0].id== req.body.id) ){
+                   initCategorieInvestClass.libelle= req.body.libelle
                    initCategorieInvestClass.id= req.body.id
                    initCategorieInvestClass.code= req.body.code
                    initCategorieInvestClass.libelle= req.body.libelle

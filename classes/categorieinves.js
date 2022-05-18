@@ -10,3 +10,5 @@ const categorieinvest={
     debut: null,
     fin: null
 }
+
+module.exports= categorieinvest
