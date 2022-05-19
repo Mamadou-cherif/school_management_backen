@@ -2,40 +2,34 @@ const mysql = require("mysql2");
 const config = require("../configs/dbconfig")
 let connection = mysql.createConnection(config)
 const express = require("express")
-const app = express();
-const bcrypt = require("bcrypt");
-const res = require("express/lib/response");
-const { reject } = require("bcrypt/promises");
-
-function getAllPaysInModel(theReq){
-    return new Promise((resolve,reject)=> {
-      
-      connection.query("CALL payss_selectAll(?,?,?)",
-            [ 
-              1,
-              null,
-              null
-            ],
-  
-        ((err,results, fields)=>{
-          if(err){
-            reject(err)
-          }else{
-            resolve(results[0])
-          }
-          
-        })
-      )
-    })
-  }
-
-    
 
 
-function getPaysByIdInModel(id) {
+function getAllCouleurInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL payss_selectById(?)",
+    connection.query("CALL couleurs_selectAll(?,?,?)",
+      [
+        1,
+        null,
+        null
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
+}
+
+
+
+function getCouleurByIdInModel(id) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL couleurs_selectById(?)",
       [
         id
       ],
@@ -51,14 +45,13 @@ function getPaysByIdInModel(id) {
 }
 
 
-function addPaysInModel(data) {
+function addCouleurInModel(data) {
 
   return new Promise((resolve, reject) => {
-    connection.query("CALL payss_insert(?,?,?,?)",
+    connection.query("CALL couleurs_insert(?,?,?)",
       [
         data.libelle,
-        data.indicatifTel,
-        data.deviseId,
+        data.code,
         data.creationUserId,
       ],
 
@@ -77,14 +70,13 @@ function addPaysInModel(data) {
   })
 }
 
-function updatePaysInModel(data) {
+function updateCouleurInModel(data) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL payss_update(?,?,?,?,?,?)",
+    connection.query("CALL couleurs_update(?,?,?,?,?)",
       [
         data.id,
         data.libelle,
-        data.indicatifTel,
-        data.deviseId,
+        data.code,
         data.modifDate,
         data.modifUserId,
       ],
@@ -96,21 +88,20 @@ function updatePaysInModel(data) {
           //connection.end();
         }
         else {
-          resolve(results);
+          resolve(results[0]);
         }
 
       })
     )
   })
 }
-function paysSelectByInModel(data) {
+function couleurSelectByInModel(data) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL payss_selectBy(?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL couleurs_selectBy(?,?,?,?,?,?,?,?,?,?)",
       [
         data.id,
         data.libelle,
-        data.indicatifTel,
-        data.deviseId,
+        data.code,
         data.estActif,
         data.creationDate,
         data.creationUserId,
@@ -123,17 +114,19 @@ function paysSelectByInModel(data) {
       ((err, results, fields) => {
         if (err) {
           reject(err)
+        } else {
+          resolve(results[0])
         }
-        resolve(results[0])
+
       })
     )
   })
 }
 
-function deletePaysInModel(id) {
+function disableCouleurInModel(id) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL payss_delete(?)",
+    connection.query("CALL couleurs_disable(?)",
       [
         id,
 
@@ -149,11 +142,33 @@ function deletePaysInModel(id) {
   })
 }
 
+function deleteCouleurInModel(id) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL couleurs_delete(?)",
+      [
+        id,
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(results[0])
+        }
+
+      })
+    )
+  })
+}
+
 module.exports = {
-  getAllPaysInModel,
-  getPaysByIdInModel,
-  addPaysInModel,
-  updatePaysInModel,
-  deletePaysInModel,
-  paysSelectByInModel
+  getAllCouleurInModel,
+  getCouleurByIdInModel,
+  addCouleurInModel,
+  updateCouleurInModel,
+  disableCouleurInModel,
+  couleurSelectByInModel,
+  deleteCouleurInModel
 }

@@ -35,9 +35,8 @@ const typeDocumentRoute = require("./routes/typeDocument")
 const typeExpertiseRoute = require("./routes/typeExpertise")
 const rubriqueEvaluationRoute = require("./routes/rubriqueEvaluation")
 const applicationRoute = require("./routes/application")
+const couleurRoute = require("./routes/couleur");
 
-
-const a = require("./a")
 
 
 app.use(bodyParser.json())
@@ -57,10 +56,11 @@ app.use("/api", userRoute)
 app.use("/api", groupeRoute)
 app.use("/api", userGroupeRoute)
 app.use("/api", menuRoute),
-app.use("/api", ongletRoute)
+    app.use("/api", ongletRoute)
 app.use("/api", modeAccesRoute)
 app.use("/api", privilegeRoute)
 app.use("/api", paysRoute)
+app.use("/api", couleurRoute)
 app.use("/api", prestaireRoute)
 app.use("/api", structureRoute)
 app.use("/api", regionsRoute)
@@ -68,8 +68,6 @@ app.use("/api", prefectureRoutes)
 app.use("/api", quartiersRoutes)
 app.use("/api", communesRoutes)
 app.use("/api", axeRoutes)
-app.use("/api", evaluationRoutes)
-app.use("/api", chaineRoutes)
 app.use("/api", deviseRoute)
 app.use("/api", programmeRoutes)
 app.use("/api", prioriteRoutes)

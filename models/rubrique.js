@@ -7,35 +7,34 @@ const bcrypt = require("bcrypt");
 const res = require("express/lib/response");
 const { reject } = require("bcrypt/promises");
 
-function getAllPaysInModel(theReq){
-    return new Promise((resolve,reject)=> {
-      
-      connection.query("CALL payss_selectAll(?,?,?)",
-            [ 
-              1,
-              null,
-              null
-            ],
-  
-        ((err,results, fields)=>{
-          if(err){
-            reject(err)
-          }else{
-            resolve(results[0])
-          }
-          
-        })
-      )
-    })
-  }
-
-    
-
-
-function getPaysByIdInModel(id) {
+function getAllRubriqueInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL payss_selectById(?)",
+    connection.query("CALL rubriques_selectAll(?,?,?)",
+      [
+        1,
+        null,
+        null
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(results[0])
+        }
+
+      })
+    )
+  })
+}
+
+
+
+function getRubriqueByIdInModel(id) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL rubriques_selectById(?)",
       [
         id
       ],
@@ -51,14 +50,13 @@ function getPaysByIdInModel(id) {
 }
 
 
-function addPaysInModel(data) {
+function addRubriquesInModel(data) {
 
   return new Promise((resolve, reject) => {
-    connection.query("CALL payss_insert(?,?,?,?)",
+    connection.query("CALL rubriques_insert(?,?,?)",
       [
         data.libelle,
-        data.indicatifTel,
-        data.deviseId,
+        data.code,
         data.creationUserId,
       ],
 
@@ -68,23 +66,19 @@ function addPaysInModel(data) {
           reject(err)
           //connection.end();
         }
-        else {
-          resolve(results);
-        }
-
+        resolve(results);
       })
     )
   })
 }
 
-function updatePaysInModel(data) {
+function updateRubriquesInModel(data) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL payss_update(?,?,?,?,?,?)",
+    connection.query("CALL rubriques_update(?,?,?,?,?,?)",
       [
         data.id,
         data.libelle,
-        data.indicatifTel,
-        data.deviseId,
+        data.code,
         data.modifDate,
         data.modifUserId,
       ],
@@ -103,14 +97,14 @@ function updatePaysInModel(data) {
     )
   })
 }
-function paysSelectByInModel(data) {
+function rubriquesSelectByInModel(data) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL payss_selectBy(?,?,?,?,?,?,?,?,?,?,?)",
+
+    connection.query("CALL rubrques_selectBy(?,?,?,?,?,?,?,?,?,?)",
       [
         data.id,
         data.libelle,
-        data.indicatifTel,
-        data.deviseId,
+        data.code,
         data.estActif,
         data.creationDate,
         data.creationUserId,
@@ -130,30 +124,32 @@ function paysSelectByInModel(data) {
   })
 }
 
-function deletePaysInModel(id) {
+function deleteRubriquesInModel(id) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL payss_delete(?)",
+    connection.query("CALL rubriques_delete(?)",
       [
         id,
-
       ],
 
       ((err, results, fields) => {
         if (err) {
           reject(err)
         }
-        resolve(results[0])
+        else {
+          resolve(results[0])
+        }
+
       })
     )
   })
 }
 
 module.exports = {
-  getAllPaysInModel,
-  getPaysByIdInModel,
-  addPaysInModel,
-  updatePaysInModel,
-  deletePaysInModel,
-  paysSelectByInModel
+  getAllRubriqueInModel,
+  getRubriqueByIdInModel,
+  addRubriquesInModel,
+  updateRubriquesInModel,
+  deleteRubriquesInModel,
+  rubriquesSelectByInModel
 }
