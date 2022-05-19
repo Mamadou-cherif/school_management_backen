@@ -34,6 +34,7 @@ const categorieinvestRoute = require("./routes/categorieinves")
 const typeDocumentRoute = require("./routes/typeDocument")
 const typeExpertiseRoute = require("./routes/typeExpertise")
 const rubriqueEvaluationRoute = require("./routes/rubriqueEvaluation")
+const applicationRoute = require("./routes/application")
 
 
 const a = require("./a")
@@ -83,6 +84,7 @@ app.use("/api", categorieinvestRoute)
 app.use("/api", typeDocumentRoute)
 app.use("/api", typeExpertiseRoute)
 app.use("/api", rubriqueEvaluationRoute)
+app.use("/api", applicationRoute)
 
 
 
