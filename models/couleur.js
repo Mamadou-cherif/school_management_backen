@@ -2,18 +2,34 @@ const mysql = require("mysql2");
 const config = require("../configs/dbconfig")
 let connection = mysql.createConnection(config)
 const express = require("express")
-const app = express();
-const bcrypt = require("bcrypt");
-const res = require("express/lib/response");
-const { reject } = require("bcrypt/promises");
 
 
-
-
-
-function selectByIdCommuneInModel(id) {
+function getAllCouleurInModel(theReq) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL communes_selectById(?)",
+
+    connection.query("CALL couleurs_selectAll(?,?,?)",
+      [
+        1,
+        null,
+        null
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
+}
+
+
+
+function getCouleurByIdInModel(id) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL couleurs_selectById(?)",
       [
         id
       ],
@@ -26,33 +42,14 @@ function selectByIdCommuneInModel(id) {
       })
     )
   })
-
 }
 
-function selectAllCommuneInModel(theReq) {
-  return new Promise((resolve, reject) => {
-    connection.query("CALL communes_selectAll(?,?,?)",
-      [
-        theReq.body.estActif,
-        theReq.body.debut,
-        theReq.body.fin
-      ],
 
-      ((err, results, fields) => {
-        if (err) {
-          reject(err)
-        }
-        resolve(results[0])
-      })
-    )
-  })
-}
+function addCouleurInModel(data) {
 
-function addCommuneInModel(data) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL communes_insert(?,?,?,?)",
+    connection.query("CALL couleurs_insert(?,?,?)",
       [
-        data.prefectureId,
         data.libelle,
         data.code,
         data.creationUserId,
@@ -73,12 +70,11 @@ function addCommuneInModel(data) {
   })
 }
 
-function updateCommuneInModel(data) {
+function updateCouleurInModel(data) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL communes_update(?,?,?,?,?,?)",
+    connection.query("CALL couleurs_update(?,?,?,?,?)",
       [
         data.id,
-        data.prefectureId,
         data.libelle,
         data.code,
         data.modifDate,
@@ -92,38 +88,18 @@ function updateCommuneInModel(data) {
           //connection.end();
         }
         else {
-          resolve(results);
+          resolve(results[0]);
         }
 
       })
     )
   })
 }
-function deleteCommuneInModel(id) {
+function couleurSelectByInModel(data) {
   return new Promise((resolve, reject) => {
-
-    connection.query("CALL communes_delete(?)",
-      [
-        id,
-
-      ],
-
-      ((err, results, fields) => {
-        if (err) {
-          reject(err)
-        }else{
-          resolve(results[0])
-        }
-      })
-    )
-  })
-}
-function communeSelectByInModel(data) {
-  return new Promise((resolve, reject) => {
-    connection.query("CALL communes_selectBy(?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL couleurs_selectBy(?,?,?,?,?,?,?,?,?,?)",
       [
         data.id,
-        data.prefectureId,
         data.libelle,
         data.code,
         data.estActif,
@@ -132,7 +108,28 @@ function communeSelectByInModel(data) {
         data.modifDate,
         data.modifUserId,
         data.debutDonnees,
-        data.finDonnees
+        data.finDonnees,
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(results[0])
+        }
+
+      })
+    )
+  })
+}
+
+function disableCouleurInModel(id) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL couleurs_disable(?)",
+      [
+        id,
+
       ],
 
       ((err, results, fields) => {
@@ -145,14 +142,33 @@ function communeSelectByInModel(data) {
   })
 }
 
+function deleteCouleurInModel(id) {
+  return new Promise((resolve, reject) => {
 
+    connection.query("CALL couleurs_delete(?)",
+      [
+        id,
 
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(results[0])
+        }
+
+      })
+    )
+  })
+}
 
 module.exports = {
-  communeSelectByInModel,
-  addCommuneInModel,
-  updateCommuneInModel,
-  selectByIdCommuneInModel,
-  selectAllCommuneInModel,
-  deleteCommuneInModel
+  getAllCouleurInModel,
+  getCouleurByIdInModel,
+  addCouleurInModel,
+  updateCouleurInModel,
+  disableCouleurInModel,
+  couleurSelectByInModel,
+  deleteCouleurInModel
 }

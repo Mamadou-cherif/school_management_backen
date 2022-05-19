@@ -1,32 +1,32 @@
-const mysql= require("mysql2");
-const config= require("../configs/dbconfig")
-let connection= mysql.createConnection(config)
-const express= require("express")
-const app= express();
-const bcrypt= require("bcrypt");
+const mysql = require("mysql2");
+const config = require("../configs/dbconfig")
+let connection = mysql.createConnection(config)
+const express = require("express")
+const app = express();
+const bcrypt = require("bcrypt");
 const res = require("express/lib/response");
 const { reject } = require("bcrypt/promises");
 
- 
 
-function checkIfModeAccesExists(theReq){
-  return new Promise((resolve,reject)=> {
-      
+
+function checkIfModeAccesExists(theReq) {
+  return new Promise((resolve, reject) => {
+
     connection.query("CALL modeaccess_selectBy(?,? ,?,?,?,?,?,?,?)",
-          [
-           theReq.id,
-           theReq.libelle,
-           theReq.estActif,
-           theReq.creationDate,
-           theReq.creationUserId,
-           theReq.modifDate,
-           theReq.modifUserId,
-           theReq.debutDonnees,
-           theReq.finDonnees
-          ],
+      [
+        theReq.id,
+        theReq.libelle,
+        theReq.estActif,
+        theReq.creationDate,
+        theReq.creationUserId,
+        theReq.modifDate,
+        theReq.modifUserId,
+        theReq.debutDonnees,
+        theReq.finDonnees
+      ],
 
-      ((err,results, fields)=>{
-        if(err){
+      ((err, results, fields) => {
+        if (err) {
           reject(err)
         }
         resolve(results[0])
@@ -36,44 +36,45 @@ function checkIfModeAccesExists(theReq){
 }
 
 
-function addModeAccesInModel(theReq){
-  return new Promise((resolve, reject)=>{
+function addModeAccesInModel(theReq) {
+  return new Promise((resolve, reject) => {
 
-    
-          connection.query("CALL modeaccess_insert(?,?)", 
-                      [
-                        theReq.body.libelle,
-                        theReq.body.creationUserId,
-                      
-                      ]
-                  ,
-                  (err, results, fields)=>{
-                    if(err){
 
-                      reject(err)
-                      //connection.end();
-                    }
-                    else{
-                    resolve(results);}
-                    // connection.end()
-            
-          })
-   
-    })
-  
+    connection.query("CALL modeaccess_insert(?,?)",
+      [
+        theReq.body.libelle,
+        theReq.body.creationUserId,
+
+      ]
+      ,
+      (err, results, fields) => {
+        if (err) {
+
+          reject(err)
+          //connection.end();
+        }
+        else {
+          resolve(results);
+        }
+        // connection.end()
+
+      })
+
+  })
+
 }
 
-function getNonAffectedByMenuAndGroupeInModel(theReq){
-  return new Promise((resolve,reject)=> {
-    
+function getNonAffectedByMenuAndGroupeInModel(theReq) {
+  return new Promise((resolve, reject) => {
+
     connection.query("CALL modeaccess_getNonAffectedByMenuAndGroupe(?,?)",
-          [ 
-            theReq.body.menuId,
-            theReq.body.groupeId            
-          ],
+      [
+        theReq.body.menuId,
+        theReq.body.groupeId
+      ],
 
-      ((err,results, fields)=>{
-        if(err){
+      ((err, results, fields) => {
+        if (err) {
           reject(err)
         }
         resolve(results[0])
@@ -83,39 +84,39 @@ function getNonAffectedByMenuAndGroupeInModel(theReq){
 }
 
 
-function getModeAccessByIdInModel(id){
-  return new Promise((resolve,reject)=> {
-    
+function getModeAccessByIdInModel(id) {
+  return new Promise((resolve, reject) => {
+
     connection.query("CALL modeaccess_selectById(?)",
-          [
-            id
-          ], 
+      [
+        id
+      ],
 
-      ((err,results, fields)=>{
-        if(err){
+      ((err, results, fields) => {
+        if (err) {
           reject(err)
         }
-          resolve(results[0])
-        
-        
+        resolve(results[0])
+
+
       })
     )
   })
 }
 
 
-function getAllModeAccessInModel(theReq){
-  return new Promise((resolve,reject)=> {
-    
-    connection.query("CALL modeaccess_selectAll(?,?,?)",
-          [
-            1,
-            null,
-            null
-          ],
+function getAllModeAccessInModel(theReq) {
+  return new Promise((resolve, reject) => {
 
-      ((err,results, fields)=>{
-        if(err){
+    connection.query("CALL modeaccess_selectAll(?,?,?)",
+      [
+        1,
+        null,
+        null
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
           reject(err)
         }
         resolve(results[0])
@@ -124,83 +125,66 @@ function getAllModeAccessInModel(theReq){
   })
 }
 
-function updateModeAccesInModel(theReq){
-  return new Promise((resolve, reject)=>{
-    connection.query("CALL modeaccess_update(?,?,?,?)", 
-                [
-                  theReq.id,
-                  theReq.libelle,
-                  theReq.modifDate,
-                  theReq.modifUserId,
-                  
-                ]
-            ,
-            (err, results, fields)=>{
-              if(err){
+function updateModeAccesInModel(theReq) {
+  return new Promise((resolve, reject) => {
+    connection.query("CALL modeaccess_update(?,?,?,?)",
+      [
+        theReq.id,
+        theReq.libelle,
+        theReq.modifDate,
+        theReq.modifUserId,
 
-                reject(err)
-                //connection.end();
-              }
-              else{
-              resolve(results);}
-              // connection.end()
-      
-    })
+      ]
+      ,
+      (err, results, fields) => {
+        if (err) {
 
-})
+          reject(err)
+          //connection.end();
+        }
+        else {
+          resolve(results);
+        }
+        // connection.end()
+
+      })
+
+  })
 }
 
 //supression en logique d'un utilisateur
-function disableModeAccesInModel(theReq, theResponse){
-  return new Promise((reject, resolve)=>{
-    
+function disableModeAccesInModel(theReq, theResponse) {
+  return new Promise((reject, resolve) => {
+
     connection.query("CALL modeaccess_disable(?,?,?)",
-     [  
-         theReq.body.id,
-         theReq.body.modifUserId,
-         theReq.body.modifDate
-      ], 
-      (err, results, fields)=>{
-        if(err){
-          theResponse.status(400).json({error: "La suppression logique a échoué"})
+      [
+        theReq.body.id,
+        theReq.body.modifUserId,
+        theReq.body.modifDate
+      ],
+      (err, results, fields) => {
+        if (err) {
+          theResponse.status(400).json({ error: "La suppression logique a échoué" })
         }
-        else{
-          theResponse.status(200).json({succes: "La suppression logique a bien reussie"})
+        else {
+          theResponse.status(200).json({ succes: "La suppression logique a bien reussie" })
         }
       })
   })
 }
- 
-function getFilsAffecteAUnGroupeInModel(theReq){
-  return new Promise((resolve,reject)=> {
-    
+
+function getFilsAffecteAUnGroupeInModel(theReq) {
+  return new Promise((resolve, reject) => {
+
     connection.query("CALL menus_getFilsAffecteAUnGroupe(?,?)",
-          [
-            theReq.body.menuPereId,
-            theReq.body.groupeId,
+      [
+        theReq.body.menuPereId,
+        theReq.body.groupeId,
 
-          ],
+      ],
 
-      ((err,results, fields)=>{
-        if(err){
-          reject(err)
-        }
-        resolve(results[0])
-      })
-    )
-  })
-} 
-
-function getPrincipalAffecteAUnGroupeInModel(theReq){
-  return new Promise((resolve,reject)=> {
-    
-    connection.query("CALL menus_getPrincipalAffecteAUnGroupe(?)",
-          [ 
-            theReq.body.groupeId
-          ],
-
-      ((err,results, fields)=>{
-        if(err){
+      ((err, results, fields) => {
+        if (err) {
           reject(err)
         }
         resolve(results[0])
@@ -209,18 +193,36 @@ function getPrincipalAffecteAUnGroupeInModel(theReq){
   })
 }
 
-function getAffectesByMenuAndGroupeInModel(theReq){
-  
-  return new Promise((resolve,reject)=> {
-    
-    connection.query("CALL modeaccess_getAffectesByMenuAndGroupe(?,?)",
-          [ 
-            theReq.body.menuId,
-            theReq.body.groupeId            
-          ],
+function getPrincipalAffecteAUnGroupeInModel(theReq) {
+  return new Promise((resolve, reject) => {
 
-      ((err,results, fields)=>{
-        if(err){
+    connection.query("CALL menus_getPrincipalAffecteAUnGroupe(?)",
+      [
+        theReq.body.groupeId
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
+}
+
+function getAffectesByMenuAndGroupeInModel(theReq) {
+
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL modeaccess_getAffectesByMenuAndGroupe(?,?)",
+      [
+        theReq.body.menuId,
+        theReq.body.groupeId
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
           reject(err)
         }
         resolve(results[0])
@@ -236,7 +238,7 @@ function getAffectesByMenuAndGroupeInModel(theReq){
 //      [  
 //          theReq.body.menuId,
 //          theReq.body.groupeId
-        
+
 //       ],
 //       ((err,results, fields)=>{
 //         if(err){
@@ -249,18 +251,18 @@ function getAffectesByMenuAndGroupeInModel(theReq){
 // }
 
 
-function getNotAffectedByOngletAndGroupeInModel(theReq){
-  return new Promise((resolve,reject)=> {
-    
+function getNotAffectedByOngletAndGroupeInModel(theReq) {
+  return new Promise((resolve, reject) => {
+
     connection.query("CALL modeaccess_getNotAffectedByOngletAndGroupe(?,?)",
-          [ 
-            theReq.body.ongletId,
-             theReq.body.groupeId
-            
-          ],
+      [
+        theReq.body.ongletId,
+        theReq.body.groupeId
 
-      ((err,results, fields)=>{
-        if(err){
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
           reject(err)
         }
         resolve(results[0])
@@ -269,18 +271,18 @@ function getNotAffectedByOngletAndGroupeInModel(theReq){
   })
 }
 
-function getAffectedByOngletAndGroupeInModel(theReq){
-  return new Promise((resolve,reject)=> {
-    
+function getAffectedByOngletAndGroupeInModel(theReq) {
+  return new Promise((resolve, reject) => {
+
     connection.query("CALL modeaccess_getAffectedByOngletAndGroupe(?,?)",
-          [ 
-            theReq.body.ongletId,
-             theReq.body.groupeId
-            
-          ],
+      [
+        theReq.body.ongletId,
+        theReq.body.groupeId
 
-      ((err,results, fields)=>{
-        if(err){
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
           reject(err)
         }
         resolve(results[0])
@@ -291,39 +293,39 @@ function getAffectedByOngletAndGroupeInModel(theReq){
 
 
 
-function getModeAccesById(theReq){
-  return new Promise((reject, resolve)=>{
+function getModeAccesById(theReq) {
+  return new Promise((reject, resolve) => {
 
     connection.query("CALL modeaccess_selectById(?)",
-     [  
-         theReq.params.id,
-         
-        
+      [
+        theReq.params.id,
+
+
       ],
-      (err, results, fields)=>{
-        if(err){
-         reject(err)
+      (err, results, fields) => {
+        if (err) {
+          reject(err)
         }
-        else{
-         resolve(results[0])
+        else {
+          resolve(results[0])
         }
       })
   })
 }
 
-module.exports= {
-    getPrincipalAffecteAUnGroupeInModel,
-    checkIfModeAccesExists,
-    getModeAccessByIdInModel,
-    getNonAffectedByMenuAndGroupeInModel,
-    addModeAccesInModel,
-    disableModeAccesInModel,
-    getAllModeAccessInModel,
-    getFilsAffecteAUnGroupeInModel,
-    getAffectesByMenuAndGroupeInModel,
-    getNotAffectedByOngletAndGroupeInModel, 
-    getAffectedByOngletAndGroupeInModel,
-    updateModeAccesInModel,
-    getModeAccesById
+module.exports = {
+  getPrincipalAffecteAUnGroupeInModel,
+  checkIfModeAccesExists,
+  getModeAccessByIdInModel,
+  getNonAffectedByMenuAndGroupeInModel,
+  addModeAccesInModel,
+  disableModeAccesInModel,
+  getAllModeAccessInModel,
+  getFilsAffecteAUnGroupeInModel,
+  getAffectesByMenuAndGroupeInModel,
+  getNotAffectedByOngletAndGroupeInModel,
+  getAffectedByOngletAndGroupeInModel,
+  updateModeAccesInModel,
+  getModeAccesById
 
 }

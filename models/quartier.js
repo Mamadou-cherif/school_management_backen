@@ -136,10 +136,10 @@ function quartierSelectByInModel(data){
         ((err,results, fields)=>{
           if(err){
             reject(err)
-          }
-          else{
+          }else{
             resolve(results[0])
           }
+          
         })
       )
     })

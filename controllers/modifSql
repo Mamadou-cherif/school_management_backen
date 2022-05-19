@@ -1,0 +1,12 @@
+ALTER TABLE `suiviprojetpublic`.`typedocuments` 
+CHANGE COLUMN `categorie` `categorie` ENUM('Structure', 'Prestataire', 'Axe', 'Programme', 'Projet', 'Evaluation') NOT NULL ;
+
+UPDATE `suiviprojetpublic`.`menus` SET `url` = 'listeTypeDocument' WHERE (`id` = '42');
+
+UPDATE `suiviprojetpublic`.`menus` SET `url` = 'listeTypeExpertise' WHERE (`id` = '39');
+
+
+UPDATE `suiviprojetpublic`.`menus` SET `url` = 'listeRubEvaluation' WHERE (`id` = '48');
+
+DELETE FROM `suiviprojetpublic`.`privileges` WHERE (`id` = '116');
+DELETE FROM `suiviprojetpublic`.`menus` WHERE (`id` = '46');

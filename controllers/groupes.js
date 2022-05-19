@@ -9,17 +9,19 @@ const initGroupeClass= require("../classes/groupes")
 
 
 function addGroupe(req, res,next){
-      
-         
-        
-        initGroupeClass.groupe.id= req.body.id
-        initGroupeClass.groupe.libelle= req.body.libelle
-       // initGroupeClass.groupe.observations= req.body.observations
+        const objGroupe={
+            libelle:req.body.libelle,
+            estActif:1
+        }
+       
      //verifie si l'utilisateur existe en base
-     Groupe.checkIfGroupeExists(initGroupeClass.groupe)
+     Groupe.checkIfGroupeExists(objGroupe)
           .then(groupe=> {
                 if(groupe.length==0){
-                      Groupe.addGroupeInModel(req)
+                    initGroupeClass.groupe.creationUserId= req.body.creationUserId
+                    initGroupeClass.groupe.libelle= req.body.libelle
+                   initGroupeClass.groupe.observations= req.body.observations
+                      Groupe.addGroupeInModel(initGroupeClass.groupe)
                           .then(()=> res.status(201).json({succes: "la création a reussi"}))
                           .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
                 }
@@ -50,12 +52,22 @@ function disableGroupe(req, res, next){
 
 function updateGroupe(req,res, next){
     
-    initGroupeClass.groupe.libelle= req.body.libelle
+    const objGroupe={
+        libelle:req.body.libelle,
+        estActif:1
+    }
+   
 
-     Groupe.checkIfGroupeExists(initGroupeClass.groupe)
+     Groupe.checkIfGroupeExists(objGroupe)
          .then(data=>{
                   if((data.length==0) || (data[0].id== req.body.id)){
-                   Groupe.updateGroupeInModel(req, res)
+                    initGroupeClass.groupe.id= req.body.id
+                    initGroupeClass.groupe.libelle= req.body.libelle
+                   initGroupeClass.groupe.observations= req.body.observations
+                   initGroupeClass.groupe.modifDate= req.body.modifDate
+                   initGroupeClass.groupe.modifUserId= req.body.modifUserId
+                   
+                   Groupe.updateGroupeInModel(initGroupeClass.groupe)
                       .then(()=>res.status(200).json({succes: "La modification du groupe a réussi"}))
                       .catch(error=> res.status(400).json(error))
                   }

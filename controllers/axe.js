@@ -11,12 +11,14 @@ const initAxeClass= require("../classes/axe")
 function addAxe(req, res,next){
       
          
-        
+    const objAxe={
+        libelle: req.body.libelle,
+        estActif:1
+    }
 
-    initAxeClass.libelle= req.body.libelle
        
      //verifie si l'utilisateur existe en base
-     Axe.checkIfAxeExists(initAxeClass)
+     Axe.checkIfAxeExists(objAxe)
           .then(axe=> {
                 if(axe.length==0){
                     initAxeClass.code= req.body.code
@@ -49,10 +51,13 @@ function disableAxe(req, res, next){
 function updateAxe(req,res, next){
         
        
-    initAxeClass.libelle= req.body.libelle
+    const objAxe={
+        libelle: req.body.libelle,
+        estActif:1
+    }
        
     //verifie si l'utilisateur existe en base
-    Axe.checkIfAxeExists(initAxeClass)
+    Axe.checkIfAxeExists(objAxe)
          .then(axe=> {
                if((axe.length==0) || (axe[0].id== req.body.id) ){
                    initAxeClass.id= req.body.id

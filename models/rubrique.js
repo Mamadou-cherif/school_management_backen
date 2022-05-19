@@ -7,13 +7,34 @@ const bcrypt = require("bcrypt");
 const res = require("express/lib/response");
 const { reject } = require("bcrypt/promises");
 
-
-
-
-
-function selectByIdCommuneInModel(id) {
+function getAllRubriqueInModel(theReq) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL communes_selectById(?)",
+
+    connection.query("CALL rubriques_selectAll(?,?,?)",
+      [
+        1,
+        null,
+        null
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(results[0])
+        }
+
+      })
+    )
+  })
+}
+
+
+
+function getRubriqueByIdInModel(id) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL rubriques_selectById(?)",
       [
         id
       ],
@@ -26,33 +47,14 @@ function selectByIdCommuneInModel(id) {
       })
     )
   })
-
 }
 
-function selectAllCommuneInModel(theReq) {
-  return new Promise((resolve, reject) => {
-    connection.query("CALL communes_selectAll(?,?,?)",
-      [
-        theReq.body.estActif,
-        theReq.body.debut,
-        theReq.body.fin
-      ],
 
-      ((err, results, fields) => {
-        if (err) {
-          reject(err)
-        }
-        resolve(results[0])
-      })
-    )
-  })
-}
+function addRubriquesInModel(data) {
 
-function addCommuneInModel(data) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL communes_insert(?,?,?,?)",
+    connection.query("CALL rubriques_insert(?,?,?)",
       [
-        data.prefectureId,
         data.libelle,
         data.code,
         data.creationUserId,
@@ -64,21 +66,17 @@ function addCommuneInModel(data) {
           reject(err)
           //connection.end();
         }
-        else {
-          resolve(results);
-        }
-
+        resolve(results);
       })
     )
   })
 }
 
-function updateCommuneInModel(data) {
+function updateRubriquesInModel(data) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL communes_update(?,?,?,?,?,?)",
+    connection.query("CALL rubriques_update(?,?,?,?,?,?)",
       [
         data.id,
-        data.prefectureId,
         data.libelle,
         data.code,
         data.modifDate,
@@ -99,31 +97,12 @@ function updateCommuneInModel(data) {
     )
   })
 }
-function deleteCommuneInModel(id) {
+function rubriquesSelectByInModel(data) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL communes_delete(?)",
-      [
-        id,
-
-      ],
-
-      ((err, results, fields) => {
-        if (err) {
-          reject(err)
-        }else{
-          resolve(results[0])
-        }
-      })
-    )
-  })
-}
-function communeSelectByInModel(data) {
-  return new Promise((resolve, reject) => {
-    connection.query("CALL communes_selectBy(?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL rubrques_selectBy(?,?,?,?,?,?,?,?,?,?)",
       [
         data.id,
-        data.prefectureId,
         data.libelle,
         data.code,
         data.estActif,
@@ -132,7 +111,7 @@ function communeSelectByInModel(data) {
         data.modifDate,
         data.modifUserId,
         data.debutDonnees,
-        data.finDonnees
+        data.finDonnees,
       ],
 
       ((err, results, fields) => {
@@ -145,14 +124,32 @@ function communeSelectByInModel(data) {
   })
 }
 
+function deleteRubriquesInModel(id) {
+  return new Promise((resolve, reject) => {
 
+    connection.query("CALL rubriques_delete(?)",
+      [
+        id,
+      ],
 
+      ((err, results, fields) => {
+        if (err) {
+          reject(err)
+        }
+        else {
+          resolve(results[0])
+        }
+
+      })
+    )
+  })
+}
 
 module.exports = {
-  communeSelectByInModel,
-  addCommuneInModel,
-  updateCommuneInModel,
-  selectByIdCommuneInModel,
-  selectAllCommuneInModel,
-  deleteCommuneInModel
+  getAllRubriqueInModel,
+  getRubriqueByIdInModel,
+  addRubriquesInModel,
+  updateRubriquesInModel,
+  deleteRubriquesInModel,
+  rubriquesSelectByInModel
 }

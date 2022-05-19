@@ -7,13 +7,15 @@ app.use(bodyParser.json())
 const bcrypt= require("bcrypt")
 const initMenuClass= require("../classes/menus")
 const { init } = require("express/lib/application")
+const { estActif } = require("../classes/rubriqueEvaluation")
 
 
 function addaMenu(req, res, next) {
 
   const menuObjlib={
     libelle: req.body.libelle,
-    menuPereId: req.body.menuPereId
+    menuPereId: req.body.menuPereId,
+    estActif: 1
   }
  
   Menu.checkIfMenuExists(menuObjlib)
@@ -21,6 +23,7 @@ function addaMenu(req, res, next) {
       if(menu.length==0){
             const menuObjRef={
               reference: req.body.reference,
+              estActif:1
             }
             Menu.checkIfMenuExists(menuObjRef)
             .then(menuByReference=>{
@@ -68,17 +71,9 @@ function getAsingleMenu(req, res, next){
 function updatatMenu(req, res, next){
  
   const objMenu={
-      id:null,
-      reference: null,
-      libelle: req.body.libelle,
-      descriptions: null,
-      menuPereId: req.body.menuPereId,
-      url: null,
-      ordre: null,
-      typeMenu: null,
-      image: null,
-      modifDate: null,
-      modifUserId: null,
+    libelle: req.body.libelle,
+    menuPereId: req.body.menuPereId,
+    estActif: 1
     }
     
    
