@@ -137,7 +137,9 @@ function quartierSelectByInModel(data){
           if(err){
             reject(err)
           }
-          resolve(results[0])
+          else{
+            resolve(results[0])
+          }
         })
       )
     })

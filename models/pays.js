@@ -140,7 +140,9 @@ function getAllPaysInModel(theReq){
           if(err){
             reject(err)
           }
-          resolve(results[0])
+          else{
+            resolve(results[0])
+          }
         })
       )
     })

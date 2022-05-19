@@ -36,7 +36,6 @@ const initPrefecturesClass= require("../classes/prefecture")
     initPrefecturesClass.libelle= req.body.libelle
     initPrefecturesClass.regionId= req.body.regionId
        
-     //verifie si l'utilisateur existe en base
      Prefecture.prefectureSelectByInModel(initPrefecturesClass)
           .then(prefectures=> {
                 if(prefectures.length==0){
@@ -69,7 +68,7 @@ function updatePrefecture(req, res,next){
                   initPrefecturesClass.modifDate= req.body.modifDate
                   initPrefecturesClass.id= req.body.id
                   Prefecture.updatePrefectureInModel(initPrefecturesClass)
-                        .then(()=> res.status(201).json({succes: "Modification effectuée avec succès"}))
+                        .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
                         .catch(()=> res.status(400).json({error: "Erreur de la procedure stockée prefectures_update"}));
               }
               else
