@@ -10,48 +10,44 @@ const initStatutProjetClass= require("../classes/statutprojet")
 
 function addStatutProjet(req, res,next){
     const statutprojet={
-        id: null,
-        libelle: null,
-        code: null,
+        libelle: req.body.libelle,
         estActif: 1,
-        creationDate: null,
-        creationUserId: null,
-        modifDate: null,
-        modifUserId: null,
-        debut: null,
-        fin: null
-    
     }
        
-     //verifie si l'utilisateur existe en base
      StatutProjet.checkIfStatutProjetExists(statutprojet)
           .then(statutprojet=> {
                 if(statutprojet.length==0){
-                    initStatutProjetClass.libelle= req.body.libelle
-                    initStatutProjetClass.libelle= req.body.libelle
-                    initStatutProjetClass.code= req.body.code                   
-                    initStatutProjetClass.creationUserId= req.body.creationUserId
+                    const statutprojet={
+                        code: req.body.code,
+                        estActif: 1,
+                    }
+                    
+                    StatutProjet.checkIfStatutProjetExists(statutprojet)
+                        .then(statutprojet=>{
+                            if(statutprojet.length==0){
+                                initStatutProjetClass.libelle= req.body.libelle
+                                initStatutProjetClass.libelle= req.body.libelle
+                                initStatutProjetClass.code= req.body.code                   
+                                initStatutProjetClass.creationUserId= req.body.creationUserId
 
-                      StatutProjet.addStatutProjetInModel(initStatutProjetClass)
-                          .then(()=> res.status(201).json({succes: "la création a reussi"}))
-                          .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
+                                StatutProjet.addStatutProjetInModel(initStatutProjetClass)
+                                    .then(()=> res.status(201).json({succes: "la création a reussi"}))
+                                    .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
+                            }
+                            else{
+                                return res.status(400).json({error: "Ce code de statut projet existe déjà."})
+                            }
+                        })
+                        .catch(()=>res.status(400).json({error: "Erreur de la procédure stockée selectBy de statutprojets."}))
+                    
                 }
                 else
                    {
-                     res.status(500).json({error: "cet statutprojet existe déjà"})
+                     res.status(500).json({error: "Le libellé saisi est déjà rattaché à un autre statut de projet"})
                    }
           })
-          .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
+          .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
 }
-
-
-
-
-
-
-
-
-
 
 //supression logique d'un statutprojet
 function disableStatutProjet(req, res, next){
@@ -68,35 +64,41 @@ function updateStatutProjet(req,res, next){
     const statutprojetObj={
         id: null,
         libelle: req.body.libelle,
-        code: null,
         estActif: 1,
-        creationDate: null,
-        creationUserId: null,
-        modifDate: null,
-        modifUserId: null,
-        debut: null,
-        fin: null
-    
     }
               
-    //verifie si l'utilisateur existe en base
     StatutProjet.checkIfStatutProjetExists(statutprojetObj)
          .then(statutprojet=> {
-               if(statutprojet.length==0){
-                initStatutProjetClass.libelle= req.body.libelle
-                initStatutProjetClass.id= req.body.id
-                initStatutProjetClass.libelle= req.body.libelle
-                initStatutProjetClass.code= req.body.code                   
-                initStatutProjetClass.modifDate= req.body.modifDate
-                initStatutProjetClass.modifUserId= req.body.modifUserId
-          
-                   StatutProjet.updateStatutProjetInModel(initStatutProjetClass)
-                         .then(()=> res.status(200).json({succes: "la modification a reussi"}))
-                         .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
-               }
+               if((statutprojet.length==0) || (statutprojet[0].id== req.body.id)){
+                const statutprojetObj={
+                    code: req.body.code,
+                    estActif: 1,
+                }
+                StatutProjet.checkIfStatutProjetExists(statutprojetObj)
+                .then(statutprojet=>{
+                    if((statutprojet.length==0) || (statutprojet[0].id== req.body.id)){
+                        initStatutProjetClass.libelle= req.body.libelle
+                        initStatutProjetClass.id= req.body.id
+                        initStatutProjetClass.libelle= req.body.libelle
+                        initStatutProjetClass.code= req.body.code                   
+                        initStatutProjetClass.modifDate= req.body.modifDate
+                        initStatutProjetClass.modifUserId= req.body.modifUserId
+                  
+                           StatutProjet.updateStatutProjetInModel(initStatutProjetClass)
+                                 .then(()=> res.status(200).json({succes: "la modification a reussi"}))
+                                 .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
+                       
+                    }
+                    else{
+                        return res.status(400).json({error: "Ce code existe déjà"})
+                    }
+                })
+                .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
+      
+                }
                else
                   {
-                    res.status(500).json({error: "cet statutprojet existe déjà"})
+                    res.status(500).json({error: "cet statut de projet existe déjà"})
                   }
          })
          .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))

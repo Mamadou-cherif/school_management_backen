@@ -10,3 +10,8 @@ UPDATE `suiviprojetpublic`.`menus` SET `url` = 'listeRubEvaluation' WHERE (`id` 
 
 DELETE FROM `suiviprojetpublic`.`privileges` WHERE (`id` = '116');
 DELETE FROM `suiviprojetpublic`.`menus` WHERE (`id` = '46');
+
+
+UPDATE `suiviprojetpublic`.`menus` SET `url` = 'Parametre' WHERE (`id` = '32');
+UPDATE `suiviprojetpublic`.`menus` SET `url` = 'listPriorite' WHERE (`id` = '37');
+UPDATE `suiviprojetpublic`.`menus` SET `url` = 'listeCouleur' WHERE (`id` = '45');

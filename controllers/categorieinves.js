@@ -2,44 +2,54 @@ const CategorieInvest= require("../models/categorieinves")
 const express= require("express") 
 const bodyParser=require("body-parser")
 const app= express()
-const jwt= require("jsonwebtoken")
 app.use(bodyParser.json()) 
-const bcrypt= require("bcrypt")
 const initCategorieInvestClass= require("../classes/categorieinves")
 
 
 function addCategorieInvest(req, res,next){
+
     const categorieinvestObj={
-        id: null,
         libelle: req.body.libelle,
-        code: null,
-        estActif: null,
-        creationDate: null,
-        creationUserId: null,
-        modifDate: null,
-        modifUserId: null,
-        debut: null,
-        fin: null
-    }
-        
+        estActif: 1,
+    } 
      CategorieInvest.checkIfCategorieInvestExists(categorieinvestObj)
           .then(categorieinvest=> {
                 if(categorieinvest.length==0){
-                    initCategorieInvestClass.libelle= req.body.libelle
-                    initCategorieInvestClass.code= req.body.code
-                    initCategorieInvestClass.libelle= req.body.libelle
-                    initCategorieInvestClass.creationUserId= req.body.creationUserId
-                      CategorieInvest.addCategorieInvestInModel(initCategorieInvestClass)
-                          .then(()=> res.status(201).json({succes: "la création a reussi"}))
-                          .catch(()=> res.status(400).json({error: "erreur de la procédure stockée d'ajout"}));
+                
+                    const categorieinvestObj={
+                        code: req.body.code,
+                        estActif: 1,
+                    } 
+                     CategorieInvest.checkIfCategorieInvestExists(categorieinvestObj)
+                          .then(codes=> {
+                                if(codes.length==0){
+                                    initCategorieInvestClass.libelle= req.body.libelle
+                                    initCategorieInvestClass.code= req.body.code
+                                    initCategorieInvestClass.libelle= req.body.libelle
+                                    initCategorieInvestClass.creationUserId= req.body.creationUserId
+                                    CategorieInvest.addCategorieInvestInModel(initCategorieInvestClass)
+                                        .then(()=> res.status(201).json({succes: "la création a reussi"}))
+                                        .catch(()=> res.status(400).json({error: "erreur de la procédure stockée d'ajout"}));
+                                }
+                                else
+                                   {
+                                     res.status(500).json({error: "Ce code de cette catégorie existe déjà"})
+                                   }
+                          })
+                          .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
+                
+                
                 }
                 else
                    {
-                     res.status(500).json({error: "cet categorieinvest existe déjà"})
+                     res.status(500).json({error: "Cette catégorie d'investissement existe déjà"})
                    }
           })
           .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
+
+
 }
+
 
 function disableCategorieInvest(req, res, next){
     initCategorieInvestClass.id= req.body.id
@@ -53,38 +63,43 @@ function disableCategorieInvest(req, res, next){
  
 function updateCategorieInvest(req,res, next){
     const categorieinvest={
-        id: null,
         libelle: req.body.libelle,
-        code: null,
-        estActif: null,
-        creationDate: null,
-        creationUserId: null,
-        modifDate: null,
-        modifUserId: null,
-        debut: null,
-        fin: null
+        estActif: 1
     }
-    
-       
     CategorieInvest.checkIfCategorieInvestExists(categorieinvest)
          .then(categorieinvest=> {
                if((categorieinvest.length==0) || (categorieinvest[0].id== req.body.id) ){
-                   initCategorieInvestClass.libelle= req.body.libelle
-                   initCategorieInvestClass.id= req.body.id
-                   initCategorieInvestClass.code= req.body.code
-                   initCategorieInvestClass.libelle= req.body.libelle
-                   initCategorieInvestClass.modifDate= req.body.modifDate
-                   initCategorieInvestClass.modifUserId= req.body.modifUserId
-                   CategorieInvest.updateCategorieInvestInModel(initCategorieInvestClass)
-                         .then(()=> res.status(200).json({succes: "la création a reussi"}))
-                         .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
+                const categorieinvest={
+                    code: req.body.code,
+                    estActif: 1
+                }
+                CategorieInvest.checkIfCategorieInvestExists(categorieinvest)
+                     .then(codes=> {
+                           if((codes.length==0) || (codes[0].id== req.body.id) ){
+                               initCategorieInvestClass.libelle= req.body.libelle
+                               initCategorieInvestClass.id= req.body.id
+                               initCategorieInvestClass.code= req.body.code
+                               initCategorieInvestClass.libelle= req.body.libelle
+                               initCategorieInvestClass.modifDate= req.body.modifDate
+                               initCategorieInvestClass.modifUserId= req.body.modifUserId
+                               CategorieInvest.updateCategorieInvestInModel(initCategorieInvestClass)
+                                     .then(()=> res.status(200).json({succes: "la création a reussi"}))
+                                     .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
+                           }
+                           else
+                              {
+                                res.status(500).json({error: "Le code de cette catégorie existe déjà"})
+                              }
+                     })
+                     .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
+            
                }
                else
                   {
-                    res.status(500).json({error: "cet categorieinvest existe déjà"})
+                    res.status(500).json({error: "Cette catégorie d'invertissement existe déjà"})
                   }
          })
-         .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
+         .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
 
 }
 

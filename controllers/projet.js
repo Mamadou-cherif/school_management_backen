@@ -10,10 +10,7 @@ const initProjetClass= require("../classes/projet")
 
 function addProjet(req, res,next){
 
-    initProjetClass.libelle= req.body.libelle
-       
-     //verifie si l'utilisateur existe en base
-    
+    initProjetClass.libelle= req.body.libelle    
     initProjetClass.programmeId= req.body.programmeId
     initProjetClass.titre= req.body.titre
     initProjetClass.code = req.body.code 

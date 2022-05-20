@@ -14,33 +14,41 @@ function addCategorieAction(req, res,next){
     const categorieactionObj={
         id: null,
 		libelle: req.body.libelle,
-		code: null,
-		estActif: null,
-		creationDate: null,
-		creationUserId: null,
-		modifDate: null,
-		modifUserId: null,
-        debut: null,
-        fin: null
+		estActif: 1
 }
      //verifie si l'utilisateur existe en base
      CategorieAction.checkIfCategorieActionExists(categorieactionObj)
           .then(categorieaction=> {
                 if(categorieaction.length==0){
-                    initCategorieActionClass.libelle= req.body.libelle
-                    initCategorieActionClass.code= req.body.code
-                    initCategorieActionClass.libelle= req.body.libelle
-                    initCategorieActionClass.creationUserId= req.body.creationUserId
-                    CategorieAction.addCategorieActionInModel(initCategorieActionClass)
-                          .then(()=> res.status(201).json({succes: "la création a reussi"}))
-                          .catch(()=> res.status(400).json({error: "erreur de la procédure stockée d'ajout"}));
-                }
+                    const categorieactionObj={
+                        code: req.body.code,
+                        estActif: 1
+                    }
+                    CategorieAction.checkIfCategorieActionExists(categorieactionObj)
+                    .then(categorieaction=> {
+                        
+                          if(categorieaction.length==0){
+                            initCategorieActionClass.libelle= req.body.libelle
+                            initCategorieActionClass.code= req.body.code
+                            initCategorieActionClass.libelle= req.body.libelle
+                            initCategorieActionClass.creationUserId= req.body.creationUserId
+                            CategorieAction.addCategorieActionInModel(initCategorieActionClass)
+                                  .then(()=> res.status(201).json({succes: "la création a reussi"}))
+                                  .catch(()=> res.status(400).json({error: "Erreur de la procédure stockée d'ajout"}));
+                            
+                         }
+                          else
+                              {
+                                  res.status(500).json({error: "Dupplicata du code saisi"})
+                              }
+                    })
+               }
                 else
-                   {
-                     res.status(500).json({error: "cet categorieaction existe déjà"})
-                   }
+                    {
+                        res.status(500).json({error: "Dupplicata du libellé saisi"})
+                    }
           })
-          .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
+          .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
 }
 
 //supression logique d'un categorieaction
@@ -50,45 +58,47 @@ function disableCategorieAction(req, res, next){
     initCategorieActionClass.modifDate= req.body.modifDate
 
     CategorieAction.disableCategorieActionInModel(initCategorieActionClass)
-    .then(()=> res.status(201).json({succes: "la suppression a reussi"}))
-    .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
+    .then(()=> res.status(200).json({succes: "la suppression a reussi"}))
+    .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
 }
  
 function updateCategorieAction(req,res, next){
-        
-       
     const categorieactionObj={
-        id: null,
 		libelle: req.body.libelle,
-		code: null,
-		estActif: null,
-		creationDate: null,
-		creationUserId: null,
-		modifDate: null,
-		modifUserId: null,
-        debut: null,
-        fin: null
-}
-   
+		estActif: 1,
+    }
     CategorieAction.checkIfCategorieActionExists(categorieactionObj)
          .then(categorieaction=> {
                if((categorieaction.length==0) || (categorieaction[0].id== req.body.id) ){
-                   initCategorieActionClass.libelle= req.body.libelle
-                   initCategorieActionClass.id= req.body.id
-                   initCategorieActionClass.code= req.body.code
-                   initCategorieActionClass.libelle= req.body.libelle
-                   initCategorieActionClass.modifDate= req.body.modifDate
-                   initCategorieActionClass.modifUserId= req.body.modifUserId
-                   CategorieAction.updateCategorieActionInModel(initCategorieActionClass)
-                         .then(()=> res.status(200).json({succes: "la création a reussi"}))
-                         .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
-               }
-               else
-                  {
-                    res.status(500).json({error: "cet categorieaction existe déjà"})
-                  }
+                const categorieactionObj={
+                    code: req.body.code,
+                    estActif: 1,
+                }
+                console.log(categorieactionObj)
+                CategorieAction.checkIfCategorieActionExists(categorieactionObj)
+                .then(categorieaction=> {
+                    if((categorieaction.length==0) || (categorieaction[0].id== req.body.id) ){
+                        initCategorieActionClass.libelle= req.body.libelle
+                        initCategorieActionClass.id= req.body.id
+                        initCategorieActionClass.code= req.body.code
+                        initCategorieActionClass.libelle= req.body.libelle
+                        initCategorieActionClass.modifDate= req.body.modifDate
+                        initCategorieActionClass.modifUserId= req.body.modifUserId
+                        CategorieAction.updateCategorieActionInModel(initCategorieActionClass)
+                              .then(()=> res.status(200).json({succes: "La création a reussi"}))
+                              .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
+                        
+                    }
+                    else{
+                            res.status(500).json({error: "Dupplicata du code de la catégorie action"})
+                    }
+                })
+            }
+            else{
+                res.status(500).json({error: "Dupplicata du libellé de la catégorie action"})
+             }
          })
-         .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
+         .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
 
 }
 
@@ -116,7 +126,7 @@ function deleteCategorieAction(req, res, next){
     console.log(req.params.id)
     CategorieAction.deleteCategorieActionInModel(req.params.id)
     .then(()=> res.status(200).json({succes: "Suppression effectuée avec succès"}))
-    .catch(()=> res.status(400).json({error: "Suppression impossible car ce pays appartient dans une autre table"}));
+    .catch(()=> res.status(400).json({error: "Suppression impossible car cette catégorie action appartient dans une autre table"}));
 }
 
 
