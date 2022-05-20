@@ -28,7 +28,7 @@ const initTypeDocumentClass= require("../classes/typeDocument")
       categorie: req.body.categorie,
       estActif:1
     }
-     //verifie si cette categorie à ce type document
+     
      typeDocument.typeDocumentSelectByInModel(objTDocument)
           .then(typeDocuments=> {
                 if(typeDocuments.length == 0){

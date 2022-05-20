@@ -10,37 +10,43 @@ const initPrioriteClass= require("../classes/priorite")
 
 function addPriorite(req, res,next){
     const prioriteObj={
-        id: null,
 		libelle: req.body.libelle,
-		code: null,
-		estActif: 1,
-		creationDate: null,
-		creationUserId: null,
-		modifDate: null,
-		modifUserId: null,
-        debut: null,
-        fin: null
-}
+		estActif: 1
+    }
     
        
      //verifie si l'utilisateur existe en base
      Priorite.checkIfPrioriteExists(prioriteObj)
           .then(priorite=> {
                 if(priorite.length==0){
-                    initPrioriteClass.libelle= req.body.libelle
-                    initPrioriteClass.code= req.body.code                   
-                    initPrioriteClass.creationUserId= req.body.creationUserId
-
-                      Priorite.addPrioriteInModel(initPrioriteClass)
-                          .then(()=> res.status(201).json({succes: "la création a reussi"}))
-                          .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
+                    const prioriteObj={
+                        code: req.body.code,
+                        estActif: 1 
                 }
-                else
-                   {
-                     res.status(500).json({error: "cet priorite existe déjà"})
-                   }
+                    Priorite.checkIfPrioriteExists(prioriteObj)
+                        .then(priorite=>{
+                            if(priorite.length==0){
+                                initPrioriteClass.libelle= req.body.libelle
+                                initPrioriteClass.code= req.body.code                   
+                                initPrioriteClass.creationUserId= req.body.creationUserId
+            
+                                  Priorite.addPrioriteInModel(initPrioriteClass)
+                                      .then(()=> res.status(201).json({succes: "la création a reussi"}))
+                                      .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
+                            
+                            }
+                            else{
+                                return res.status(400).json({error: "duplicata du code de la priorité"})
+                            }
+                        }) 
+                        .catch()
+             }
+            else
+            {
+                res.status(500).json({error: "Dupplicata du libellé de la priorité"})
+            }
           })
-          .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
+          .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
 }
 
 
@@ -60,43 +66,50 @@ function disablePriorite(req, res, next){
 
     Priorite.disablePrioriteInModel(initPrioriteClass)
     .then(()=> res.status(201).json({succes: "la suppression a reussi"}))
-    .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
+    .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
 }
  
 function updatePriorite(req,res, next){
         
     const prioriteObj={
-        id: null,
 		libelle: req.body.libelle,
-		code: null,
-		estActif: 1,
-		creationDate: null,
-		creationUserId: null,
-		modifDate: null,
-		modifUserId: null,
-        debut: null,
-        fin: null
-}
+		estActif: 1,	
+    }
 
     Priorite.checkIfPrioriteExists(prioriteObj)
          .then(priorite=> {
                if((priorite.length==0) || (priorite[0].id== req.body.id) ){
-                initPrioriteClass.id= req.body.id
-                initPrioriteClass.libelle= req.body.libelle
-                initPrioriteClass.code= req.body.code                   
-                initPrioriteClass.modifDate= req.body.modifDate
-                initPrioriteClass.modifUserId= req.body.modifUserId
+                const prioriteObj={
+                    code: req.body.code,
+                    estActif: 1,	
+                }
+                    Priorite.checkIfPrioriteExists(prioriteObj)
+                    .then(priorite=>{
+                        if((priorite.length==0) || (priorite[0].id== req.body.id) ){
+                            initPrioriteClass.id= req.body.id
+                            initPrioriteClass.libelle= req.body.libelle
+                            initPrioriteClass.code= req.body.code                   
+                            initPrioriteClass.modifDate= req.body.modifDate
+                            initPrioriteClass.modifUserId= req.body.modifUserId
           
-                   Priorite.updatePrioriteInModel(initPrioriteClass)
-                         .then(()=> res.status(200).json({succes: "la modification a reussi"}))
-                         .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
-               }
+                            Priorite.updatePrioriteInModel(initPrioriteClass)
+                            .then(()=> res.status(200).json({succes: "la modification a reussi"}))
+                            .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
+                
+                        }
+                        else
+                        {
+                            res.status(500).json({error: "Dupplicata du code saisi"})
+                        }
+                    })
+                    
+                }
                else
                   {
-                    res.status(500).json({error: "cet priorite existe déjà"})
+                    res.status(500).json({error: "Cette priorité existe déjà"})
                   }
          })
-         .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
+         .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
 
    
                    
