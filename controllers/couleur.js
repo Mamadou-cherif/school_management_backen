@@ -21,60 +21,91 @@ function getCouleurById(req, res, next) {
 
 
 function addCouleur(req, res, next) {
-  const objCouleur = {
-    libelle: req.body.libelle,
-    estActif: 1
-  }
 
-  //verifie si l'utilisateur existe en base
+    const objCouleur = {
+      libelle: req.body.libelle,
+      estActif: 1
+    }
+
   Couleur.couleurSelectByInModel(objCouleur)
     .then(couleur => {
-      if (couleur.length == 0) {
 
-        initCouleurClass.libelle = req.body.libelle
-        initCouleurClass.code = req.body.code
-        initCouleurClass.creationUserId = req.body.creationUserId
-
-
-        Couleur.addCouleurInModel(initCouleurClass)
-          .then(() => res.status(201).json({ succes: "Ajout effectué avec succès" }))
-          .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée couleurs_insert" }));
-      }
+      if(couleur.length == 0){
+          const objCouleur = {
+            code: req.body.code,
+            estActif: 1
+          }
+        Couleur.couleurSelectByInModel(objCouleur)
+          .then(codes => {
+            if (codes.length == 0) {
+              initCouleurClass.libelle = req.body.libelle
+              initCouleurClass.code = req.body.code
+              initCouleurClass.creationUserId = req.body.creationUserId
+              Couleur.addCouleurInModel(initCouleurClass)
+                .then(() => res.status(201).json({ succes: "Ajout effectué avec succès" }))
+                .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée couleurs_insert" }));
+             }
+            else {
+              res.status(500).json({ error: "Ce code de cette rubrique existe déjà" })
+            }
+          })
+          .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée couleurs_insert" }))
+      
+      
+        }
       else {
         res.status(500).json({ error: "Ce rubrique existe déjà" })
       }
     })
     .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée couleurs_insert" }))
-}
+
+  }
 
 
-function updateCouleur(req, res, next) {
+function updateCouleur(req, res, next){
+
   const objCouleur = {
     libelle: req.body.libelle,
     estActif: 1
   }
   //verifie si la rubrique existe en base
-  console.log("init", objCouleur);
-  Couleur.couleurSelectByInModel(objCouleur)
+    Couleur.couleurSelectByInModel(objCouleur)
     .then(couleur => {
-      console.log("cou", couleur);
       if ((couleur.length == 0) || (couleur[0].id == req.body.id)) {
-        initCouleurClass.id = req.body.id
-        initCouleurClass.libelle = req.body.libelle
-        initCouleurClass.code = req.body.code
-        initCouleurClass.modifUserId = req.body.modifUserId
-        initCouleurClass.modifDate = req.body.modifDate
+        const objCouleur = {
 
-        Couleur.updateCouleurInModel(initCouleurClass)
-          .then(() => res.status(200).json({ succes: "Modification effectuée avec succès" }))
-          .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée couleurs_update" }));
-      }
+          code: req.body.code,
+          estActif: 1
+        }
+        //verifie si la rubrique existe en base
+          Couleur.couleurSelectByInModel(objCouleur)
+          .then(codes => {
+            if ((codes.length == 0) || (codes[0].id == req.body.id)) {
+              initCouleurClass.id = req.body.id
+              initCouleurClass.libelle = req.body.libelle
+              initCouleurClass.code = req.body.code
+              initCouleurClass.modifUserId = req.body.modifUserId
+              initCouleurClass.modifDate = req.body.modifDate
+      
+              Couleur.updateCouleurInModel(initCouleurClass)
+                .then(() => res.status(200).json({ succes: "Modification effectuée avec succès" }))
+                .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée couleurs_update" }));
+            }
+            else {
+              res.status(500).json({ error: "Ce code de cette couleur existe déjà" })
+            }
+          })
+          .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée couleurs_selectBy" }))
+      
+      
+        }
       else {
         res.status(500).json({ error: "Cette couleur existe déjà" })
       }
     })
     .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée couleurs_selectBy" }))
-}
+
+ }
 
 
 //supression logique d'une rubrique
