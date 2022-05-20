@@ -27,15 +27,31 @@ const initTypeExpertiseClass= require("../classes/typeExpertise")
       libelle: req.body.libelle,
       estActif:1
     }
+   
      typeExpertise.typeExpertiseSelectByInModel(objExpertise)
           .then(typeExpertises=> {
                 if(typeExpertises.length==0){
-                     initTypeExpertiseClass.libelle = req.body.libelle
-                     initTypeExpertiseClass.code= req.body.code
-                    initTypeExpertiseClass.creationUserId= req.body.creationUserId
-                    typeExpertise.addTypeExpertiseInModel(initTypeExpertiseClass)
-                          .then(()=> res.status(201).json({succes: "Ajout effectué avec succès"}))
-                          .catch(()=> res.status(400).json({error: "Erreur de la procedure stockée typeexpertises_insert"}));
+                  const objUniqCode={
+                    code: req.body.code,
+                    estActif:1
+                  }
+                  typeExpertise.typeExpertiseSelectByInModel(objUniqCode)
+                  .then(uniqueCode=> {
+                        if(uniqueCode.length==0){
+                             initTypeExpertiseClass.libelle = req.body.libelle
+                             initTypeExpertiseClass.code= req.body.code
+                            initTypeExpertiseClass.creationUserId= req.body.creationUserId
+                            typeExpertise.addTypeExpertiseInModel(initTypeExpertiseClass)
+                                  .then(()=> res.status(201).json({succes: "Ajout effectué avec succès"}))
+                                  .catch(()=> res.status(400).json({error: "Erreur de la procedure stockée typeexpertises_insert"}));
+                        }
+                        else
+                        {
+                             res.status(500).json({error: "Ce code de ce type expertise existe déjà"})
+                        }
+                  })
+                  .catch(()=> res.status(400).json({error: "Erreur de la procedure stockée typeexpertises_selectBy"}))
+        
                 }
                 else
                 {
@@ -43,7 +59,8 @@ const initTypeExpertiseClass= require("../classes/typeExpertise")
                 }
           })
           .catch(()=> res.status(400).json({error: "Erreur de la procedure stockée typeexpertises_selectBy"}))
-}
+
+        }
 
 
 function updateTypeExpertise(req, res,next){
@@ -51,19 +68,33 @@ function updateTypeExpertise(req, res,next){
   const objExpertise={
     libelle: req.body.libelle,
     estActif:1
-  }
-       
+  } 
      typeExpertise.typeExpertiseSelectByInModel(objExpertise)
           .then(typeExpertises=> {
               if((typeExpertises.length==0) || (typeExpertises[0].id== req.body.id)){
-                  initTypeExpertiseClass.id= req.body.id
-                   initTypeExpertiseClass.libelle = req.body.libelle
-                  initTypeExpertiseClass.code= req.body.code
-                  initTypeExpertiseClass.modifUserId= req.body.modifUserId
-                  initTypeExpertiseClass.modifDate= req.body.modifDate
-                  typeExpertise.updateTypeExpertiseInModel(initTypeExpertiseClass)
-                        .then(()=> res.status(201).json({succes: "Modification effectuée avec succès"}))
-                        .catch(()=> res.status(400).json({error: "Erreur de la procedure stockée typeexpertises_update"}));
+                const objCode={
+                  code: req.body.code,
+                  estActif:1
+                } 
+                   typeExpertise.typeExpertiseSelectByInModel(objCode)
+                        .then(codes=> {
+                            if((codes.length==0) || (codes[0].id== req.body.id)){
+                                initTypeExpertiseClass.id= req.body.id
+                                 initTypeExpertiseClass.libelle = req.body.libelle
+                                initTypeExpertiseClass.code= req.body.code
+                                initTypeExpertiseClass.modifUserId= req.body.modifUserId
+                                initTypeExpertiseClass.modifDate= req.body.modifDate
+                                typeExpertise.updateTypeExpertiseInModel(initTypeExpertiseClass)
+                                      .then(()=> res.status(201).json({succes: "Modification effectuée avec succès"}))
+                                      .catch(()=> res.status(400).json({error: "Erreur de la procedure stockée typeexpertises_update"}));
+                            }
+                            else
+                            {
+                                 res.status(500).json({error: "Ce code de ce type expertise existe déjà"})
+                            }
+                      })
+                      .catch(()=> res.status(400).json({error: "Erreur de la procedure stockée typeexpertises_selectBy"}))
+              
               }
               else
               {
@@ -71,6 +102,7 @@ function updateTypeExpertise(req, res,next){
               }
         })
         .catch(()=> res.status(400).json({error: "Erreur de la procedure stockée typeexpertises_selectBy"}))
+
 }
 
 

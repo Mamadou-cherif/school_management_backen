@@ -30,12 +30,29 @@ const initRubriqueEvaluationClass= require("../classes/rubriqueEvaluation")
      rubriqueEvaluation.rubriqueEvaluationSelectByInModel(objRubEvaluation)
           .then(rubEvaluations=> {
                 if(rubEvaluations.length == 0){
-                   initRubriqueEvaluationClass.libelle = req.body.libelle
-                     initRubriqueEvaluationClass.code= req.body.code
-                    initRubriqueEvaluationClass.creationUserId= req.body.creationUserId
-                    rubriqueEvaluation.addRubriqueEvaluationInModel(initRubriqueEvaluationClass)
-                          .then(()=> res.status(201).json({succes: "Ajout effectué avec succès"}))
-                          .catch(()=> res.status(400).json({error: "Erreur de la procedure stockée rubriqueevaluations_insert"}));
+
+                  const objRubEvaluation={
+                      code: req.body.code,
+                      estActif:1
+                   }
+                  
+             rubriqueEvaluation.rubriqueEvaluationSelectByInModel(objRubEvaluation)
+                  .then(code=> {
+                        if(code.length == 0){
+                           initRubriqueEvaluationClass.libelle = req.body.libelle
+                             initRubriqueEvaluationClass.code= req.body.code
+                            initRubriqueEvaluationClass.creationUserId= req.body.creationUserId
+                            rubriqueEvaluation.addRubriqueEvaluationInModel(initRubriqueEvaluationClass)
+                                  .then(()=> res.status(201).json({succes: "Ajout effectué avec succès"}))
+                                  .catch(()=> res.status(400).json({error: "Erreur de la procedure stockée rubriqueevaluations_insert"}));
+                        }
+                        else
+                        {
+                             res.status(500).json({error: "Ce code de cette rubrique existe déjà"})
+                        }
+                  })
+                  .catch(()=> res.status(400).json({error: "Erreur de la procedure stockée rubriqueevaluations_selectBy"}))
+        
                 }
                 else
                 {
@@ -43,7 +60,8 @@ const initRubriqueEvaluationClass= require("../classes/rubriqueEvaluation")
                 }
           })
           .catch(()=> res.status(400).json({error: "Erreur de la procedure stockée rubriqueevaluations_selectBy"}))
-}
+
+     }
 
 
 function updateRubriqueEvaluation(req, res,next){
@@ -54,16 +72,30 @@ function updateRubriqueEvaluation(req, res,next){
   }
      rubriqueEvaluation.rubriqueEvaluationSelectByInModel(objRubEvaluation)
           .then(rubEvaluations=> {
-            console.log("retourselectBy",rubEvaluations)
               if((rubEvaluations.length == 0) || (rubEvaluations[0].id == req.body.id)){
-                 initRubriqueEvaluationClass.libelle = req.body.libelle
-                  initRubriqueEvaluationClass.id= req.body.id
-                  initRubriqueEvaluationClass.code= req.body.code
-                  initRubriqueEvaluationClass.modifUserId= req.body.modifUserId
-                  initRubriqueEvaluationClass.modifDate= req.body.modifDate
-                  rubriqueEvaluation.updateRubriqueEvaluationInModel(initRubriqueEvaluationClass)
-                        .then(()=> res.status(201).json({succes: "Modification effectuée avec succès"}))
-                        .catch(()=> res.status(400).json({error: "Erreur de la procedure stockée rubriqueevaluations_update"}));
+                const objRubEvaluation={
+                  code: req.body.code,
+                  estActif:1
+                }
+                   rubriqueEvaluation.rubriqueEvaluationSelectByInModel(objRubEvaluation)
+                        .then(codes=> {
+                            if((codes.length == 0) || (codes[0].id == req.body.id)){
+                               initRubriqueEvaluationClass.libelle = req.body.libelle
+                                initRubriqueEvaluationClass.id= req.body.id
+                                initRubriqueEvaluationClass.code= req.body.code
+                                initRubriqueEvaluationClass.modifUserId= req.body.modifUserId
+                                initRubriqueEvaluationClass.modifDate= req.body.modifDate
+                                rubriqueEvaluation.updateRubriqueEvaluationInModel(initRubriqueEvaluationClass)
+                                      .then(()=> res.status(201).json({succes: "Modification effectuée avec succès"}))
+                                      .catch(()=> res.status(400).json({error: "Erreur de la procedure stockée rubriqueevaluations_update"}));
+                            }
+                            else
+                            {
+                                 res.status(500).json({error: "Ce code de cette rubrique existe déjà"})
+                            }
+                      })
+                      .catch(()=> res.status(400).json({error: "Erreur de la procedure stockée rubriqueevaluations_selectBy"}))
+              
               }
               else
               {
@@ -71,7 +103,9 @@ function updateRubriqueEvaluation(req, res,next){
               }
         })
         .catch(()=> res.status(400).json({error: "Erreur de la procedure stockée rubriqueevaluations_selectBy"}))
-}
+
+
+      }
 
 
 //supression logique d'un axe
