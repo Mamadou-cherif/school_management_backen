@@ -32,7 +32,7 @@ function addProgrammeInModel(theReq){
       })
 }
 
-function checkIfProgrammeExists(theReq){
+function programmeSelectByInModel(theReq){
     return new Promise((resolve,reject)=> {
     
         connection.query("CALL programmes_selectBy(?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -62,7 +62,7 @@ function checkIfProgrammeExists(theReq){
       })
 }
 
-function getProgrammeByIdInModel(id){
+function selectByIdProgrammeInModel(id){
     return new Promise((resolve,reject)=> {
     
         connection.query("CALL programmes_selectById(?)",
@@ -129,7 +129,7 @@ function updateProgrammeInModel(theReq){
       })
 }
 
-function getAllProgrammeInModel(theReq){
+function selectAllProgrammeInModel(theReq){
     return new Promise((resolve,reject)=> {
     
         connection.query("CALL programmes_selectAll(?,?,?)",
@@ -154,7 +154,7 @@ module.exports={
     addProgrammeInModel,
     disableProgrammeInModel,
     updateProgrammeInModel,
-    getProgrammeByIdInModel,
-    getAllProgrammeInModel,
-    checkIfProgrammeExists
+    selectByIdProgrammeInModel,
+    selectAllProgrammeInModel,
+    programmeSelectByInModel
 }

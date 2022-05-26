@@ -139,16 +139,16 @@ function deleteDeviseInModel(id) {
       ((err, results, fields) => {
         if (err) {
           reject(err)
-        } 
-        else{
+        }
+        else {
           resolve(results[0]);
         }
-        
+
       })
     )
   })
 }
-function communeSelectByInModel(data) {
+function deviseSelectByInModel(data) {
   return new Promise((resolve, reject) => {
     connection.query("CALL devises_selectBy(? ,?,?,?,?,?,?,?,?,?)",
       [
@@ -179,7 +179,7 @@ function communeSelectByInModel(data) {
 
 module.exports = {
   checkIfDeviseExists,
-  communeSelectByInModel,
+  deviseSelectByInModel,
   addDeviseInModel,
   updateDeviseInModel,
   selectByIdDeviseInModel,

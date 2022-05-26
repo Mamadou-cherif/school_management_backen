@@ -57,12 +57,12 @@ function addPriorite(req, res,next){
 
 
 
- 
+
 //supression logique d'un priorite
-function disablePriorite(req, res, next){
-    initPrioriteClass.id= req.body.id
-    initPrioriteClass.modifUserId= req.body.modifUserId
-    initPrioriteClass.modifDate= req.body.modifDate
+function disablePriorite(req, res, next) {
+    initPrioriteClass.id = req.body.id
+    initPrioriteClass.modifUserId = req.body.modifUserId
+    initPrioriteClass.modifDate = req.body.modifDate
 
     Priorite.disablePrioriteInModel(initPrioriteClass)
     .then(()=> res.status(201).json({succes: "la suppression a reussi"}))
@@ -118,30 +118,30 @@ function updatePriorite(req,res, next){
 
 }
 
-function getAsinglePriorite(req, res, next){
-    const id= req.params.id
+function getAsinglePriorite(req, res, next) {
+    const id = req.params.id
     Priorite.getPrioriteByIdInModel(id)
-        .then(priorite=> res.status(200).json(priorite))
-        .catch(error=> res.status(400).json(error))
+        .then(priorite => res.status(200).json(priorite))
+        .catch(error => res.status(400).json(error))
 }
 
 
-function getAllPriorites(req,res, next){
-    initPrioriteClass.estActif= req.body.estActif
-    initPrioriteClass.debut= req.body.debut
-    initPrioriteClass.fin= req.body.fin
+function getAllPriorites(req, res, next) {
+    initPrioriteClass.estActif = req.body.estActif
+    initPrioriteClass.debut = req.body.debut
+    initPrioriteClass.fin = req.body.fin
 
-     Priorite.getAllPrioriteInModel(initPrioriteClass)
-        .then(priorites=> res.status(200).json(priorites))
-        .catch(error=> res.status(400).json(error))
+    Priorite.getAllPrioriteInModel(initPrioriteClass)
+        .then(priorites => res.status(200).json(priorites))
+        .catch(error => res.status(400).json(error))
 }
 
 
 
 
 
- 
-module.exports={
+
+module.exports = {
     disablePriorite,
     addPriorite,
     updatePriorite,

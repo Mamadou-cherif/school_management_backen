@@ -4,7 +4,7 @@ const programmeController= require("../controllers/programme")
 const ensure_auth= require("../middlewares/authenticated")
 
     router.post("/addProgramme", programmeController.addProgramme)
-    router.post("/checkIfProgrammeExists", programmeController.checkIfProgrammeExists)
+    router.post("/programmeSelectBy", programmeController.programmeSelectBy)
     router.put("/disableProgramme", programmeController.disableProgramme)
     router.put("/updateProgramme", programmeController.updateProgramme)
     router.get("/getOneProgramme/:id", programmeController.getAsingleProgramme)

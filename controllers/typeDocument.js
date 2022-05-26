@@ -84,11 +84,33 @@ function deleteTypeDocument(req, res, next){
     .catch(()=> res.status(400).json({error: "Suppression impossible car ce type de document est dans une autre table"}));
 }
  
+function typeDocumentSelectBy(req, res, next){
+
+  const objTDocument = {
+    id:req.body.id ||null,
+    libelle:req.body.libelle ||null,
+    categorie:req.body.categorie ||null,
+    estActif:1,
+    creationDate:req.body.creationDate ||null,
+    creationUserId:req.body.creationUserId ||null,
+    modifDate:req.body.modifDate ||null,
+    modifUserId:req.body.modifUserId ||null,
+    debutDonnees:req.body.debutDonnees ||null,
+    finDonnees:req.body.finDonnees ||null,
+    
+  }
+
+ typeDocument.typeDocumentSelectByInModel(objTDocument)
+     .then(typeDocument=> res.status(200).json(typeDocument))
+     .catch(error=> res.status(400).json(error))
+}
+
 
   module.exports={
     selectAllTypeDocument,
     selectByIdTypeDocument,
     addTypeDocument,
     updateTypeDocument,
-    deleteTypeDocument
+    deleteTypeDocument,
+    typeDocumentSelectBy
   }
