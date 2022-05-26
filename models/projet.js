@@ -140,7 +140,7 @@ function updateProjetInModel(theReq) {
         theReq.statutId,
         theReq.observations,
         theReq.modifDate,
-        theReq.modifUserId,
+        theReq.modifUserId
 
       ],
 
