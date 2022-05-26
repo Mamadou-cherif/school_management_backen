@@ -10,12 +10,8 @@ const initServiceClass= require("../classes/service")
 
 function addService(req, res,next){
 
-    initServiceClass.libelle= req.body.libelle
-       
-     //verifie si l'utilisateur existe en base
-     Service.checkIfServiceExists(initServiceClass)
-          .then(service=> {
-                if(service.length==0){
+
+    
                     
                     initServiceClass.structureId= req.body.structureId 
                     initServiceClass.nom= req.body.nom                   
@@ -28,14 +24,7 @@ function addService(req, res,next){
                       Service.addServiceInModel(initServiceClass)
                           .then(()=> res.status(201).json({succes: "la création a reussi"}))
                           .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
-                }
-                else
-                   {
-                     res.status(500).json({error: "cet service existe déjà"})
-                   }
-          })
-          .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
-}
+                        }
 
 
 
@@ -103,11 +92,9 @@ function getAsingleService(req, res, next){
 
 
 function getAllServices(req,res, next){
-    initServiceClass.estActif= req.body.estActif
-    initServiceClass.debut= req.body.debut
-    initServiceClass.fin= req.body.fin
+    
 
-     Service.getAllServiceInModel(initServiceClass)
+     Service.getAllServiceInModel()
         .then(services=> res.status(200).json(services))
         .catch(error=> res.status(400).json(error))
 }

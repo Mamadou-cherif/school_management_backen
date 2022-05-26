@@ -9,7 +9,7 @@ const { reject } = require("bcrypt/promises");
 
 function prestataireSelectByInModel(data){
     return new Promise((resolve,reject)=> {
-      connection.query("CALL prestataires_selectBy(?,? ,?,?,?,?,?,?,?,?,?,? ,?,?,?,?,?,?,?,?)",
+      connection.query("CALL prestataires_selectBy(?,? ,?,?,?,?,?,?,?,?,?,? ,?,?,?,?,?,?)",
             [
              data.id,
              data.type,

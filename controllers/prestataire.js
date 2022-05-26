@@ -24,8 +24,44 @@ const bcrypt= require("bcrypt")
        .catch(error=> res.status(400).json(error))
   }
 
+     
+  function addPrestataire(req, res,next){
+  }
+  
+  
+  
+  
+  
+  //supression en dur
+  function deletePrestataire(req, res, next){
+      
+  }
+  
+  //supression logique d'un utilisateur
+  function disablePrestataire(req, res, next){
+  }
+  
+  
+  
+  function updatePrestataire(req,res, next){
+      
+   
+  }
+  
+  function getAsinglePrestataire(req, res, next){
+  
+  }
+  
 
-  module.exports={
+  
+
+  module.exports={  
+    disablePrestataire,
+    deletePrestataire,
+    addPrestataire,
+    updatePrestataire,
+    getAsinglePrestataire,
     prestataireSelectBy,
     getAllPrestataire
   }
+

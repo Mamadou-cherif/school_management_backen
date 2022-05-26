@@ -1,39 +1,27 @@
 const ServiceConcerne= require("../models/serviceconcerne")
 const express= require("express") 
-const bodyParser=require("body-parser")
-const app= express()
-const jwt= require("jsonwebtoken")
-app.use(bodyParser.json()) 
-const bcrypt= require("bcrypt")
 const initServiceConcerneClass= require("../classes/serviceconcerne")
 
 
 function addServiceConcerne(req, res,next){
 
-    initServiceConcerneClass.libelle= req.body.libelle
-       
-     //verifie si l'utilisateur existe en base
-     ServiceConcerne.checkIfServiceConcerneExists(initServiceConcerneClass)
-          .then(serviceconcerne=> {
-                if(serviceconcerne.length==0){
-                    
-                    initServiceConcerneClass.projetId= req.body.projetId 
-                    initServiceConcerneClass.serviceId= req.body.serviceId                   
-                    initServiceConcerneClass.observations= req.body.observations                   
-                    initServiceConcerneClass.creationUserId= req.body.creationUserId
-
-                      ServiceConcerne.addServiceConcerneInModel(initServiceConcerneClass)
-                          .then(()=> res.status(201).json({succes: "la création a reussi"}))
-                          .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
-                }
-                else
-                   {
-                     res.status(500).json({error: "cet serviceconcerne existe déjà"})
-                   }
-          })
-          .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
+    const serviceConcerneObj={
+        id: req.body.id || null,
+		projetId: req.body.projetId || null,
+		serviceId: req.body.serviceId || null,
+		observations: req.body.observations || null,
+		estActif: 1,
+		creationDate: req.body.creationDate || null,
+		creationUserId: req.body.creationUserId || null,
+		modifDate: req.body.modifDate || null,
+		modifUserId: req.body.modifUserId || null,
+        debut: req.body.debut || null,
+        fin: req.body.fin || null
 }
-
+    ServiceConcerne.addServiceConcerneInModel(serviceConcerneObj)
+        .then(()=> res.status(201).json({succes: "la création a reussi"}))
+        .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
+}
 
 
 
@@ -45,46 +33,68 @@ function addServiceConcerne(req, res,next){
 
 //supression logique d'un serviceconcerne
 function disableServiceConcerne(req, res, next){
-    initServiceConcerneClass.id= req.body.id
-    initServiceConcerneClass.modifUserId= req.body.modifUserId
-    initServiceConcerneClass.modifDate= req.body.modifDate
+    const serviceConcerneObj={
+        id: req.body.id || null,
+		projetId: req.body.projetId || null,
+		serviceId: req.body.serviceId || null,
+		observations: req.body.observations || null,
+		estActif: 1,
+		creationDate: req.body.creationDate || null,
+		creationUserId: req.body.creationUserId || null,
+		modifDate: req.body.modifDate || null,
+		modifUserId: req.body.modifUserId || null,
+        debut: req.body.debut || null,
+        fin: req.body.fin || null
+}
 
-    ServiceConcerne.disableServiceConcerneInModel(initServiceConcerneClass)
-    .then(()=> res.status(201).json({succes: "la suppression a reussi"}))
+    ServiceConcerne.disableServiceConcerneInModel(serviceConcerneObj)
+    .then(()=> res.status(200).json({succes: "la suppression a reussi"}))
     .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
 }
  
 function updateServiceConcerne(req,res, next){
-        
-       
-    initServiceConcerneClass.libelle= req.body.libelle
-       
-    //verifie si l'utilisateur existe en base
-    ServiceConcerne.checkIfServiceConcerneExists(initServiceConcerneClass)
-         .then(serviceconcerne=> {
-               if(serviceconcerne.length==0){
-                initServiceConcerneClass.projetId= req.body.projetId 
-                initServiceConcerneClass.serviceId= req.body.serviceId                   
-                initServiceConcerneClass.observations= req.body.observations                
-                initServiceConcerneClass.modifDate= req.body.modifDate
-                initServiceConcerneClass.modifUserId= req.body.modifUserId
+    const serviceConcerneObj={
+        id: req.body.id || null,
+		projetId: req.body.projetId || null,
+		serviceId: req.body.serviceId || null,
+		observations: req.body.observations || null,
+		estActif: 1,
+		creationDate: req.body.creationDate || null,
+		creationUserId: req.body.creationUserId || null,
+		modifDate: req.body.modifDate || null,
+		modifUserId: req.body.modifUserId || null,
+        debut: req.body.debut || null,
+        fin: req.body.fin || null
+}
           
-                   ServiceConcerne.updateServiceConcerneInModel(initServiceConcerneClass)
+                   ServiceConcerne.updateServiceConcerneInModel(serviceConcerneObj)
                          .then(()=> res.status(200).json({succes: "la modification a reussi"}))
                          .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
-               }
-               else
-                  {
-                    res.status(500).json({error: "cet serviceconcerne existe déjà"})
-                  }
-         })
-         .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
+           
 
    
                    
                      
          
 
+}
+function serviceConcerneSelectBy(req, res,next){
+    const serviceConcerne={
+        id: req.body.id || null,
+		projetId: req.body.projetId || null,
+		serviceId: req.body.serviceId || null,
+		observations: req.body.observations || null,
+		estActif: 1,
+		creationDate: req.body.creationDate || null,
+		creationUserId: req.body.creationUserId || null,
+		modifDate: req.body.modifDate || null,
+		modifUserId: req.body.modifUserId || null,
+        debut: req.body.debut || null,
+        fin: req.body.fin || null
+}
+    ServiceConcerne.serviceConcerneSelectByInModel(serviceConcerne)
+    .then(serviceconcerne=> res.status(200).json(serviceconcerne))
+    .catch(error=> res.status(400).json(error))
 }
 
 function getAsingleServiceConcerne(req, res, next){
@@ -96,13 +106,7 @@ function getAsingleServiceConcerne(req, res, next){
 
 
 function getAllServiceConcernes(req,res, next){
-    initServiceConcerneClass.estActif= req.body.estActif
-    initServiceConcerneClass.debut= req.body.debut
-    initServiceConcerneClass.fin= req.body.fin
-
-     ServiceConcerne.getAllServiceConcerneInModel(initServiceConcerneClass)
-        .then(serviceconcernes=> res.status(200).json(serviceconcernes))
-        .catch(error=> res.status(400).json(error))
+    res.status(200).json({succes: "cette function ne marche pas"})
 }
 
 
@@ -116,4 +120,5 @@ module.exports={
     updateServiceConcerne,
     getAsingleServiceConcerne,
     getAllServiceConcernes,
+    serviceConcerneSelectBy
 }

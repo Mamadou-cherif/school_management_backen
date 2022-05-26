@@ -8,5 +8,6 @@ const ensure_auth= require("../middlewares/authenticated")
     router.put("/updateFinancement", financementController.updateFinancement)
     router.get("/getOneFinancement/:id", financementController.getAsingleFinancement)
     router.post("/getAllFinancement", financementController.getAllFinancements)
+    router.post("/financementSelectBy", financementController.financementSelectBy)
 
 module.exports= router

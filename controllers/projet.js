@@ -67,6 +67,7 @@ function updateProjet(req,res, next){
     initProjetClass.observations= req.body.observations
     initProjetClass.modifDate= req.body.modifDate
     initProjetClass.modifUserId= req.body.modifUserId
+    console.log(initProjetClass)
         Projet.updateProjetInModel(initProjetClass)
                 .then(()=> res.status(200).json({succes: "la modification a reussi"}))
                 .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));

@@ -7,21 +7,24 @@ const bcrypt= require("bcrypt");
 const res = require("express/lib/response");
 const { reject } = require("bcrypt/promises");
 
-function prestataireSelectByInModel(data){
+function structureSelectByInModel(data){
     return new Promise((resolve,reject)=> {
-      connection.query("CALL prestataires_selectBy(?,? ,?,?,?,?,?,?,?,?,?,? ,?,?,?,?,?,?,?,?)",
+      connection.query("CALL structures_selectBy(?,? ,?,?,?,?,?,?,?,?,?,? ,?,?,?,?,?,?,?,?,?)",
             [
              data.id,
-             data.type,
+             data.categorieId,
              data.categorie,
-             data.localisation,
              data.nom,
              data.sigle,
-             data.telephone,
+             data.logo,
+             data.website,
+             data.telephone1,
+             data.telephone2,
              data.email,
              data.adresse,
              data.localiteId,
-             data.partenaireLocalId,
+             data.header,
+             data.footer,
              data.observations,
              data.estActif,
              data.creationDate,
@@ -62,6 +65,6 @@ function prestataireSelectByInModel(data){
     })
   }
   module.exports={
-    prestataireSelectByInModel,
+    structureSelectByInModel,
     getAllStructureInModel
   }

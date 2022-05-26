@@ -7,6 +7,6 @@ const ensure_auth= require("../middlewares/authenticated")
     router.put("/disableService", serviceController.disableService)
     router.put("/updateService", serviceController.updateService)
     router.get("/getOneService/:id", serviceController.getAsingleService)
-    router.post("/getAllService", serviceController.getAllServices)
+    router.get("/getAllService", serviceController.getAllServices)
 
 module.exports= router

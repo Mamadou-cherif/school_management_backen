@@ -8,5 +8,6 @@ const ensure_auth= require("../middlewares/authenticated")
     router.put("/updateAction", actionController.updateAction)
     router.get("/getOneAction/:id", actionController.getAsingleAction)
     router.post("/getAllAction", actionController.getAllActions)
+    router.post("/actionsSelectBy", actionController.actionsSelectBy)
 
 module.exports= router

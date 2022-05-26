@@ -136,14 +136,14 @@ function updateServiceInModel(theReq){
       })
 }
 
-function getAllServiceInModel(theReq){
+function getAllServiceInModel(){
     return new Promise((resolve,reject)=> {
     
         connection.query("CALL services_selectAll(?,?,?)",
               [ 
-                theReq.estActif,
-                theReq.debut,
-                theReq.fin,
+                1,
+                null,
+                null,
                 
               ],
     

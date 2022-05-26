@@ -39,14 +39,23 @@ function addActionInModel(theReq) {
   })
 }
 
-function checkIfActionExists(theReq) {
+function actionsSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL actions_selectBy(?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL actions_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
+        theReq.projetId,
+        theReq.categorieActionId,
         theReq.libelle,
-        theReq.code,
+        theReq.typeExpertiseId,
+        theReq.charge,
+        theReq.uniteId,
+        theReq.delai,
+        theReq.unite2Id,
+        theReq.cout,
+        theReq.deviseId,
+        theReq.observations,
         theReq.estActif,
         theReq.creationDate,
         theReq.creationUserId,
@@ -168,5 +177,5 @@ module.exports = {
   updateActionInModel,
   getActionByIdInModel,
   getAllActionInModel,
-  checkIfActionExists
+  actionsSelectByInModel
 }
