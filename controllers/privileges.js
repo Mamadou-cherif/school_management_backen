@@ -9,10 +9,11 @@ const initPrivilegeClass= require("../classes/privileges")
 
 
 function addPrivilege(req, res,next){
-                      Privilege.addPrivilegeInModel(req)
-                          .then(()=> res.status(201).json({succes: "la création a reussi"}))
-                          .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));           
+    Privilege.addPrivilegeInModel(req)
+        .then(()=> res.status(201).json({succes: "la création a reussi"}))
+        .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));           
 }
+
 
 
 function getAllPrivileges(req,res, next){
@@ -21,6 +22,19 @@ function getAllPrivileges(req,res, next){
      .then(privileges=> res.status(200).json(privileges))
      .catch(error=> res.status(400).json(error))
 }
+
+function getCountPrivilegeForActionOnglet(req,res, next){
+    
+            const objPrivilege={
+                userId:req.body.userId,
+                referenceMenu:req.body.referenceMenu,
+                referenceOnglet:req.body.referenceOnglet,
+            }
+          
+    Privilege.getCountPrivilegeForActionOnglet(objPrivilege)
+       .then(privileges=> res.status(200).json(privileges))
+       .catch(error=> res.status(400).json(error))
+  }
 
 //supression logique d'un utilisateur
 function disablePrivilege(req, res, next){
@@ -60,7 +74,6 @@ module.exports={
     addPrivilege,
     getAllPrivileges,
     deletePrivilege,
-    checkIfPrivilegeExists
-    
-   
+    checkIfPrivilegeExists,
+    getCountPrivilegeForActionOnglet
 }

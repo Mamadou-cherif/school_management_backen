@@ -38,6 +38,7 @@ const applicationRoute = require("./routes/application")
 const couleurRoute = require("./routes/couleur");
 const uniteRoute= require("./routes/unite")
 const anneecibleRoute= require("./routes/anneecible")
+const document= require("./routes/document")
 
 
 app.use(bodyParser.json())
@@ -86,6 +87,7 @@ app.use("/api", typeDocumentRoute)
 app.use("/api", typeExpertiseRoute)
 app.use("/api", rubriqueEvaluationRoute)
 app.use("/api", applicationRoute)
+app.use("/api", document)
 
 
 
