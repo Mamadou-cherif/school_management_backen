@@ -30,7 +30,7 @@ function addAxeInModel(theReq){
       })
 }
 
-function checkIfAxeExists(theReq){
+function axeSelectByInModel(theReq){
     return new Promise((resolve,reject)=> {
     
         connection.query("CALL axes_selectBy(?,?,?,?,?,?,?,?,?,?,?)",
@@ -152,5 +152,5 @@ module.exports={
     updateAxeInModel,
     getAxeByIdInModel,
     getAllAxeInModel,
-    checkIfAxeExists
+    axeSelectByInModel
 }

@@ -34,7 +34,7 @@ function addFinancementInModel(theReq){
       })
 }
 
-function checkIfFinancementExists(theReq){
+function financementSelectByInModel(theReq){
     return new Promise((resolve,reject)=> {
     
         connection.query("CALL financement_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -162,5 +162,5 @@ module.exports={
     updateFinancementInModel,
     getFinancementByIdInModel,
     getAllFinancementInModel,
-    checkIfFinancementExists
+    financementSelectByInModel
 }

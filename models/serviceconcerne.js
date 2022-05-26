@@ -17,8 +17,6 @@ function addServiceConcerneInModel(theReq){
                 theReq.serviceId,              
                 theReq.observations,  
                 theReq.creationUserId
-
-                
               ],
     
           ((err,results, fields)=>{
@@ -31,10 +29,10 @@ function addServiceConcerneInModel(theReq){
       })
 }
 
-function checkIfServiceConcerneExists(theReq){
+function serviceConcerneSelectByInModel(theReq){
     return new Promise((resolve,reject)=> {
     
-        connection.query("CALL serviceconcernes_selectBy(?,?,?,?,?,?,?,?,?,?)",
+        connection.query("CALL serviceconcernes_selectBy(?,?,?,?,?,?,?,?,?,?,?)",
               [ 
                 theReq.id,              
                 theReq.projetId,              
@@ -153,5 +151,5 @@ module.exports={
     updateServiceConcerneInModel,
     getServiceConcerneByIdInModel,
     getAllServiceConcerneInModel,
-    checkIfServiceConcerneExists
+    serviceConcerneSelectByInModel
 }

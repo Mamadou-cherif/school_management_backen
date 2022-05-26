@@ -27,130 +27,80 @@ function getAllChaineInModel(theReq) {
   })
 }
 
+function chainederesultatSelectByInModel(theReq){
+  return new Promise((resolve, reject) => {
 
+    connection.query("CALL chaineresultats_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      [
+        theReq.id,
+        theReq.projetId,
+        theReq.rubriqueId,
+        theReq.libelle,
+        theReq.sourceMoyenVerif,
+        theReq.observations,
+        theReq.estActif,
+        theReq.creationDate,
+        theReq.creationUserId,
+        theReq.modifDate,
+        theReq.modifUserId,
+        theReq.debutDonnees,
+        theReq.finDonnees
 
-// function getPaysByIdInModel(id){
-//   return new Promise((resolve,reject)=> {
+      ],
 
-//     connection.query("CALL payss_selectById(?)",
-//           [ 
-//             id
-//           ],
-
-//       ((err,results, fields)=>{
-//         if(err){
-//           reject(err)
-//         }
-//         resolve(results[0])
-//       })
-//     )
-//   })
-// }
-
-
-// function addPaysInModel(data){
-
-//   return new Promise((resolve,reject)=> {
-//     connection.query("CALL payss_insert(?,?,?,?)",
-//           [
-//             data.libelle,
-//             data.indicatifTel,
-//             data.deviseId,
-//             data.creationUserId,
-//           ],
-
-//       ((err,results, fields)=>{
-//         if(err){
-
-//           reject(err)
-//           //connection.end();
-//         }
-//         else{
-//         resolve(results);
-//         }
-
-//       })
-//     )
-//   })
-// }
-
-// function updatePaysInModel(data){
-//   return new Promise((resolve,reject)=> {
-//     connection.query("CALL payss_update(?,?,?,?,?,?)",
-//           [
-//             data.id, 
-//             data.libelle,
-//             data.indicatifTel,
-//             data.deviseId,
-//             data.modifDate,
-//             data.modifUserId,
-//           ],
-
-//       ((err,results, fields)=>{
-//         if(err){
-
-//           reject(err)
-//           //connection.end();
-//         }
-//         else{
-//         resolve(results);
-//         }
-
-//       })
-//     )
-//   })
-// }
-// function paysSelectByInModel(data){
-//     return new Promise((resolve,reject)=> {
-//       connection.query("CALL payss_selectBy(?,?,?,?,?,?,?,?,?,?,?)",
-//             [
-//              data.id,
-//              data.libelle,
-//              data.indicatifTel,
-//              data.deviseId,
-//              data.estActif,
-//              data.creationDate,
-//              data.creationUserId,
-//              data.modifDate,
-//              data.modifUserId, 
-//              data.debutDonnees, 
-//              data.finDonnees,
-//             ],
-
-//         ((err,results, fields)=>{
-//           if(err){
-//             reject(err)
-//           }
-//           resolve(results[0])
-//         })
-//       )
-//     })
-// }
-
-// function deletePaysInModel(id){
-//   return new Promise((resolve,reject)=> {
-
-//     connection.query("CALL payss_delete(?)",
-//           [ 
-//             id,
-
-//           ],
-
-//       ((err,results, fields)=>{
-//         if(err){
-//           reject(err)
-//         }
-//         resolve(results[0])
-//       })
-//     )
-//   })
-//}
-
-module.exports = {
-  getAllChaineInModel,
-  // getPaysByIdInModel,
-  // addPaysInModel,
-  // updatePaysInModel,
-  // deletePaysInModel,
-  // paysSelectByInModel
+      ((err, results, fields) => {
+        if (err) {
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
 }
+
+
+
+     
+function addChaineResultatInModel(req, res,next){
+}
+
+
+
+
+
+//supression en dur
+function deleteChaineResultatInModel(theReq){
+    
+}
+
+//supression logique d'un utilisateur
+function disableChaineResultatInModel(id){
+}
+
+
+
+function updateChaineResultatInModel(req,res, next){
+    
+ 
+}
+
+function getAsingleChaineResultatInModel(theReq){
+
+}
+
+
+
+
+
+
+module.exports={  
+  disableChaineResultatInModel,
+  deleteChaineResultatInModel,
+  addChaineResultatInModel,
+  updateChaineResultatInModel,
+  getAsingleChaineResultatInModel,
+  getAllChaineInModel,
+  chainederesultatSelectByInModel,
+}
+
+

@@ -38,6 +38,13 @@ const applicationRoute = require("./routes/application")
 const couleurRoute = require("./routes/couleur");
 const uniteRoute= require("./routes/unite")
 const anneecibleRoute= require("./routes/anneecible")
+const budgetPrevisionnelRoute= require("./routes/budgetprevisionnel")
+const interventionRoute = require("./routes/intervention")
+const documentRoute = require("./routes/document")
+const executionRoute = require("./routes/execution")
+const indicateurRoutes = require("./routes/indicateur")
+const investissementRoute = require("./routes/investissement")
+const hypotheseRoute = require("./routes/hypothese")
 
 
 app.use(bodyParser.json())
@@ -57,7 +64,7 @@ app.use("/api", userRoute)
 app.use("/api", groupeRoute)
 app.use("/api", userGroupeRoute)
 app.use("/api", menuRoute),
-    app.use("/api", ongletRoute)
+app.use("/api", ongletRoute)
 app.use("/api", modeAccesRoute)
 app.use("/api", privilegeRoute)
 app.use("/api", paysRoute)
@@ -86,6 +93,15 @@ app.use("/api", typeDocumentRoute)
 app.use("/api", typeExpertiseRoute)
 app.use("/api", rubriqueEvaluationRoute)
 app.use("/api", applicationRoute)
+app.use("/api", budgetPrevisionnelRoute)
+app.use("/api", documentRoute)
+app.use("/api", interventionRoute)
+app.use("/api", executionRoute)
+app.use("/api", investissementRoute)
+app.use("/api", chaineRoutes)
+app.use("/api", indicateurRoutes)
+app.use("/api", hypotheseRoute)
+
 
 
 

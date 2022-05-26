@@ -8,5 +8,6 @@ const ensure_auth= require("../middlewares/authenticated")
     router.put("/updateServiceConcerne", serviceconcerneController.updateServiceConcerne)
     router.get("/getOneServiceConcerne/:id", serviceconcerneController.getAsingleServiceConcerne)
     router.post("/getAllServiceConcerne", serviceconcerneController.getAllServiceConcernes)
+    router.post("/serviceConcerneSelectby", serviceconcerneController.serviceConcerneSelectBy)
 
 module.exports= router

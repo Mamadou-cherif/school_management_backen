@@ -67,6 +67,7 @@ function updateProjet(req,res, next){
     initProjetClass.observations= req.body.observations
     initProjetClass.modifDate= req.body.modifDate
     initProjetClass.modifUserId= req.body.modifUserId
+    console.log(initProjetClass)
         Projet.updateProjetInModel(initProjetClass)
                 .then(()=> res.status(200).json({succes: "la modification a reussi"}))
                 .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
@@ -98,14 +99,41 @@ function getAllProjets(req,res, next){
 }
 
 
+function projetSelectBy(req, res, next){
+    const objProjet ={
+        id:req.body.id || null,
+        programmeId:req.body.programmeId || null,
+        code:req.body.code || null,
+        titre:req.body.titre || null,
+        description:req.body.description || null,
+        prioriteId:req.body.prioriteId || null,
+        nature:req.body.nature || null,
+        modalites:req.body.modalites || null,
+        duree:req.body.duree || null,
+        debut:req.body.debut || null,
+        fin:req.body.fin || null,
+        statutId:req.body.statutId || null,
+        observations:req.body.observations || null,
+        estActif:1,
+        creationDate:req.body.creationDate || null,
+        creationUserId:req.body.creationUserId || null,
+        modifDate:req.body.modifDate || null,
+        modifUserId:req.body.modifUserId || null,
+        debutDonnees:req.body.debutDonnees || null,
+        finDonnees:req.body.finDonnees || null,
+     
+    }
 
+   Projet.projetSelectByInModel(objProjet)
+       .then(projet=> res.status(200).json(projet))
+       .catch(error=> res.status(400).json(error))
+}
 
-
- 
 module.exports={
     disableProjet,
     addProjet,
     updateProjet,
     getAsingleProjet,
     getAllProjets,
+    projetSelectBy
 }

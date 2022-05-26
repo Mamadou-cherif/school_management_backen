@@ -41,7 +41,7 @@ function addProjetInModel(theReq) {
   })
 }
 
-function checkIfProjetExists(theReq) {
+function projetSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
     connection.query("CALL projets_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -79,7 +79,7 @@ function checkIfProjetExists(theReq) {
   })
 }
 
-function getProjetByIdInModel(id) {
+function selectByIdProjetInModel(id) {
   return new Promise((resolve, reject) => {
 
     connection.query("CALL projets_selectById(?)",
@@ -140,7 +140,7 @@ function updateProjetInModel(theReq) {
         theReq.statutId,
         theReq.observations,
         theReq.modifDate,
-        theReq.modifUserId,
+        theReq.modifUserId
 
       ],
 
@@ -154,7 +154,7 @@ function updateProjetInModel(theReq) {
   })
 }
 
-function getAllProjetInModel(theReq) {
+function selectAllProjetInModel(theReq) {
   return new Promise((resolve, reject) => {
 
     connection.query("CALL projets_selectAll(?,?,?)",
@@ -179,7 +179,7 @@ module.exports = {
   addProjetInModel,
   disableProjetInModel,
   updateProjetInModel,
-  getProjetByIdInModel,
-  getAllProjetInModel,
-  checkIfProjetExists
+  selectByIdProjetInModel,
+  selectAllProjetInModel,
+  projetSelectByInModel
 }

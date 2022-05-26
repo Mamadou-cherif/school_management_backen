@@ -12,8 +12,7 @@ function addAction(req, res,next){
         libelle: req.body.libelle,
         estActif:1
     }
-     //verifie si l'utilisateur existe en base
-     Action.checkIfActionExists(objAction)
+     Action.actionsSelectByInModel(objAction)
           .then(action=> {
                 if(action.length==0){
                     
@@ -44,7 +43,13 @@ function addAction(req, res,next){
 
 
 
+function actionsSelectBy(req, res, next){
+    initActionClass.projetId= req.body.projetId;
+    Action.actionsSelectByInModel(initActionClass)
+        .then(action=> res.status(200).json(action))
+        .catch(error=> res.status(400).json(error))
 
+}
 
 
 
@@ -70,7 +75,7 @@ function updateAction(req,res, next){
         estActif:1
     }
     //verifie si l'utilisateur existe en base
-    Action.checkIfActionExists(objAction)
+    Action.actionsSelectByInModel(objAction)
          .then(action=> {
                if(action.length==0){
                     initActionClass.id= req.body.id
@@ -119,7 +124,7 @@ function updateAction(req, res, next) {
     initActionClass.libelle = req.body.libelle
 
     //verifie si l'utilisateur existe en base
-    Action.checkIfActionExists(initActionClass)
+    Action.actionsSelectByInModel(initActionClass)
         .then(action => {
             if (action.length == 0) {
                 initActionClass.id = req.body.id
@@ -173,4 +178,5 @@ module.exports = {
     updateAction,
     getAsingleAction,
     getAllActions,
+    actionsSelectBy
 }
