@@ -149,12 +149,12 @@ function addUserInModel(theObject) {
       ,
       (err, results, fields) => {
         if (err) {
-          console.log('if bon')
+
           reject(err)
           //connection.end();
         }
         else {
-          console.log('else bon')
+
 
           resolve(results[0]);
           // connection.end()
@@ -232,7 +232,7 @@ function updateUserInModel(theReq) {
         if (err) {
           reject(err)
         }
-        // console.log(results[0])
+        // (results[0])
         resolve(results[0])
       })
     )

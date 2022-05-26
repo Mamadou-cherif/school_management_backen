@@ -91,7 +91,7 @@ function updatePriorite(req,res, next){
                             initPrioriteClass.code= req.body.code                   
                             initPrioriteClass.modifDate= req.body.modifDate
                             initPrioriteClass.modifUserId= req.body.modifUserId
-          
+    
                             Priorite.updatePrioriteInModel(initPrioriteClass)
                             .then(()=> res.status(200).json({succes: "la modification a reussi"}))
                             .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));

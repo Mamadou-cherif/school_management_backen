@@ -45,7 +45,7 @@ function addUnite(req, res, next) {
         }
         Unite.checkIfUniteExists(uniteObj)
           .then(unites => {
-            console.log(unites)
+            (unites)
             if (unites.length == 0) {
               initUniteClass.libelle = req.body.libelle
               initUniteClass.symbole = req.body.symbole
