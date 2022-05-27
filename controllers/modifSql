@@ -3,11 +3,11 @@ DROP procedure IF EXISTS `programmes_selectBy`;
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `programmes_selectBy`;
-;
+
 
 DELIMITER $$
 USE `suiviprojetpublic`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `programmes_selectBy`(`id` INT, `axeId` INT, `code` VARCHAR(10), `libelle` VARCHAR(255), `description` TEXT, `estActif` TINYINT, `creationDate` DATETIME, `creationUserId` INT, `modifDate` DATETIME, `modifUserId` INT, `debutDonnees` INT, `finDonnees` INT)
+CREATE  PROCEDURE `programmes_selectBy`(`id` INT, `axeId` INT, `code` VARCHAR(10), `libelle` VARCHAR(255), `description` TEXT, `estActif` TINYINT, `creationDate` DATETIME, `creationUserId` INT, `modifDate` DATETIME, `modifUserId` INT, `debutDonnees` INT, `finDonnees` INT)
 BEGIN
 	DECLARE requeteSql varchar(500);
 	SET @requeteSql := 'SELECT
@@ -72,11 +72,11 @@ DROP procedure IF EXISTS `documents_selectBy`;
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `documents_selectBy`;
-;
+
 
 DELIMITER $$
 USE `suiviprojetpublic`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `documents_selectBy`(`id` INT, `axeId` INT, `programmeId` INT, `projetId` INT, `prestataireId` INT, `structureId` INT, `evaluationId` INT, `typeDocumentId` INT, `reference` VARCHAR(20), `debut` DATE, `fin` DATE, `copie` VARCHAR(45), `renouvelerId` INT, `observations` TEXT, `estActif` TINYINT, `creationDate` DATETIME, `creationUserId` INT, `modifDate` DATETIME, `modifUserId` INT, `debutDonnees` INT, `finDonnees` INT)
+CREATE  PROCEDURE `documents_selectBy`(`id` INT, `axeId` INT, `programmeId` INT, `projetId` INT, `prestataireId` INT, `structureId` INT, `evaluationId` INT, `typeDocumentId` INT, `reference` VARCHAR(20), `debut` DATE, `fin` DATE, `copie` VARCHAR(45), `renouvelerId` INT, `observations` TEXT, `estActif` TINYINT, `creationDate` DATETIME, `creationUserId` INT, `modifDate` DATETIME, `modifUserId` INT, `debutDonnees` INT, `finDonnees` INT)
 BEGIN
 	DECLARE requeteSql varchar(500);
 	SET @requeteSql := 'SELECT
@@ -171,7 +171,7 @@ BEGIN
 END$$
 
 DELIMITER ;
-;
+
 
 ALTER TABLE `prestataires` 
 CHANGE COLUMN `telephone` `telephone` VARCHAR(16) NOT NULL ;
@@ -191,9 +191,9 @@ DROP procedure IF EXISTS `privileges_getCountPrivilegeForActionOnglet`;
 
 DELIMITER $$
 USE `suiviprojetpublic`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `privileges_getCountPrivilegeForActionOnglet`(`userId` INT, `referenceMenu` VARCHAR(50),`referenceOnglet` VARCHAR(50), `modeAccesId` INT)
+CREATE  PROCEDURE `privileges_getCountPrivilegeForActionOnglet`(`userId` INT, `referenceMenu` VARCHAR(50),`referenceOnglet` VARCHAR(50), `modeAccesId` INT)
 BEGIN
-	SELECT count(*) as `nombre`
+	SELECT `privileges`.`modeAccesId`
     FROM `privileges` 
     INNER JOIN `groupes`  ON `privileges`.`groupeId` = `groupes`.`id`
     INNER JOIN `usergroupes`  ON `groupes`.`id` = `usergroupes`.`groupeId`
@@ -201,7 +201,6 @@ BEGIN
     INNER JOIN `menus` ON `onglets`.`menuId` = `menus`.`id`
     WHERE `privileges`.`estActif` = 1 AND `groupes`.`estActif` = 1
     AND `menus`.`estActif` = 1 AND `onglets`.`estActif` = 1
-    AND ( `privileges`.`modeAccesId` = modeAccesId OR `privileges`.`modeAccesId` = 5)
 	AND `menus`.`reference` =referenceMenu
 	AND `onglets`.`reference` =referenceOnglet
 	AND `usergroupes`.`userId`=userId;

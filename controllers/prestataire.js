@@ -194,39 +194,24 @@ function getAllPrestataire(req, res, next) {
 
 
 
-function addPrestataire(req, res, next) {
-}
 
 
 
 
 
-//supression en dur
-function deletePrestataire(req, res, next) {
 
-}
-
-//supression logique d'un utilisateur
-function disablePrestataire(req, res, next) {
-}
-
-
-
-function updatePrestataire(req, res, next) {
-
-
-}
 
 function getAsinglePrestataire(req, res, next) {
-
+  const id = req.params.id
+  Prestataire.getPrestataireByIdInModel(id)
+    .then(presta => res.status(200).json(presta))
+    .catch(error => res.status(400).json(error))
 }
-
 
 
 
 module.exports = {
   disablePrestataire,
-  deletePrestataire,
   addPrestataire,
   updatePrestataire,
   getAsinglePrestataire,

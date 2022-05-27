@@ -8,25 +8,25 @@ const res = require("express/lib/response");
 const { reject } = require("bcrypt/promises");
 
 
-function getCountPrivilegeForActionOnglet(theReq){
-  return new Promise((resolve,reject)=> {
+function getCountPrivilegeForActionOnglet(theReq) {
+  return new Promise((resolve, reject) => {
 
-  
-      connection.query("CALL privileges_getCountPrivilegeForActionOnglet(?,?,?)",
-            [ 
-              theReq.userId,
-              theReq.referenceMenu,
-              theReq.referenceOnglet,
-            ],
-  
-        ((err,results, fields)=>{
-          if(err){
-            reject(err)
-          }
-          resolve(results[0])
-        })
-      )
-    })
+
+    connection.query("CALL privileges_getCountPrivilegeForActionOnglet(?,?,?)",
+      [
+        theReq.userId,
+        theReq.referenceMenu,
+        theReq.referenceOnglet,
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
 }
 
 function checkIfPrivilegeExists(theReq) {
