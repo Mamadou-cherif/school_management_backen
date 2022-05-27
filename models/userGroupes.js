@@ -78,7 +78,7 @@ function deleteUserGroupeInModel(id) {
         if (err) {
           reject(err)
         }
-        // console.log(results[0])
+        // (results[0])
         resolve(results[0])
       })
     )
@@ -106,7 +106,7 @@ function disableUserGroupeInModel(theReq, theResponse) {
 }
 
 function updateUserGroupeInModel(theReq, theResponse) {
-  console.log(theReq.body)
+
   return new Promise((resolve, reject) => {
 
 

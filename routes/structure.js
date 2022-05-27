@@ -1,7 +1,13 @@
-const express=require("express")
-const router= express.Router()
-const structureController= require("../controllers/structure")
+const express = require("express")
+const router = express.Router()
+const structureController = require("../controllers/structure")
 
-// router.get("/prestataireSelectBy", prestataireController.prestataireSelectBy)
+// router.get("/prestataireSelectBy", structureController.prestataireSelectBy)
 router.get("/getAllStructure", structureController.getAllStructure)
-module.exports= router
+router.get("/getAllCategorieStructure", structureController.getAllCategorieStructure)
+router.post("/addStructure", structureController.addStructure)
+router.put("/updateStructure", structureController.updateStructure)
+router.put("/disableStructure", structureController.disableStructure)
+router.get("/getOneStructure/:id", structureController.getAsingleStructure)
+
+module.exports = router

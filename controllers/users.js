@@ -13,43 +13,43 @@ const userPassword = require("../models/userPassword")
 const initUserPassword = require("../classes/userPassword")
 const jwt = require("../services/jwt")
 
-function addUser(req, res,next){
-    initUserClass.user.telephone1= req.body.indicatifTel.toString() + req.body.telephone1
-     const  objUser1={
-        telephone1:req.body.indicatifTel.toString() + req.body.telephone1,
-        estActif:1
+function addUser(req, res, next) {
+    initUserClass.user.telephone1 = req.body.indicatifTel.toString() + req.body.telephone1
+    const objUser1 = {
+        telephone1: req.body.indicatifTel.toString() + req.body.telephone1,
+        estActif: 1
     }
-   
 
-     //verifie si l'utilisateur existe en base
-     User.checkIfUserExists(objUser1)
-          .then(user=> {
-                if(user.length==0){ 
-                    if(req.body.telephone2){
 
-                        initUserClass.user.telephone2= req.body.indicatifTel.toString() + req.body.telephone2
-                    }else{
-                        initUserClass.user.telephone2= null
-                    }
-                    const userInsert={
-                        structureId:req.body.structureId,
-                        prestataireId: req.body.prestataireId,
-                        nom:req.body.nom,
-                        prenoms:req.body.prenoms,
-                        fonction:req.body.fonction, 
-                        telephone1: initUserClass.user.telephone1, 
-                        telephone2 :initUserClass.user.telephone2, 
-                        email:req.body.email, 
-                        photo:"",
-                        password: md5(req.body.password),
-                        quartierdistrictId: req.body.quartierdistrictId,
-                        observations:req.body.observations,
-                        estAlerte:   0, 
-                        estSuspendu : 0,
-                        creationUserId:req.body.creationUserId
-                       
-                        }
-               
+    //verifie si l'utilisateur existe en base
+    User.checkIfUserExists(objUser1)
+        .then(user => {
+            if (user.length == 0) {
+                if (req.body.telephone2) {
+
+                    initUserClass.user.telephone2 = req.body.indicatifTel.toString() + req.body.telephone2
+                } else {
+                    initUserClass.user.telephone2 = null
+                }
+                const userInsert = {
+                    structureId: req.body.structureId,
+                    prestataireId: req.body.prestataireId,
+                    nom: req.body.nom,
+                    prenoms: req.body.prenoms,
+                    fonction: req.body.fonction,
+                    telephone1: initUserClass.user.telephone1,
+                    telephone2: initUserClass.user.telephone2,
+                    email: req.body.email,
+                    photo: "",
+                    password: md5(req.body.password),
+                    quartierdistrictId: req.body.quartierdistrictId,
+                    observations: req.body.observations,
+                    estAlerte: 0,
+                    estSuspendu: 0,
+                    creationUserId: req.body.creationUserId
+
+                }
+
                 User.addUserInModel(userInsert)
                     .then(donnee => {
 
@@ -106,16 +106,16 @@ function login(req, res, next) {
                                         if (data[0].fin == null) {
 
 
-                                            //   console.log(data[0].creationDate)
+                                            //   (data[0].creationDate)
                                             //var lastConnexion=data[0].creationDate;
 
                                             //    const lastConnexion1 = new Date(lastConnexion);
-                                            //     console.log(lastConnexion1)
+                                            //     (lastConnexion1)
                                             //      var now = new Date();
                                             //      const diffInMs = Math.abs(lastConnexion - now);
                                             //      const  enMinute= diffInMs / (1000 * 60);
-                                            //      console.log(enMinute)
-                                            // console.log(now) 
+                                            //      (enMinute)
+                                            // (now) 
                                             // if(differenceTime>15){
                                             //     $bool=true;
                                             // }
@@ -140,7 +140,7 @@ function login(req, res, next) {
                                                     return res.status(200).json({ customisePassword: true })
                                                 }
                                                 else {
-                                                    console.log(user)
+                                                    (user)
                                                     const userconnect = {
                                                         userId: user[0].id,
                                                         creationUserId: user[0].creationUserId,
@@ -199,10 +199,10 @@ function disableUser(req, res, next) {
     User.disableUserInModel(req, res)
 }
 
-function updateUser(req,res, next){
-    const user={
+function updateUser(req, res, next) {
+    const user = {
         telephone1: req.body.telephone1,
-        estActif:1
+        estActif: 1
     }
     User.checkIfUserExists(user)
         .then(data => {
@@ -228,7 +228,7 @@ function updateUser(req,res, next){
                     modifUserId: req.body.modifUserId
                 }
 
-                console.log(objUser)
+
                 User.updateUserInModel(objUser)
                     .then(() => { return res.status(200).json({ succes: "La modification de l'utilisateur a réussi" }) })
                     .catch(error => res.status(400).json(error))

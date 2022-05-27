@@ -9,7 +9,7 @@ const { reject } = require("bcrypt/promises");
 
 
 function addProjetInModel(theReq) {
-  console.log(theReq)
+
   return new Promise((resolve, reject) => {
 
     connection.query("CALL projets_insert(?,?,?,?,?,?,?,?,?,?,?,?,?)",
