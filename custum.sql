@@ -1,7 +1,6 @@
-ALTER TABLE `prestataires` CHANGE `telephone` `telephone` VARCHAR(14) NOT NULL; 
+ALTER TABLE `prestataires` CHANGE `telephone` `telephone` VARCHAR(16) NOT NULL; 
 
-DROP PROCEDURE `prestataires_insert`;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `prestataires_insert`(IN `type` VARCHAR(20), IN `categorie` VARCHAR(20), IN `localisation` VARCHAR(20), IN `nom` VARCHAR(45), IN `sigle` VARCHAR(10), IN `telephone` VARCHAR(16), IN `email` VARCHAR(45), IN `adresse` VARCHAR(45), IN `localiteId` INT, IN `partenaireLocalId` INT, IN `observations` TEXT, IN `creationUserId` INT) NOT DETERMINISTIC CONTAINS SQL SQL SECURITY DEFINER BEGIN
+CREATE  PROCEDURE `prestataires_insert`(IN `type` VARCHAR(20), IN `categorie` VARCHAR(20), IN `localisation` VARCHAR(20), IN `nom` VARCHAR(45), IN `sigle` VARCHAR(10), IN `telephone` VARCHAR(16), IN `email` VARCHAR(45), IN `adresse` VARCHAR(45), IN `localiteId` INT, IN `partenaireLocalId` INT, IN `observations` TEXT, IN `creationUserId` INT) NOT DETERMINISTIC CONTAINS SQL SQL SECURITY DEFINER BEGIN
 	INSERT INTO `suiviprojetpublic`.`prestataires`(
 		`id`,
 		`type`,
@@ -41,8 +40,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `prestataires_insert`(IN `type` VARC
 END
 
 
-DROP PROCEDURE `prestataires_update`;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `prestataires_update`(IN `id` INT, IN `type` VARCHAR(20), IN `categorie` VARCHAR(20), IN `localisation` VARCHAR(20), IN `nom` VARCHAR(45), IN `sigle` VARCHAR(10), IN `telephone` VARCHAR(16), IN `email` VARCHAR(45), IN `adresse` VARCHAR(45), IN `localiteId` INT, IN `partenaireLocalId` INT, IN `observations` TEXT, IN `modifDate` DATETIME, IN `modifUserId` INT) NOT DETERMINISTIC CONTAINS SQL SQL SECURITY DEFINER BEGIN
+DROP PROCEDURE IF EXISTS `prestataires_update`;
+CREATE  PROCEDURE `prestataires_update`(IN `id` INT, IN `type` VARCHAR(20), IN `categorie` VARCHAR(20), IN `localisation` VARCHAR(20), IN `nom` VARCHAR(45), IN `sigle` VARCHAR(10), IN `telephone` VARCHAR(16), IN `email` VARCHAR(45), IN `adresse` VARCHAR(45), IN `localiteId` INT, IN `partenaireLocalId` INT, IN `observations` TEXT, IN `modifDate` DATETIME, IN `modifUserId` INT) NOT DETERMINISTIC CONTAINS SQL SQL SECURITY DEFINER BEGIN
 	UPDATE `prestataires`
 	SET
 		`type`= type,
@@ -63,8 +62,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `prestataires_update`(IN `id` INT, I
 END
 
 
-DROP PROCEDURE `prestataires_selectBy`;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `prestataires_selectBy`(IN `id` INT, IN `type` VARCHAR(20), IN `categorie` VARCHAR(20), IN `localisation` VARCHAR(20), IN `nom` VARCHAR(45), IN `sigle` VARCHAR(10), IN `telephone` VARCHAR(16), IN `email` VARCHAR(45), IN `adresse` VARCHAR(45), IN `localiteId` INT, IN `partenaireLocalId` INT, IN `observations` TEXT, IN `estActif` TINYINT, IN `creationDate` DATETIME, IN `creationUserId` INT, IN `modifDate` DATETIME, IN `modifUserId` INT, IN `debutDonnees` INT, IN `finDonnees` INT) NOT DETERMINISTIC CONTAINS SQL SQL SECURITY DEFINER BEGIN
+DROP PROCEDURE IF EXISTS `prestataires_selectBy`;
+CREATE  PROCEDURE `prestataires_selectBy`(IN `id` INT, IN `type` VARCHAR(20), IN `categorie` VARCHAR(20), IN `localisation` VARCHAR(20), IN `nom` VARCHAR(45), IN `sigle` VARCHAR(10), IN `telephone` VARCHAR(16), IN `email` VARCHAR(45), IN `adresse` VARCHAR(45), IN `localiteId` INT, IN `partenaireLocalId` INT, IN `observations` TEXT, IN `estActif` TINYINT, IN `creationDate` DATETIME, IN `creationUserId` INT, IN `modifDate` DATETIME, IN `modifUserId` INT, IN `debutDonnees` INT, IN `finDonnees` INT) NOT DETERMINISTIC CONTAINS SQL SQL SECURITY DEFINER BEGIN
 	DECLARE requeteSql varchar(500);
 	SET @requeteSql := 'SELECT\r\n\t\t`prestataires`.`id`,\r\n\t\t`prestataires`.`type`,\r\n\t\t`prestataires`.`categorie`,\r\n\t\t`prestataires`.`localisation`,\r\n\t\t`prestataires`.`nom`,\r\n\t\t`prestataires`.`sigle`,\r\n\t\t`prestataires`.`telephone`,\r\n\t\t`prestataires`.`email`,\r\n\t\t`prestataires`.`adresse`,\r\n\t\t`prestataires`.`localiteId`,\r\n\t\t`prestataires`.`partenaireLocalId`,\r\n\t\t`prestataires`.`observations`,\r\n\t\t`prestataires`.`estActif`,\r\n\t\t`prestataires`.`creationDate`,\r\n\t\t`prestataires`.`creationUserId`,\r\n\t\t`prestataires`.`modifDate`,\r\n\t\t`prestataires`.`modifUserId`\r\n\t\tFROM `prestataires`\r\n\t\tWHERE 1';
 		IF id IS NOT NULL THEN

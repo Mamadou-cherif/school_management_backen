@@ -95,7 +95,7 @@ function getAllProjets(req,res, next){
 
      Projet.getAllProjetInModel(initProjetClass)
         .then(projets=> res.status(200).json(projets))
-        .catch(error=> res.status(400).json(error))
+        .catch(error=> console.log)
 }
 
 

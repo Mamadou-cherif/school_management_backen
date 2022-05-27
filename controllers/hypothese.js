@@ -1,25 +1,8 @@
 const Hypothese= require("../models/hypothese")
 
 
-  function hypotheseSelectBy(req, res, next){
+
   
-  const execution={
-    id: req.body.id || null,
-    chaineResultatId: req.body.chaineResultatId || null,
-    libelle: req.body.libelle || null,
-    estActif: 1,
-    creationDate: req.body.creationDate || null,
-    creationUserId: req.body.creationUserId || null,
-    modifDate: req.body.modifDate || null,
-    modifUserId: req.body.modifUserId || null,
-    debut: req.body.debut || null,
-    fin: req.body.fin || null
-  }
-    Hypothese.hypotheseSelectByInModel(execution)
-    .then(hypothese=> res.status(200).json(hypothese))
-    .catch(error=> res.status(400).json({error}))
-    
-  }
 
   function addHypothese(req, res,next){
     const hypotheseObj={
@@ -124,6 +107,26 @@ const Hypothese= require("../models/hypothese")
     .then(hypothese=> res.status(200).json(hypothese))
     .catch(error=> res.status(400).json(error))
   }
+
+  function hypotheseSelectBy(req, res, next){
+    const hypotheseObj={
+      id: req.body.id || null,
+      chaineResultatId: req.body.chaineResultatId || null,
+      libelle: req.body.libelle || null,
+      estActif: 1,
+      creationDate: req.body.creationDate || null,
+      creationUserId: req.body.creationUserId || null,
+      modifDate: req.body.modifDate || null,
+      modifUserId: req.body.modifUserId || null,
+      debutDonnees: req.body.debutDonnees || null,
+      finDonnees: req.body.finDonnees || null
+  
+     }
+       
+      Hypothese.hypotheseSelectByInModel(hypotheseObj)
+      .then(hypothese=> res.status(200).json(hypothese))
+      .catch(error=> res.status(400).json({error}))
+  }
   
   
   function getAllHypotheses(req,res, next){ 
@@ -141,5 +144,5 @@ const Hypothese= require("../models/hypothese")
     getAsingleHypothese,
     getAllHypotheses,
     hypotheseSelectBy,
-
+    
   }
