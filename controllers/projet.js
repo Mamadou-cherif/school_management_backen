@@ -120,7 +120,6 @@ function getAllProjets(req, res, next) {
     initProjetClass.debut = req.body.debut
     initProjetClass.fin = req.body.fin
 
-    console.log(initProjetClass);
     Projet.selectAllProjetInModel(initProjetClass)
         .then(projets => res.status(200).json(projets))
         .catch(error => res.status(400).json(error))
