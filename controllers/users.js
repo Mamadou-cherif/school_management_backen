@@ -297,6 +297,39 @@ function getAffecteByGroup(req, res, next) {
         .then(users => res.status(200).json(users))
         .catch(error => res.status(400).json(error))
 }
+
+
+function UserSelectBy(req, res, next) {
+
+    const objUser = {
+        id: req.body.id || null,
+        structureId: req.body.structureId || null,
+        prestataireId: req.body.prestataireId || null,
+        nom: req.body.nom || null,
+        prenoms: req.body.prenoms || null,
+        fonction: req.body.fonction || null,
+        telephone1: req.body.telephone1 || null,
+        telephone2: req.body.telephone2 || null,
+        email: req.body.email || null,
+        photo: req.body.photo || null,
+        password: req.body.password || null,
+        quartierdistrictId: req.body.quartierdistrictId || null,
+        observations: req.body.observations || null,
+        estSuspendu: req.body.estSuspendu || null,
+        estActif: 1,
+        creationDate: req.body.creationDate || null,
+        creationUserId: req.body.creationUserId || null,
+        modifDate: req.body.modifDate || null,
+        modifUserId: req.body.modifUserId || null,
+        debutDonnees: req.body.debutDonnees || null,
+        finDonnees: req.body.finDonnees || null,
+    }
+    console.log("doc", objUser);
+    User.checkIfUserExists(objUser)
+        .then(document => res.status(200).json(document))
+        .catch(error => res.status(400).json(error))
+}
+
 module.exports = {
     getAffecteByGroup,
     getNonAffecteByGroup,
@@ -308,5 +341,6 @@ module.exports = {
     getAsingleUser,
     getAllUsers,
     activateUser,
-    updatePassword
+    updatePassword,
+    UserSelectBy
 }

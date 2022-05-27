@@ -155,6 +155,7 @@ function updateProjetInModel(theReq) {
 }
 
 function selectAllProjetInModel(theReq) {
+  console.log("projet", theReq);
   return new Promise((resolve, reject) => {
 
     connection.query("CALL projets_selectAll(?,?,?)",

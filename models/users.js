@@ -8,43 +8,7 @@ const res = require("express/lib/response");
 const { reject } = require("bcrypt/promises");
 
 
-//  function checkIfUserExists(theReq){
-//     return new Promise((resolve,reject)=> {
-//       connection.query("CALL users_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-//             [
-//               theReq.id,
-//               theReq.structureId,
-//               theReq.prestataireId,
-//               theReq.nom,
-//               theReq.prenoms,
-//               theReq.fonction,
-//               theReq.telephone1,
-//               theReq.telephone2,
-//               theReq.email,
-//               theReq.photo,
-//               theReq.password,
-//               theReq.quartierdistrictId,
-//               theReq.observations,
-//               theReq.estAlerte,
-//               theReq.estSuspendu,
-//               theReq.estActif,
-//               theReq.creationDate,
-//               theReq.creationUserId,
-//               theReq.modifDate,
-//               theReq.modifUserId,
-//               theReq.debutDonnees,
-//               theReq.finDonnees
-//             ],
 
-//         ((err,results, fields)=>{
-//           if(err){
-//             reject(err)
-//           }
-//           resolve(results[0])
-//         })
-//       )
-//     })
-//   }
 
 function checkIfUserExists(theReq) {
   return new Promise((resolve, reject) => {
