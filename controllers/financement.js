@@ -33,14 +33,6 @@ function addFinancement(req, res,next){
 }
 
 
-
-
-
-
-
-
-
-
 //supression logique d'un financement
 function disableFinancement(req, res, next){
     const financementObj={

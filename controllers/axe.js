@@ -88,7 +88,6 @@ function updateAxe(req, res,next){
                                         modifDate:req.body.modifDate,
                                         modifUserId:req.body.modifUserId,
                                     }
-                                 
                                       Axe.updateAxeInModel(objAxeUpdate)
                                           .then(()=> res.status(201).json({succes: "Modification effectuée avec succès"}))
                                           .catch(()=> res.status(400).json({error: "Modification non effectuée"}));

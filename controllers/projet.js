@@ -7,30 +7,44 @@ app.use(bodyParser.json())
 const bcrypt = require("bcrypt")
 const initProjetClass = require("../classes/projet")
 
+function addProjet(req, res,next){
 
-function addProjet(req, res, next) {
+      const objProjet = {
+        code: req.body.code,
+        estActif: 1
+      }
 
-    initProjetClass.libelle = req.body.libelle
-    initProjetClass.programmeId = req.body.programmeId
-    initProjetClass.titre = req.body.titre
-    initProjetClass.code = req.body.code
-    initProjetClass.description = req.body.description
-    initProjetClass.prioriteId = req.body.prioriteId
-    initProjetClass.nature = req.body.nature
-    initProjetClass.modalites = req.body.modalites
-    initProjetClass.duree = req.body.duree
-    initProjetClass.debut = req.body.debut
-    initProjetClass.fin = req.body.fin
-    initProjetClass.statutId = req.body.statutId
-    initProjetClass.observations = req.body.observations
-    initProjetClass.creationUserId = req.body.creationUserId
-    Projet.addProjetInModel(initProjetClass)
-        .then(() => res.status(201).json({ succes: "la création a reussi" }))
-        .catch(() => res.status(400).json({ error: "erreur de la procédure stocké d'ajout" }));
-
-}
-
-
+      Projet.projetSelectByInModel(objProjet)
+        .then(projet => {
+          if ((projet.length == 0)) {
+           
+            initProjetClass.libelle= req.body.libelle    
+            initProjetClass.programmeId= req.body.programmeId
+            initProjetClass.titre= req.body.titre
+            initProjetClass.code = req.body.code 
+            initProjetClass.description= req.body.description
+            initProjetClass.prioriteId= req.body.prioriteId
+            initProjetClass.nature= req.body.nature
+            initProjetClass.modalites= req.body.modalites
+            initProjetClass.duree= req.body.duree
+            initProjetClass.debut= req.body.debut 
+            initProjetClass.fin= req.body.fin
+            initProjetClass.statutId= req.body.statutId 
+            initProjetClass.observations= req.body.observations
+            initProjetClass.creationUserId= req.body.creationUserId
+            Projet.addProjetInModel(initProjetClass)
+            .then(()=> res.status(201).json({succes: "Ajout effectué avec succès"}))
+            .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
+          }
+          else {
+            res.status(500).json({ error: "Ce code existe déjà" })
+          }
+        })
+        .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée projets_selectBy" }))
+   
+   
+  
+ }
 
 
 
@@ -50,41 +64,54 @@ function disableProjet(req, res, next) {
         .catch(() => res.status(400).json({ error: "erreur de la procédure stocké d'ajout" }));
 }
 
-function updateProjet(req, res, next) {
-
-    initProjetClass.id = req.body.id
-    initProjetClass.titre = req.body.titre
-    initProjetClass.programmeId = req.body.programmeId
-    initProjetClass.code = req.body.code
-    initProjetClass.description = req.body.description
-    initProjetClass.prioriteId = req.body.prioriteId
-    initProjetClass.nature = req.body.nature
-    initProjetClass.modalites = req.body.modalites
-    initProjetClass.duree = req.body.duree
-    initProjetClass.debut = req.body.debut
-    initProjetClass.fin = req.body.fin
-    initProjetClass.statutId = req.body.statutId
-    initProjetClass.observations = req.body.observations
-    initProjetClass.modifDate = req.body.modifDate
-    initProjetClass.modifUserId = req.body.modifUserId
-    console.log(initProjetClass)
-    Projet.updateProjetInModel(initProjetClass)
-        .then(() => res.status(200).json({ succes: "la modification a reussi" }))
-        .catch(() => res.status(400).json({ error: "erreur de la procédure stocké d'ajout" }));
+function updateProjet(req, res,next){
 
 
+    const objProjet = {
+        code: req.body.code,
+        estActif: 1
+      }
 
+      Projet.projetSelectByInModel(objProjet)
+        .then(projet => {
+          if ((projet.length == 0) || (projet[0].id == req.body.id)) {
+           
+            initProjetClass.id= req.body.id
+            initProjetClass.titre= req.body.titre
+            initProjetClass.programmeId= req.body.programmeId
+            initProjetClass.code = req.body.code 
+            initProjetClass.description= req.body.description
+            initProjetClass.prioriteId= req.body.prioriteId
+            initProjetClass.nature= req.body.nature
+            initProjetClass.modalites= req.body.modalites
+            initProjetClass.duree= req.body.duree
+            initProjetClass.debut= req.body.debut
+            initProjetClass.fin= req.body.fin
+            initProjetClass.statutId= req.body.statutId 
+            initProjetClass.observations= req.body.observations
+            initProjetClass.modifDate= req.body.modifDate
+            initProjetClass.modifUserId= req.body.modifUserId
+            Projet.updateProjetInModel(initProjetClass)
+                .then(()=> res.status(201).json({succes: "Modification effectuée avec succès"}))
+                .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké de modification"}));
+          }
+          else {
+            res.status(500).json({ error: "Ce code existe déjà" })
+          }
+        })
+        .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée projets_selectBy" }))
+   
 
-
-
+       
+         
 
 }
 
-function getAsingleProjet(req, res, next) {
-    const id = req.params.id
-    Projet.getProjetByIdInModel(id)
-        .then(projet => res.status(200).json(projet))
-        .catch(error => res.status(400).json(error))
+function getAsingleProjet(req, res, next){
+    const id= req.params.id
+    Projet.selectByIdProjetInModel(id)
+        .then(projet=> res.status(200).json(projet))
+        .catch(error=> res.status(400).json(error))
 }
 
 
@@ -93,7 +120,6 @@ function getAllProjets(req, res, next) {
     initProjetClass.debut = req.body.debut
     initProjetClass.fin = req.body.fin
 
-    console.log(initProjetClass);
     Projet.selectAllProjetInModel(initProjetClass)
         .then(projets => res.status(200).json(projets))
         .catch(error => res.status(400).json(error))

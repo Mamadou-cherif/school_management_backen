@@ -9,11 +9,30 @@ const { reject } = require("bcrypt/promises");
 
 
 
+ function getAsingleHypotheseInModel(id){
+  return new Promise((resolve,reject)=> {
+    
+    connection.query("CALL hypotheses_selectById(?)",
+          [ 
+            id
+            
+          ],
+
+      ((err,results, fields)=>{
+        if(err){
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
+}
 
 
-function hypotheseSelectByInModel(theReq) {
+ function hypotheseSelectByInModel(theReq){
+  console.log(theReq)
   return new Promise((resolve, reject) => {
-
+    
     connection.query("CALL hypotheses_selectBy(?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
@@ -37,8 +56,7 @@ function hypotheseSelectByInModel(theReq) {
       })
     )
   })
-}
-
+ }
      
 function addHypotheseInModel(theReq){
   return new Promise((resolve, reject) => {
@@ -161,7 +179,7 @@ module.exports={
   addHypotheseInModel,
   updateHypotheseInModel,
   getAsingleHypotheseInModel,
-   
+  hypotheseSelectByInModel
 }
 
 

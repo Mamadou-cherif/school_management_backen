@@ -44,10 +44,15 @@ function disablePrivilege(req, res, next){
 function deletePrivilege(req, res,next){
 
 
-    initPrivilegeClass.privilege.menuId= req.body.menuId
-    initPrivilegeClass.privilege.groupeId= req.body.groupeId
-    initPrivilegeClass.privilege.modeAccesId= req.body.modeAccesId
-    Privilege.checkIfPrivilegeExists(initPrivilegeClass.privilege)
+    const objPrivilege={
+        menuId:req.body.menuId,
+        ongletId:req.body.ongletId,
+        groupeId:req.body.groupeId,
+        modeAccesId:req.body.modeAccesId,
+        estActif:1,
+    }
+    
+    Privilege.checkIfPrivilegeExists(objPrivilege)
         .then(privilege=>{
             
                     Privilege.deletePrivilegeInModel(privilege[0].id)
