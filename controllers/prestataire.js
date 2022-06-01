@@ -97,7 +97,7 @@ function updatePrestataire(req, res, next) {
 
   Prestataire.prestataireSelectByInModel(prestataireObj)
     .then(presta => {
-      (presta);
+
       if ((presta.length == 0) || (presta[0].id == req.body.id)) {
         const prestataireObj = {
           sigle: req.body.sigle,
@@ -132,7 +132,7 @@ function updatePrestataire(req, res, next) {
                       modifUserId: req.body.modifUserId
 
                     }
-                    console.log("upd", prestataireObj);
+
                     Prestataire.updatePrestataireInModel(prestataireObj)
                       .then(() => res.status(201).json({ succes: "la modification a reussi" }))
                       .catch(() => res.status(400).json({ error: "Erreur de la procédure stocké de modification" }));
@@ -170,7 +170,7 @@ function disablePrestataire(req, res, next) {
     modifUserId: req.body.modifUserId,
     modifDate: req.body.modifDate,
   }
-    ("dis", obj);
+
 
   Prestataire.disablePrestataireInModel(obj)
     .then(() => res.status(201).json({ succes: "la suppression a reussi" }))

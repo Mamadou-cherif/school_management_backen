@@ -7,7 +7,7 @@ app.use(bodyParser.json())
 
 
 function addStructure(req, res, next) {
-  ("str", req.body);
+
   const structureObj = {
     nom: req.body.nom,
     estActif: 1
@@ -16,7 +16,7 @@ function addStructure(req, res, next) {
 
   Structure.structureSelectByInModel(structureObj)
     .then(structure => {
-      ("s", structure);
+
       if ((structure.length == 0)) {
         const structureObj = {
           sigle: req.body.sigle,
@@ -24,7 +24,8 @@ function addStructure(req, res, next) {
         }
         Structure.structureSelectByInModel(structureObj)
           .then(structure => {
-            ("s1", structure);
+
+
             if ((structure.length == 0)) {
               const structureObj = {
                 telephone1: req.body.telephone1,
@@ -83,7 +84,7 @@ function addStructure(req, res, next) {
 
 
 function updateStructure(req, res, next) {
-  console.log('body',req.body)
+
 
   const StructureObj = {
     nom: req.body.nom,
@@ -92,7 +93,7 @@ function updateStructure(req, res, next) {
 
   Structure.structureSelectByInModel(StructureObj)
     .then(structure => {
-      (structure);
+
       if ((structure.length == 0) || (structure[0].id == req.body.id)) {
         const prestataireObj = {
           sigle: req.body.sigle,
