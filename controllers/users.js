@@ -19,8 +19,6 @@ function addUser(req, res, next) {
         telephone1: req.body.indicatifTel.toString() + req.body.telephone1,
         estActif: 1
     }
-
-
     //verifie si l'utilisateur existe en base
     User.checkIfUserExists(objUser1)
         .then(user => {
