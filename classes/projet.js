@@ -7,6 +7,7 @@ const projet={
    prioriteId: null,
    nature: null,
    modalites: null,
+   objectif: null,
    duree: null,
    debut: null,
    fin: null,

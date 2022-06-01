@@ -170,7 +170,7 @@ function addStructureInModel(data) {
 }
 
 
-function disableStrcutureInModel(theReq) {
+function disableStructureInModel(theReq) {
   return new Promise((resolve, reject) => {
 
     connection.query("CALL structures_disable(?,?,?)",
@@ -195,18 +195,19 @@ function disableStrcutureInModel(theReq) {
 
 function getStructureByIdInModel(id) {
   return new Promise((resolve, reject) => {
-
+  
     connection.query("CALL structures_selectById(?)",
       [
         id
-
       ],
 
       ((err, results, fields) => {
         if (err) {
           reject(err)
         }
-        resolve(results[0])
+        else{
+          resolve(results[0])
+        }
       })
     )
   })
@@ -215,7 +216,7 @@ function getStructureByIdInModel(id) {
 module.exports = {
 
   getAllStructureInModel,
-  disableStrcutureInModel,
+  disableStructureInModel,
   updateStructureInModel,
   addStructureInModel,
   structureSelectByInModel,

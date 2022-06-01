@@ -34,7 +34,6 @@ function addStructure(req, res, next) {
               Structure.structureSelectByInModel(structureObj)
                 .then(stru => {
                   if ((stru.length == 0)) {
-
                     const structure = {
 
                       categorieId: req.body.categorieId,
@@ -84,6 +83,7 @@ function addStructure(req, res, next) {
 
 
 function updateStructure(req, res, next) {
+  console.log('body',req.body)
 
   const StructureObj = {
     nom: req.body.nom,
@@ -109,7 +109,6 @@ function updateStructure(req, res, next) {
               Structure.structureSelectByInModel(StructureObj)
                 .then(structure => {
                   if (((structure.length == 0) || (structure[0].id == req.body.id))) {
-
                     const structure = {
                       id: req.body.id,
                       categorieId: req.body.categorieId,
@@ -128,7 +127,6 @@ function updateStructure(req, res, next) {
                       modifDate: req.body.modifDate,
                       modifUserId: req.body.modifUserId
                     }
-                      ("obje", StructureObj);
                     Structure.updateStructureInModel(structure)
                       .then(() => res.status(201).json({ succes: "la modification a reussi" }))
                       .catch(() => res.status(400).json({ error: "Erreur de la procédure stocké de modification" }));
@@ -178,10 +176,8 @@ function disableStructure(req, res, next) {
     modifDate: req.body.modifDate,
   }
 
-
-  Structure.disableStrcutureInModel(obj)
-    .then((data))
-    .then(() => res.status(201).json({ succes: "la suppression a reussi" }))
+  Structure.disableStructureInModel(obj)
+    .then(() => res.status(201).json({ succes: "La suppression a reussi" }))
     .catch(() => res.status(400).json({ error: "Erreur de la procédure stocké de suppression" }));
 }
 
@@ -190,7 +186,7 @@ function getAsingleStructure(req, res, next) {
   const id = req.params.id
   Structure.getStructureByIdInModel(id)
     .then(structure => res.status(200).json(structure))
-    .catch(error => res.status(400).json(error))
+    .catch(error => res.status(400).json(console.log(error)))
 }
 module.exports = {
   getAllStructure,
