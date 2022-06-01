@@ -132,7 +132,7 @@ function updatePrestataire(req, res, next) {
                       modifUserId: req.body.modifUserId
 
                     }
-                      ("obje", prestataireObj);
+                    console.log("upd", prestataireObj);
                     Prestataire.updatePrestataireInModel(prestataireObj)
                       .then(() => res.status(201).json({ succes: "la modification a reussi" }))
                       .catch(() => res.status(400).json({ error: "Erreur de la procédure stocké de modification" }));
