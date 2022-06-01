@@ -9,7 +9,7 @@ const { reject } = require("bcrypt/promises");
 
 
 
- 
+
 
 function InterventionSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
@@ -42,8 +42,8 @@ function InterventionSelectByInModel(theReq) {
 }
 
 
-     
-function addInterventionInModel(theReq){
+
+function addInterventionInModel(theReq) {
   return new Promise((resolve, reject) => {
 
     connection.query("CALL interventions_insert(?,?,?,?,?)",
@@ -58,9 +58,9 @@ function addInterventionInModel(theReq){
       ((err, results, fields) => {
         if (err) {
           reject(err)
-        }
-        else{
-         resolve(results[0])
+        } else {
+
+          resolve(results[0])
         }
       })
     )
@@ -72,24 +72,24 @@ function addInterventionInModel(theReq){
 
 
 //supression en dur
-function deleteInterventionInModel(theReq){
-    
+function deleteInterventionInModel(theReq) {
+
 }
 
 //supression logique d'un utilisateur
-function disableInterventionInModel(theReq){
-  return new Promise((resolve,reject)=> {
-    
-    connection.query("CALL interventions_disable(?,?,?)",
-          [ 
-            theReq.id,
-            theReq.modifUserId,
-            theReq.modifDate,
-            
-          ],
+function disableInterventionInModel(theReq) {
+  return new Promise((resolve, reject) => {
 
-      ((err,results, fields)=>{
-        if(err){
+    connection.query("CALL interventions_disable(?,?,?)",
+      [
+        theReq.id,
+        theReq.modifUserId,
+        theReq.modifDate,
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
           reject(err)
         }
         resolve(results[0])
@@ -100,15 +100,15 @@ function disableInterventionInModel(theReq){
 
 
 
-function updateInterventionInModel(theReq){
+function updateInterventionInModel(theReq) {
   return new Promise((resolve, reject) => {
 
     connection.query("CALL interventions_update(?,?,?,?,?,?,?)",
-      [ 
+      [
         theReq.id,
         theReq.prestataireId,
         theReq.projetId,
-        theReq.categorie, 
+        theReq.categorie,
         theReq.observations,
         theReq.modifDate,
         theReq.modifUserId
@@ -122,20 +122,20 @@ function updateInterventionInModel(theReq){
       })
     )
   })
- 
+
 }
 
-function getAsingleInterventionInModel(id){
-  return new Promise((resolve,reject)=> {
-    
-    connection.query("CALL interventions_selectById(?)",
-          [ 
-            id
-            
-          ],
+function getAsingleInterventionInModel(id) {
+  return new Promise((resolve, reject) => {
 
-      ((err,results, fields)=>{
-        if(err){
+    connection.query("CALL interventions_selectById(?)",
+      [
+        id
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
           reject(err)
         }
         resolve(results[0])
@@ -149,11 +149,11 @@ function getAsingleInterventionInModel(id){
 
 
 
-module.exports={  
+module.exports = {
   disableInterventionInModel,
   deleteInterventionInModel,
   addInterventionInModel,
   updateInterventionInModel,
   getAsingleInterventionInModel,
-  InterventionSelectByInModel 
+  InterventionSelectByInModel
 }

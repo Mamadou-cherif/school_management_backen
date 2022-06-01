@@ -12,7 +12,7 @@ function addProjetInModel(theReq) {
 
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL projets_insert(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL projets_insert(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.programmeId,
         theReq.code,
@@ -21,6 +21,7 @@ function addProjetInModel(theReq) {
         theReq.prioriteId,
         theReq.nature,
         theReq.modalites,
+        theReq.objectif,
         theReq.duree,
         theReq.debut,
         theReq.fin,
@@ -44,7 +45,7 @@ function addProjetInModel(theReq) {
 function projetSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL projets_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL projets_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.programmeId,
@@ -54,6 +55,7 @@ function projetSelectByInModel(theReq) {
         theReq.prioriteId,
         theReq.nature,
         theReq.modalites,
+        theReq.objectif,
         theReq.duree,
         theReq.debut,
         theReq.fin,
@@ -98,6 +100,22 @@ function selectByIdProjetInModel(id) {
   })
 }
 
+function getStatutByProgrammeIdOrAxeId(theReq) {
+  return new Promise((resolve, reject) => {
+    connection.query("CALL projets_getStatutByProgrammeIdOrAxeId(?,?)",
+      [
+        theReq.programmeId,
+        theReq.axeId
+      ],
+      ((err, results, fields) => {
+        if (err) {
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
+}
 
 function disableProjetInModel(theReq) {
   return new Promise((resolve, reject) => {
@@ -124,7 +142,7 @@ function disableProjetInModel(theReq) {
 function updateProjetInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL projets_update(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL projets_update(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.programmeId,
@@ -134,6 +152,7 @@ function updateProjetInModel(theReq) {
         theReq.prioriteId,
         theReq.nature,
         theReq.modalites,
+        theReq.objectif,
         theReq.duree,
         theReq.debut,
         theReq.fin,
@@ -182,5 +201,6 @@ module.exports = {
   updateProjetInModel,
   selectByIdProjetInModel,
   selectAllProjetInModel,
-  projetSelectByInModel
+  projetSelectByInModel,
+  getStatutByProgrammeIdOrAxeId
 }

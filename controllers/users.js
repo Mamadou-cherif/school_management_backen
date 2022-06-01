@@ -19,8 +19,6 @@ function addUser(req, res, next) {
         telephone1: req.body.indicatifTel.toString() + req.body.telephone1,
         estActif: 1
     }
-
-
     //verifie si l'utilisateur existe en base
     User.checkIfUserExists(objUser1)
         .then(user => {
@@ -91,8 +89,6 @@ function login(req, res, next) {
 
                         if (user) {
 
-                            //Si le mot de passe saisi et le mot de passe en base sont identiques 
-                            //  if(user[0].password==login.motDePasse){
 
                             initUserConnexion.userConnexion.debutDonnees = 0
                             initUserConnexion.userConnexion.finDonnees = 1
@@ -106,22 +102,7 @@ function login(req, res, next) {
                                         if (data[0].fin == null) {
 
 
-                                            //   (data[0].creationDate)
-                                            //var lastConnexion=data[0].creationDate;
 
-                                            //    const lastConnexion1 = new Date(lastConnexion);
-                                            //     (lastConnexion1)
-                                            //      var now = new Date();
-                                            //      const diffInMs = Math.abs(lastConnexion - now);
-                                            //      const  enMinute= diffInMs / (1000 * 60);
-                                            //      (enMinute)
-                                            // (now) 
-                                            // if(differenceTime>15){
-                                            //     $bool=true;
-                                            // }
-                                            // else{
-                                            //     bool=false;
-                                            // }
                                             bool = true
                                         }
                                         else {
@@ -324,7 +305,7 @@ function UserSelectBy(req, res, next) {
         debutDonnees: req.body.debutDonnees || null,
         finDonnees: req.body.finDonnees || null,
     }
-    console.log("doc", objUser);
+
     User.checkIfUserExists(objUser)
         .then(document => res.status(200).json(document))
         .catch(error => res.status(400).json(error))

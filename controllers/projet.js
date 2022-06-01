@@ -7,6 +7,68 @@ app.use(bodyParser.json())
 const bcrypt = require("bcrypt")
 const initProjetClass = require("../classes/projet")
 
+
+
+
+
+function getStatutByProgrammeIdOrAxeId(req, res,next){
+        const objProjet={
+            programmeId:req.body.programmeId,
+            axeId:req.body.axeId,
+        }
+        Projet.getStatutByProgrammeIdOrAxeId(objProjet)
+        .then((res)=>{
+           let nonDemare= false;
+           let encours= false;
+           let termine= false;
+           let retour;
+           if(res.length==0){
+             retour="Aucun projet"
+           }else{
+
+                res.forEach(element => {
+
+                    if(element.statutProjet === "Encours"){
+                      encours=true;
+                    }
+                    if(element.statutProjet === "Terminé"){
+                      termine=true;
+                    }
+                    if(element.statutProjet === "Non demarré"){
+                      nonDemare=true;
+                    }
+                });
+                if(encours==true){
+                  
+                retour= "encours";
+                }
+                if((nonDemare==true) && (termine==true) ){
+                  
+                retour= "encours";
+
+                }
+                if((nonDemare==true) && (termine==false) ){
+                
+                retour= "Non demarré";
+
+                }
+                if((termine==true) && (nonDemare==false) && (encours==false) ){
+                retour= "Terminé";
+
+                }
+           }
+           
+       
+
+        return retour
+
+        }).then(result => res.status(200).json(result))
+       .catch(()=> res.status(400).json({error: "Erreur de la procédure getStatut"}));
+    
+
+
+}
+
 function addProjet(req, res,next){
 
       const objProjet = {
@@ -26,6 +88,7 @@ function addProjet(req, res,next){
             initProjetClass.prioriteId= req.body.prioriteId
             initProjetClass.nature= req.body.nature
             initProjetClass.modalites= req.body.modalites
+            initProjetClass.objectif= req.body.objectif
             initProjetClass.duree= req.body.duree
             initProjetClass.debut= req.body.debut 
             initProjetClass.fin= req.body.fin
@@ -45,13 +108,6 @@ function addProjet(req, res,next){
    
   
  }
-
-
-
-
-
-
-
 
 //supression logique d'un projet
 function disableProjet(req, res, next) {
@@ -73,6 +129,7 @@ function updateProjet(req, res,next){
       }
 
       Projet.projetSelectByInModel(objProjet)
+
         .then(projet => {
           if ((projet.length == 0) || (projet[0].id == req.body.id)) {
            
@@ -84,6 +141,7 @@ function updateProjet(req, res,next){
             initProjetClass.prioriteId= req.body.prioriteId
             initProjetClass.nature= req.body.nature
             initProjetClass.modalites= req.body.modalites
+            initProjetClass.objectif= req.body.objectif
             initProjetClass.duree= req.body.duree
             initProjetClass.debut= req.body.debut
             initProjetClass.fin= req.body.fin
@@ -120,7 +178,6 @@ function getAllProjets(req, res, next) {
     initProjetClass.debut = req.body.debut
     initProjetClass.fin = req.body.fin
 
-    console.log(initProjetClass);
     Projet.selectAllProjetInModel(initProjetClass)
         .then(projets => res.status(200).json(projets))
         .catch(error => res.status(400).json(error))
@@ -137,6 +194,7 @@ function projetSelectBy(req, res, next) {
         prioriteId: req.body.prioriteId || null,
         nature: req.body.nature || null,
         modalites: req.body.modalites || null,
+        objectif: req.body.objectif || null,
         duree: req.body.duree || null,
         debut: req.body.debut || null,
         fin: req.body.fin || null,
@@ -163,5 +221,6 @@ module.exports = {
     updateProjet,
     getAsingleProjet,
     getAllProjets,
-    projetSelectBy
+    projetSelectBy,
+    getStatutByProgrammeIdOrAxeId
 }
