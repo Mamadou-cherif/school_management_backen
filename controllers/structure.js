@@ -53,6 +53,7 @@ function addStructure(req, res, next) {
                       creationUserId: req.body.creationUserId
 
                     }
+
                     Structure.addStructureInModel(structure)
                       .then(() => res.status(200).json({ succes: "la création a reussi" }))
                       .catch(() => res.status(400).json({ error: "Erreur de la procédure stocké d'ajout" }));
