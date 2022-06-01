@@ -59,7 +59,9 @@ function addInterventionInModel(theReq){
         if (err) {
           reject(err)
         }
-        resolve(results[0])
+        else{
+         resolve(results[0])
+        }
       })
     )
   })
@@ -75,7 +77,7 @@ function deleteInterventionInModel(theReq){
 }
 
 //supression logique d'un utilisateur
-function disableInterventionInModel(id){
+function disableInterventionInModel(theReq){
   return new Promise((resolve,reject)=> {
     
     connection.query("CALL interventions_disable(?,?,?)",
@@ -123,7 +125,7 @@ function updateInterventionInModel(theReq){
  
 }
 
-function getAsingleInterventionInModel(theReq){
+function getAsingleInterventionInModel(id){
   return new Promise((resolve,reject)=> {
     
     connection.query("CALL interventions_selectById(?)",
