@@ -270,5 +270,5 @@ module.exports = {
   getOngletsAffecteAUnGroupeInModel,
   getOngletByIdInModel,
   updateOngletInModel,
-  getOngletByUserReferenceMenuInModel
+  getOngletByUserReferenceMenuInModel,
 }

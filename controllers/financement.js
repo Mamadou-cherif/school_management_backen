@@ -9,48 +9,51 @@ const initFinancementClass= require("../classes/financement")
 
 
 function addFinancement(req, res,next){
-
     const financementObj={
-        id: req.body.id || null,
-        projetId:  req.body.projetId || null,
         structureId:  req.body.structureId || null,
-        type:  req.body.type || null,
-        typeAppui:  req.body.typeAppui || null,
-        taux:  req.body.taux || null,
-        observations:  req.body.observations || null,
-        estActif: 1,
-        creationDate:  req.body.creationDate || null,
-        creationUserId:  req.body.creationUserId || null,
-        modifDate:  req.body.modifDate || null,
-        modifUserId:  req.body.modifUserId || null,
-        debut:  req.body.debut || null,
-        fin:  req.body.fin || null
-   
-   }
-    Financement.addFinancementInModel(financementObj)
-        .then(()=> res.status(200).json({succes: "la création a reussi"}))
-        .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
+        estActif: 1
+    }   
+    Financement.financementSelectByInModel(financementObj)
+        .then(financement=>{
+            if(financement.length==0){
+                const financementObj={
+                    id: req.body.id || null,
+                    projetId:  req.body.projetId || null,
+                    structureId:  req.body.structureId || null,
+                    type:  req.body.type || null,
+                    typeAppui:  req.body.typeAppui || null,
+                    taux:  req.body.taux || null,
+                    observations:  req.body.observations || null,
+                    estActif: 1,
+                    creationDate:  req.body.creationDate || null,
+                    creationUserId:  req.body.creationUserId || null,
+                    modifDate:  req.body.modifDate || null,
+                    modifUserId:  req.body.modifUserId || null,
+                    debut:  req.body.debut || null,
+                    fin:  req.body.fin || null
+               
+               }
+                Financement.addFinancementInModel(financementObj)
+                .then(()=> res.status(200).json({succes: "la création a reussi"}))
+                .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
+            }
+            else{
+                res.status(400).json({succes: "dupplicata de la structure"})
+            }
+            
+    
+        })
+        .catch(error=> res.status(400).json(error))
+     
 }
 
 
 //supression logique d'un financement
 function disableFinancement(req, res, next){
     const financementObj={
-        id: req.body.id || null,
-        projetId:  req.body.projetId || null,
-        structureId:  req.body.structureId || null,
-        type:  req.body.type || null,
-        typeAppui:  req.body.typeAppui || null,
-        taux:  req.body.taux || null,
-        observations:  req.body.observations || null,
-        estActif: 1,
-        creationDate:  req.body.creationDate || null,
-        creationUserId:  req.body.creationUserId || null,
-        modifDate:  req.body.modifDate || null,
-        modifUserId:  req.body.modifUserId || null,
-        debut:  req.body.debut || null,
-        fin:  req.body.fin || null
-   
+        id: req.body.id,
+        modifDate:  req.body.modifDate,
+        modifUserId:  req.body.modifUserId,
    }
 
     Financement.disableFinancementInModel(financementObj)
@@ -58,31 +61,44 @@ function disableFinancement(req, res, next){
     .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
 }
  
-function updateFinancement(req,res, next){
-        
-       
+function updateFinancement(req,res, next){     
     const financementObj={
-        id: req.body.id || null,
-        projetId:  req.body.projetId || null,
         structureId:  req.body.structureId || null,
-        type:  req.body.type || null,
-        typeAppui:  req.body.typeAppui || null,
-        taux:  req.body.taux || null,
-        observations:  req.body.observations || null,
         estActif: 1,
-        creationDate:  req.body.creationDate || null,
-        creationUserId:  req.body.creationUserId || null,
-        modifDate:  req.body.modifDate || null,
-        modifUserId:  req.body.modifUserId || null,
-        debut:  req.body.debut || null,
-        fin:  req.body.fin || null
-   
    }
+   Financement.financementSelectByInModel(financementObj)
+   .then(financement=>{
+       if((financement.length==0)  ||  (financement[0].id == req.body.id)){
+           const financementObj={
+               id: req.body.id || null,
+               projetId:  req.body.projetId || null,
+               structureId:  req.body.structureId || null, 
+               type:  req.body.type || null,
+               typeAppui:  req.body.typeAppui || null,
+               taux:  req.body.taux || null,
+               observations:  req.body.observations || null,
+               estActif: 1,
+               creationDate:  req.body.creationDate || null,
+               creationUserId:  req.body.creationUserId || null,
+               modifDate:  req.body.modifDate || null,
+               modifUserId:  req.body.modifUserId || null,
+               debut:  req.body.debut || null,
+               fin:  req.body.fin || null
+          
+          }
+          Financement.updateFinancementInModel(financementObj)
+          .then(()=> res.status(200).json({succes: "la modification a reussi"}))
+          .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));         
+}
+       else{
+           res.status(400).json({succes: "dupplicata de la structure"})
+       }
+       
 
-        Financement.updateFinancementInModel(financementObj)
-                .then(()=> res.status(200).json({succes: "la modification a reussi"}))
-                .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));         
+   })
+   .catch(error=> res.status(400).json(error))
 
+     
 }
 
 function financementSelectBy(req, res, next){

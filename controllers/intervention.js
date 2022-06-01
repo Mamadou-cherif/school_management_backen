@@ -18,45 +18,12 @@ function interventionSelectBy(req, res, next) {
     fin: req.body.fin || null
   }
 
-
-
   Intervention.InterventionSelectByInModel(intervention)
     .then(intervention => res.status(200).json(intervention))
     .catch(error => res.status(400).json({ error }))
 
 }
 
-
-
-// function addIntervention(req, res, next) {
-//   const interventionObj = {
-//     prestataireId: req.body.prestataireId || null,
-//     projetId: req.body.projetId || null,
-//     categorie: req.body.categorie || null,
-//     observations: req.body.observations || null,
-//     estActif: 1,
-//     creationDate: req.body.creationDate || null,
-//     creationUserId: req.body.creationUserId || null,
-//     modifDate: req.body.modifDate || null,
-//     modifUserId: req.body.modifUserId || null,
-//     debut: req.body.debut || null,
-//     fin: req.body.fin || null
-
-
-//   }
-//   console.log("in", interventionObj)
-//   Intervention.addInterventionInModel(interventionObj)
-//     .then(() => res.status(200).json({ succes: "L'ajout du projet a réussi!" }))
-//     .catch(() => res.status(400).json({ error: "Echec de la modification!" }))
-
-
-// }
-
-
-
-
-
-//supression en dur
 
 function addIntervention(req, res, next) {
   const interventionObj = {
