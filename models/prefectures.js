@@ -53,7 +53,7 @@ function selectByIdPrefectureInModel(id) {
 
 }
 
-function selectAllPrefectureInModel(theReq) {
+function selectAllPrefectureInModel() {
   return new Promise((resolve, reject) => {
     connection.query("CALL prefectures_selectAll(?,?,?)",
       [
@@ -66,7 +66,10 @@ function selectAllPrefectureInModel(theReq) {
         if (err) {
           reject(err)
         }
-        resolve(results[0])
+        else {
+          resolve(results[0])
+        }
+
       })
     )
   })
@@ -117,39 +120,39 @@ function updatePrefectureInModel(data) {
         }
         else {
           resolve(results);
-          }
-         
-        })
-      )
-    })
-  }
-  function deletePrefectureInModel(id){
-    return new Promise((resolve,reject)=> {
-      
-      connection.query("CALL prefectures_delete(?)",
-            [ 
-              id,
-              
-            ],
-  
-        ((err,results, fields)=>{
-          if(err){
-            reject(err)
-          }
-          else{
-            resolve(results[0])
-          }
-        })
-      )
-    })
-  }
- 
-  module.exports={
-    prefectureSelectByInModel,
-    addPrefectureInModel,
-    updatePrefectureInModel,
-    selectByIdPrefectureInModel,
-    selectAllPrefectureInModel,
-    deletePrefectureInModel
-  }
- 
+        }
+
+      })
+    )
+  })
+}
+function deletePrefectureInModel(id) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL prefectures_delete(?)",
+      [
+        id,
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          reject(err)
+        }
+        else {
+          resolve(results[0])
+        }
+      })
+    )
+  })
+}
+
+module.exports = {
+  prefectureSelectByInModel,
+  addPrefectureInModel,
+  updatePrefectureInModel,
+  selectByIdPrefectureInModel,
+  selectAllPrefectureInModel,
+  deletePrefectureInModel
+}
+

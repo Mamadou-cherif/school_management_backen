@@ -33,7 +33,7 @@ function addIntervention(req, res, next) {
   }
   Intervention.InterventionSelectByInModel(interventionObj)
     .then(intervention => {
-      console.log(intervention)
+
       if ((intervention.length == 0)) {
         const interventionObj = {
           id: req.body.id || null,
@@ -94,7 +94,7 @@ function updateIntervention(req, res, next) {
   }
   Intervention.InterventionSelectByInModel(interventionObj)
     .then(intervention => {
-      console.log(intervention)
+
       if ((intervention.length == 0) || (intervention[0].id == req.body.id)) {
         const interventionObj = {
           id: req.body.id || null,

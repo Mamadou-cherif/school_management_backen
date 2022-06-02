@@ -3,11 +3,11 @@ DROP procedure IF EXISTS `projets_selectBy`;
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `suiviprojetpublic`.`projets_selectBy`;
-;
+
 
 DELIMITER $$
 USE `suiviprojetpublic`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `projets_selectBy`(`id` INT, `programmeId` INT, `code` VARCHAR(5), `titre` TEXT, `description` TEXT, `prioriteId` INT, `nature` VARCHAR(45), `modalites` TEXT, `duree` INT, `debut` DATE, `fin` DATE, `statutId` INT, `observations` TEXT, `estActif` TINYINT, `creationDate` DATETIME, `creationUserId` INT, `modifDate` DATETIME, `modifUserId` INT, `debutDonnees` INT, `finDonnees` INT)
+CREATE  PROCEDURE `projets_selectBy`(`id` INT, `programmeId` INT, `code` VARCHAR(5), `titre` TEXT, `description` TEXT, `prioriteId` INT, `nature` VARCHAR(45), `modalites` TEXT, `duree` INT, `debut` DATE, `fin` DATE, `statutId` INT, `observations` TEXT, `estActif` TINYINT, `creationDate` DATETIME, `creationUserId` INT, `modifDate` DATETIME, `modifUserId` INT, `debutDonnees` INT, `finDonnees` INT)
 BEGIN
 	DECLARE requeteSql varchar(500);
 	SET @requeteSql := 'SELECT
@@ -177,7 +177,7 @@ END$$
 DELIMITER ;
 
 
-//
+
 
 
 ALTER TABLE `suiviprojetpublic`.`projets` 
@@ -190,11 +190,11 @@ DROP procedure IF EXISTS `projets_selectBy`;
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `suiviprojetpublic`.`projets_selectBy`;
-;
+
 
 DELIMITER $$
 USE `suiviprojetpublic`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `projets_selectBy`(`id` INT, `programmeId` INT, `code` VARCHAR(5), `titre` TEXT, `description` TEXT, `prioriteId` INT, `nature` VARCHAR(45),`modalites` VARCHAR(45), `objectif` TEXT, `duree` INT, `debut` DATE, `fin` DATE, `statutId` INT, `observations` TEXT, `estActif` TINYINT, `creationDate` DATETIME, `creationUserId` INT, `modifDate` DATETIME, `modifUserId` INT, `debutDonnees` INT, `finDonnees` INT)
+CREATE  PROCEDURE `projets_selectBy`(`id` INT, `programmeId` INT, `code` VARCHAR(5), `titre` TEXT, `description` TEXT, `prioriteId` INT, `nature` VARCHAR(45),`modalites` VARCHAR(45), `objectif` TEXT, `duree` INT, `debut` DATE, `fin` DATE, `statutId` INT, `observations` TEXT, `estActif` TINYINT, `creationDate` DATETIME, `creationUserId` INT, `modifDate` DATETIME, `modifUserId` INT, `debutDonnees` INT, `finDonnees` INT)
 BEGIN
 	DECLARE requeteSql varchar(500);
 	SET @requeteSql := 'SELECT
@@ -290,18 +290,18 @@ BEGIN
 END$$
 
 DELIMITER ;
-;
+
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `projets_update`;
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `suiviprojetpublic`.`projets_update`;
-;
+
 
 DELIMITER $$
 USE `suiviprojetpublic`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `projets_update`(`id` INT, `programmeId` INT, `code` VARCHAR(5), `titre` TEXT, `description` TEXT, `prioriteId` INT, `nature` VARCHAR(45),`modalites` VARCHAR(45), `objectif` TEXT, `duree` INT, `debut` DATE, `fin` DATE, `statutId` INT, `observations` TEXT, `modifDate` DATETIME, `modifUserId` INT)
+CREATE  PROCEDURE `projets_update`(`id` INT, `programmeId` INT, `code` VARCHAR(5), `titre` TEXT, `description` TEXT, `prioriteId` INT, `nature` VARCHAR(45),`modalites` VARCHAR(45), `objectif` TEXT, `duree` INT, `debut` DATE, `fin` DATE, `statutId` INT, `observations` TEXT, `modifDate` DATETIME, `modifUserId` INT)
 BEGIN
 	UPDATE `projets`
 	SET
@@ -325,18 +325,18 @@ BEGIN
 END$$
 
 DELIMITER ;
-;
+
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `projets_insert`;
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `suiviprojetpublic`.`projets_insert`;
-;
+
 
 DELIMITER $$
 USE `suiviprojetpublic`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `projets_insert`(`programmeId` INT, `code` VARCHAR(5), `titre` TEXT, `description` TEXT, `prioriteId` INT, `nature` VARCHAR(45),`modalites` VARCHAR(45), `objectif` TEXT, `duree` INT, `debut` DATE, `fin` DATE, `statutId` INT, `observations` TEXT, `creationUserId` INT)
+CREATE  PROCEDURE `projets_insert`(`programmeId` INT, `code` VARCHAR(5), `titre` TEXT, `description` TEXT, `prioriteId` INT, `nature` VARCHAR(45),`modalites` VARCHAR(45), `objectif` TEXT, `duree` INT, `debut` DATE, `fin` DATE, `statutId` INT, `observations` TEXT, `creationUserId` INT)
 BEGIN
 	INSERT INTO `suiviprojetpublic`.`projets`(
 		`id`,
@@ -381,18 +381,18 @@ BEGIN
 END$$
 
 DELIMITER ;
-;
+
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `projets_selectById`;
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `suiviprojetpublic`.`projets_selectById`;
-;
+
 
 DELIMITER $$
 USE `suiviprojetpublic`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `projets_selectById`(`id` INT)
+CREATE  PROCEDURE `projets_selectById`(`id` INT)
 BEGIN
 	SELECT
 		`projets`.`id`,
@@ -419,17 +419,17 @@ BEGIN
 END$$
 
 DELIMITER ;
-;
+
 
 
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `suiviprojetpublic`.`projets_getStatutByProgrammeIdOrAxeId`;
-;
+
 
 DELIMITER $$
 USE `suiviprojetpublic`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `projets_getStatutByProgrammeIdOrAxeId`(`programmeId` INT, `axeId` INT)
+CREATE  PROCEDURE `projets_getStatutByProgrammeIdOrAxeId`(`programmeId` INT, `axeId` INT)
 BEGIN
 	DECLARE requeteSql varchar(500);
 	Set @requeteSql := 'SELECT
@@ -453,17 +453,17 @@ BEGIN
 END$$
 
 DELIMITER ;
-;
+
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `structures_selectById`;
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `suiviprojetpublic`.`structures_selectById`;
-;
+
 
 DELIMITER $$
 USE `suiviprojetpublic`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `structures_selectById`(`id` INT)
+CREATE  PROCEDURE `structures_selectById`(`id` INT)
 BEGIN
 	SELECT
 		`structures`.`id`,
@@ -500,5 +500,5 @@ BEGIN
 END$$
 
 DELIMITER ;
-;
+
 

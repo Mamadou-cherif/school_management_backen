@@ -3,11 +3,11 @@ DROP procedure IF EXISTS `prestataires_selectById`;
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `suiviprojetpublic`.`prestataires_selectById`;
-;
+
 
 DELIMITER $$
 USE `suiviprojetpublic`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `prestataires_selectById`(IN `id` INT) NOT DETERMINISTIC CONTAINS SQL SQL SECURITY DEFINER BEGIN
+CREATE PROCEDURE `prestataires_selectById`(IN `id` INT) NOT DETERMINISTIC CONTAINS SQL SQL SECURITY DEFINER BEGIN
 	SELECT
 		`prestataires`.`id`,
 		`prestataires`.`type`,
@@ -40,5 +40,5 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `prestataires_selectById`(IN `id` IN
 END$$
 
 DELIMITER ;
-;
+
 
