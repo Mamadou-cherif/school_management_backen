@@ -20,7 +20,7 @@ const md_auth= require("../middlewares/authenticated")
     router.post("/getAffectedByOngletAndGroupe", modeAccesController.getAffectedByOngletAndGroupe)
     router.put("/updateModeAcces/:id", modeAccesController.updateModeAcces)
     router.get("/getModeAccesById/:id",modeAccesController.getModeAccessById)
-
+    router.delete("/deleteModeAcces/:id", modeAccesController.deleteModeAcces)
 
 
     module.exports = router 

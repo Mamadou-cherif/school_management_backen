@@ -42,8 +42,8 @@ function addUser(req, res, next) {
                     password: md5(req.body.password),
                     quartierdistrictId: req.body.quartierdistrictId,
                     observations: req.body.observations,
-                    estAlerte: 0,
-                    estSuspendu: 0,
+                    estAlerte: req.body.estAlerte,
+                    estSuspendu: req.body.estSuspendu,
                     creationUserId: req.body.creationUserId
 
                 }
@@ -203,8 +203,8 @@ function updateUser(req, res, next) {
                     password: req.body.password,
                     quartierdistrictId: req.body.quartierdistrictId,
                     observations: req.body.observations,
-                    estAlerte: 1,
-                    estSuspendu: 0,
+                    estAlerte: req.body.estAlerte,
+                    estSuspendu: req.body.estSuspendu,
                     modifDate: req.body.modifDate,
                     modifUserId: req.body.modifUserId
                 }
