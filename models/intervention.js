@@ -8,9 +8,6 @@ const res = require("express/lib/response");
 const { reject } = require("bcrypt/promises");
 
 
-
-
-
 function InterventionSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
