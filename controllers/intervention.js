@@ -36,18 +36,18 @@ function addIntervention(req, res, next) {
       console.log(intervention)
       if ((intervention.length == 0)) {
         const interventionObj = {
-          id: req.body.id || null,
-          prestataireId: req.body.prestataireId || null,
-          projetId: req.body.projetId || null,
-          categorie: req.body.categorie || null,
-          observations: req.body.observations || null,
+          id: req.body.id ,
+          prestataireId: req.body.prestataireId ,
+          projetId: req.body.projetId ,
+          categorie: req.body.categorie ,
+          observations: req.body.observations ,
           estActif: 1,
-          creationDate: req.body.creationDate || null,
-          creationUserId: req.body.creationUserId || null,
-          modifDate: req.body.modifDate || null,
-          modifUserId: req.body.modifUserId || null,
-          debut: req.body.debut || null,
-          fin: req.body.fin || null
+          creationDate: req.body.creationDate ,
+          creationUserId: req.body.creationUserId ,
+          modifDate: req.body.modifDate ,
+          modifUserId: req.body.modifUserId ,
+          debut: req.body.debut ,
+          fin: req.body.fin 
         }
         Intervention.addInterventionInModel(interventionObj)
           .then(() => res.status(200).json({ succes: "L'ajout a réussi!" }))
@@ -97,18 +97,18 @@ function updateIntervention(req, res, next) {
       console.log(intervention)
       if ((intervention.length == 0) || (intervention[0].id == req.body.id)) {
         const interventionObj = {
-          id: req.body.id || null,
-          prestataireId: req.body.prestataireId || null,
-          projetId: req.body.projetId || null,
-          categorie: req.body.categorie || null,
-          observations: req.body.observations || null,
+          id: req.body.id ,
+          prestataireId: req.body.prestataireId ,
+          projetId: req.body.projetId ,
+          categorie: req.body.categorie ,
+          observations: req.body.observations ,
           estActif: 1,
-          creationDate: req.body.creationDate || null,
-          creationUserId: req.body.creationUserId || null,
-          modifDate: req.body.modifDate || null,
-          modifUserId: req.body.modifUserId || null,
-          debut: req.body.debut || null,
-          fin: req.body.fin || null
+          creationDate: req.body.creationDate ,
+          creationUserId: req.body.creationUserId ,
+          modifDate: req.body.modifDate ,
+          modifUserId: req.body.modifUserId ,
+          debut: req.body.debut ,
+          fin: req.body.fin 
         }
         Intervention.updateInterventionInModel(interventionObj)
           .then(() => res.status(200).json({ succes: "La modification a réussi!" }))

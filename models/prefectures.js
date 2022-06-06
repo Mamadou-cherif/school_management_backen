@@ -53,7 +53,7 @@ function selectByIdPrefectureInModel(id) {
 
 }
 
-function selectAllPrefectureInModel(theReq) {
+function selectAllPrefectureInModel() {
   return new Promise((resolve, reject) => {
     connection.query("CALL prefectures_selectAll(?,?,?)",
       [

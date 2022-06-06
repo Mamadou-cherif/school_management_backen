@@ -3,7 +3,7 @@ DROP procedure IF EXISTS `projets_selectBy`;
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `suiviprojetpublic`.`projets_selectBy`;
-;
+
 
 DELIMITER $$
 USE `suiviprojetpublic`$$
@@ -177,7 +177,7 @@ END$$
 DELIMITER ;
 
 
-//
+
 
 
 ALTER TABLE `suiviprojetpublic`.`projets` 
@@ -190,7 +190,7 @@ DROP procedure IF EXISTS `projets_selectBy`;
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `suiviprojetpublic`.`projets_selectBy`;
-;
+
 
 DELIMITER $$
 USE `suiviprojetpublic`$$
@@ -290,14 +290,14 @@ BEGIN
 END$$
 
 DELIMITER ;
-;
+
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `projets_update`;
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `suiviprojetpublic`.`projets_update`;
-;
+
 
 DELIMITER $$
 USE `suiviprojetpublic`$$
@@ -325,14 +325,14 @@ BEGIN
 END$$
 
 DELIMITER ;
-;
+
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `projets_insert`;
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `suiviprojetpublic`.`projets_insert`;
-;
+
 
 DELIMITER $$
 USE `suiviprojetpublic`$$
@@ -381,14 +381,14 @@ BEGIN
 END$$
 
 DELIMITER ;
-;
+
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `projets_selectById`;
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `suiviprojetpublic`.`projets_selectById`;
-;
+
 
 DELIMITER $$
 USE `suiviprojetpublic`$$
@@ -419,13 +419,13 @@ BEGIN
 END$$
 
 DELIMITER ;
-;
+
 
 
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `suiviprojetpublic`.`projets_getStatutByProgrammeIdOrAxeId`;
-;
+
 
 DELIMITER $$
 USE `suiviprojetpublic`$$
@@ -453,13 +453,13 @@ BEGIN
 END$$
 
 DELIMITER ;
-;
+
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `structures_selectById`;
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `suiviprojetpublic`.`structures_selectById`;
-;
+
 
 DELIMITER $$
 USE `suiviprojetpublic`$$
@@ -500,5 +500,5 @@ BEGIN
 END$$
 
 DELIMITER ;
-;
+
 

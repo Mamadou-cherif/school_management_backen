@@ -45,6 +45,7 @@ const executionRoute = require("./routes/execution")
 const indicateurRoutes = require("./routes/indicateur")
 const investissementRoute = require("./routes/investissement")
 const hypotheseRoute = require("./routes/hypothese")
+const rubriqueRoute = require("./routes/rubrique")
 
 
 app.use(bodyParser.json())
@@ -101,6 +102,7 @@ app.use("/api", investissementRoute)
 app.use("/api", chaineRoutes)
 app.use("/api", indicateurRoutes)
 app.use("/api", hypotheseRoute)
+app.use("/api", rubriqueRoute)
 
 
 

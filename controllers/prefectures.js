@@ -18,7 +18,7 @@ function prefectureSelectBy(req, res, next) {
 
 function selectAllPrefecture(req, res, next) {
 
-  Prefecture.selectAllPrefectureInModel(req)
+  Prefecture.selectAllPrefectureInModel()
     .then(prefectures => res.status(200).json(prefectures))
     .catch(error => res.status(400).json(error))
 }

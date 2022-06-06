@@ -1,12 +1,12 @@
 const express = require("express")
 const router = express.Router()
-const paysRubrique = require("../controllers/rubrique")
+const rubriqueController = require("../controllers/rubrique")
 
 
-router.get("/getAllRubrique", paysRubrique.getAllRubrique)
-router.get("/getRubriqueById/:id", paysRubrique.getRubriqueById)
-router.post("/addRubrique", paysRubrique.addRubrique)
-router.put("/updateRubrique", paysRubrique.updateRubrique)
-router.delete("/deleteRubrique/:id", paysRubrique.deleteRubrique)
+router.get("/getAllRubrique", rubriqueController.getAllRubrique)
+router.get("/getRubriqueById/:id", rubriqueController.getRubriqueById)
+router.post("/addRubrique", rubriqueController.addRubrique)
+router.put("/updateRubrique", rubriqueController.updateRubrique)
+router.delete("/deleteRubrique/:id", rubriqueController.deleteRubrique)
 
 module.exports = router
