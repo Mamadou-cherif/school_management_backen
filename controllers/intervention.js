@@ -27,7 +27,9 @@ function interventionSelectBy(req, res, next) {
 
 function addIntervention(req, res, next) {
   const interventionObj = {
+
     prestataireId: req.body.prestataireId,
+    projetId: req.body.projetId,
     estActif: 1,
 
   }
@@ -54,7 +56,7 @@ function addIntervention(req, res, next) {
           .catch(error => console.log(error))
       }
       else {
-        res.status(400).json({ error: "duplicata du prestataire" })
+        res.status(400).json({ error: "Ce prestataire intervient déjà sur ce projet" })
       }
     })
     .catch(error => res.status(400).json(error))
@@ -90,6 +92,7 @@ function disableIntervention(req, res, next) {
 function updateIntervention(req, res, next) {
   const interventionObj = {
     prestataireId: req.body.prestataireId,
+    projetId: req.body.projetId,
     estActif: 1
   }
   Intervention.InterventionSelectByInModel(interventionObj)
@@ -115,7 +118,7 @@ function updateIntervention(req, res, next) {
           .catch(() => res.status(400).json({ error: "Echec de la modification!" }))
       }
       else {
-        res.status(400).json({ error: "duplicata du prestataire" })
+        res.status(400).json({ error: "Ce prestataire intervient déjà sur ce projet" })
       }
     })
     .catch(error => res.status(400).json(error))
