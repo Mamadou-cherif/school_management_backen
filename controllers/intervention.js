@@ -2,28 +2,6 @@ const Intervention = require("../models/intervention")
 
 const initInterventionClass = require("../classes/intervention")
 
-function interventionSelectBy(req, res, next) {
-  const intervention = {
-    id: req.body.id || null,
-    prestataireId: req.body.prestataireId || null,
-    projetId: req.body.projetId || null,
-    categorie: req.body.categorie || null,
-    observations: req.body.observations || null,
-    estActif: 1,
-    creationDate: req.body.creationDate || null,
-    creationUserId: req.body.creationUserId || null,
-    modifDate: req.body.modifDate || null,
-    modifUserId: req.body.modifUserId || null,
-    debut: req.body.debut || null,
-    fin: req.body.fin || null
-  }
-
-  Intervention.InterventionSelectByInModel(intervention)
-    .then(intervention => res.status(200).json(intervention))
-    .catch(error => res.status(400).json({ error }))
-
-}
-
 
 function addIntervention(req, res, next) {
   const interventionObj = {
@@ -34,22 +12,14 @@ function addIntervention(req, res, next) {
 
   }
   Intervention.InterventionSelectByInModel(interventionObj)
-    .then(intervention => {
-
+  .then(intervention => {
       if ((intervention.length == 0)) {
         const interventionObj = {
-          id: req.body.id || null,
-          prestataireId: req.body.prestataireId || null,
-          projetId: req.body.projetId || null,
-          categorie: req.body.categorie || null,
-          observations: req.body.observations || null,
-          estActif: 1,
-          creationDate: req.body.creationDate || null,
-          creationUserId: req.body.creationUserId || null,
-          modifDate: req.body.modifDate || null,
-          modifUserId: req.body.modifUserId || null,
-          debut: req.body.debut || null,
-          fin: req.body.fin || null
+            prestataireId: req.body.prestataireId,
+            projetId: req.body.projetId,
+            categorie: req.body.categorie,
+            observations: req.body.observations || null,
+            creationUserId: req.body.creationUserId || null
         }
         Intervention.addInterventionInModel(interventionObj)
           .then(() => res.status(200).json({ succes: "L'ajout a réussi!" }))
@@ -86,9 +56,6 @@ function disableIntervention(req, res, next) {
 }
 
 
-
-
-
 function updateIntervention(req, res, next) {
   const interventionObj = {
     prestataireId: req.body.prestataireId,
@@ -100,18 +67,14 @@ function updateIntervention(req, res, next) {
 
       if ((intervention.length == 0) || (intervention[0].id == req.body.id)) {
         const interventionObj = {
-          id: req.body.id || null,
-          prestataireId: req.body.prestataireId || null,
-          projetId: req.body.projetId || null,
-          categorie: req.body.categorie || null,
+          id: req.body.id ,
+          prestataireId: req.body.prestataireId ,
+          projetId: req.body.projetId ,
+          categorie: req.body.categorie ,
           observations: req.body.observations || null,
-          estActif: 1,
-          creationDate: req.body.creationDate || null,
-          creationUserId: req.body.creationUserId || null,
-          modifDate: req.body.modifDate || null,
-          modifUserId: req.body.modifUserId || null,
-          debut: req.body.debut || null,
-          fin: req.body.fin || null
+          modifDate: req.body.modifDate,
+          modifUserId: req.body.modifUserId,
+         
         }
         Intervention.updateInterventionInModel(interventionObj)
           .then(() => res.status(200).json({ succes: "La modification a réussi!" }))
@@ -134,7 +97,25 @@ function getAsingleIntervention(req, res, next) {
 }
 
 
-function getAllInterventions(req, res, next) {
+function interventionSelectBy(req, res, next) {
+  const intervention = {
+    id: req.body.id || null,
+    prestataireId: req.body.prestataireId || null,
+    projetId: req.body.projetId || null,
+    categorie: req.body.categorie || null,
+    observations: req.body.observations || null,
+    estActif: 1,
+    creationDate: req.body.creationDate || null,
+    creationUserId: req.body.creationUserId || null,
+    modifDate: req.body.modifDate || null,
+    modifUserId: req.body.modifUserId || null,
+    debut: req.body.debut || null,
+    fin: req.body.fin || null
+  }
+
+  Intervention.InterventionSelectByInModel(intervention)
+    .then(intervention => res.status(200).json(intervention))
+    .catch(error => res.status(400).json({ error }))
 
 }
 
@@ -148,6 +129,5 @@ module.exports = {
   addIntervention,
   updateIntervention,
   getAsingleIntervention,
-  getAllInterventions,
 }
 
