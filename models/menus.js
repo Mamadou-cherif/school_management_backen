@@ -182,14 +182,15 @@ function getMenuFilsByGroupeInModel(theReq) {
       [
         theReq.body.menuPereId,
         theReq.body.groupeId
-
       ],
 
       ((err, results, fields) => {
         if (err) {
           reject(err)
+        }else{
+          resolve(results[0])
         }
-        resolve(results[0])
+        
       })
     )
   })
@@ -326,12 +327,10 @@ function getAsingleMenuInModel(theReq) {
 
 function getFilsByPereInModel(theReq) {
   return new Promise((resolve, reject) => {
-
     connection.query("CALL menus_getFilsByPere(?)",
       [
         theReq.body.pereId
       ],
-
       ((err, results, fields) => {
         if (err) {
           reject(err)

@@ -49,10 +49,13 @@ function addOnglet(req, res, next) {
 
 
 //supression logique d'un utilisateur
-function disableOnglet(req, res, next) {
-  Onglet.disableOngletInModel(req, res)
-}
 
+function disableOnglet(req, res, next){
+  Onglet.disableOngletInModel(req)
+  .then(()=> res.status(200).json({succes: "La suppression a reussi"}))
+  .catch(error => res.status(400).json(console.log(error)))
+
+}
 function getOngletByGroupe(req, res, next) {
   Onglet.getOngletByGroupeModel(req)
     .then(onglets => res.status(201).json(onglets))
@@ -80,8 +83,10 @@ function getOngletById(req, res, next) {
 
 function checkIfOngletExists(req, res, next) {
   objOnglet = {
-    menuId: req.body.menuId
+    menuId: req.body.menuId,
+    estActif:1
   }
+  
   Onglet.checkIfOngletExists(objOnglet)
     .then(onglet => res.status(200).json(onglet))
     .catch(error => res.status(400).json({ error }))

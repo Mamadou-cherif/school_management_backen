@@ -98,24 +98,26 @@ function getOngletByIdInModel(theReq) {
 
 }
 
+
 //supression en logique d'un utilisateur
-function disableOngletInModel(theReq, theResponse) {
-  return new Promise((reject, resolve) => {
+function disableOngletInModel(theReq) {
+  return new Promise((resolve, reject) => {
 
     connection.query("CALL onglets_disable(?,?,?)",
       [
         theReq.body.id,
         theReq.body.modifUserId,
-        theReq.body.modifDate
+        theReq.body.modifDate,
+ 
       ],
-      (err, results, fields) => {
+
+      ((err, results, fields) => {
         if (err) {
-          theResponse.status(400).json({ succes: "La suppression logique a échoué" })
+          reject(err)
         }
-        else {
-          theResponse.status(200).json({ succes: "La suppression logique a bien reussie" })
-        }
+        resolve(results[0])
       })
+    )
   })
 }
 

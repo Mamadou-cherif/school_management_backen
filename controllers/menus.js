@@ -131,17 +131,18 @@ function disableMenu(req, res, next){
 // ramene tous les menus d'un groupe donné
 
 function getMenuFilsByGroupe(req, res, next){
+
     Menu.getMenuFilsByGroupeInModel(req)
       .then(menu=> res.status(200).json(menu))
-      .catch(()=> res.status(400).json({error: "erreur"}))
+      .catch((error)=> res.status(400).json({error: "erreur"}))
 } 
+
 
 function getFilsByPere(req, res, next){
   Menu.getFilsByPereInModel(req)
     .then(menu=> res.status(200).json(menu))
     .catch(()=> res.status(400).json({error: "erreur"}))
 } 
-
 // ramene tous les menus qui ont des onglets 
 function getWithOnglets(req, res, next){
   Menu.getWithOngletsInModels(req)
