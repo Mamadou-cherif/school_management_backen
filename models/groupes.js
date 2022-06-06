@@ -44,7 +44,7 @@ function addGroupeInModel(theReq) {
           connection.query("CALL groupes_insert(?,?,?)", 
                       [
                         theReq.libelle,
-                        theReq.prestataireId,
+                        theReq.observations,
                         theReq.creationUserId,
                       
                       ],

@@ -21,50 +21,36 @@ function addPrestataire(req, res, next) {
 
       if ((presta.length == 0)) {
         const prestataireObj = {
-          sigle: req.body.sigle,
+          telephone: req.body.telephone,
           estActif: 1
         }
+
         Prestataire.prestataireSelectByInModel(prestataireObj)
           .then(presta => {
-            if ((presta.length == 0)) {
+            if (((presta.length == 0))) {
+
               const prestataireObj = {
+
+                type: req.body.type,
+                categorie: req.body.categorie,
+                localisation: req.body.localisation,
+                nom: req.body.nom,
+                sigle: req.body.sigle,
                 telephone: req.body.telephone,
-                estActif: 1
+                email: req.body.email,
+                adresse: req.body.adresse,
+                localiteId: req.body.localiteId,
+                partenaireLocalId: req.body.partenaireLocalId,
+                observations: req.body.observations,
+                creationUserId: req.body.creationUserId
               }
-
-              Prestataire.prestataireSelectByInModel(prestataireObj)
-                .then(presta => {
-                  if (((presta.length == 0))) {
-
-                    const prestataireObj = {
-
-                      type: req.body.type,
-                      categorie: req.body.categorie,
-                      localisation: req.body.localisation,
-                      nom: req.body.nom,
-                      sigle: req.body.sigle,
-                      telephone: req.body.telephone,
-                      email: req.body.email,
-                      adresse: req.body.adresse,
-                      localiteId: req.body.localiteId,
-                      partenaireLocalId: req.body.partenaireLocalId,
-                      observations: req.body.observations,
-                      creationUserId: req.body.creationUserId
-                    }
-                    Prestataire.addPrestataireInModel(prestataireObj)
-                      .then(() => res.status(200).json({ succes: "la création a reussi" }))
-                      .catch(() => res.status(400).json({ error: "Erreur de la procédure stocké d'ajout" }));
-
-                  }
-                  else {
-                    return res.status(400).json({ error: "Le télephone doit être unique " })
-                  }
-                })
-                .catch()
+              Prestataire.addPrestataireInModel(prestataireObj)
+                .then(() => res.status(200).json({ succes: "la création a reussi" }))
+                .catch(() => res.status(400).json({ error: "Erreur de la procédure stocké d'ajout" }));
 
             }
             else {
-              return res.status(400).json({ error: "Duplicata du sigle du prestataire" })
+              return res.status(400).json({ error: "Le télephone doit être unique " })
             }
           })
           .catch()
@@ -97,59 +83,46 @@ function updatePrestataire(req, res, next) {
 
   Prestataire.prestataireSelectByInModel(prestataireObj)
     .then(presta => {
-      (presta);
+
       if ((presta.length == 0) || (presta[0].id == req.body.id)) {
         const prestataireObj = {
-          sigle: req.body.sigle,
+          telephone: req.body.telephone,
           estActif: 1
         }
+
         Prestataire.prestataireSelectByInModel(prestataireObj)
           .then(presta => {
             if (((presta.length == 0) || (presta[0].id == req.body.id))) {
+
               const prestataireObj = {
+                id: req.body.id,
+                type: req.body.type,
+                categorie: req.body.categorie,
+                localisation: req.body.localisation,
+                nom: req.body.nom,
+                sigle: req.body.sigle,
                 telephone: req.body.telephone,
-                estActif: 1
+                email: req.body.email,
+                adresse: req.body.adresse,
+                localiteId: req.body.localiteId,
+                partenaireLocalId: req.body.partenaireLocalId,
+                observations: req.body.observations,
+                modifDate: req.body.modifDate,
+                modifUserId: req.body.modifUserId
+
               }
 
-              Prestataire.prestataireSelectByInModel(prestataireObj)
-                .then(presta => {
-                  if (((presta.length == 0) || (presta[0].id == req.body.id))) {
-
-                    const prestataireObj = {
-                      id: req.body.id,
-                      type: req.body.type,
-                      categorie: req.body.categorie,
-                      localisation: req.body.localisation,
-                      nom: req.body.nom,
-                      sigle: req.body.sigle,
-                      telephone: req.body.telephone,
-                      email: req.body.email,
-                      adresse: req.body.adresse,
-                      localiteId: req.body.localiteId,
-                      partenaireLocalId: req.body.partenaireLocalId,
-                      observations: req.body.observations,
-                      modifDate: req.body.modifDate,
-                      modifUserId: req.body.modifUserId
-
-                    }
-                    console.log("upd", prestataireObj);
-                    Prestataire.updatePrestataireInModel(prestataireObj)
-                      .then(() => res.status(201).json({ succes: "la modification a reussi" }))
-                      .catch(() => res.status(400).json({ error: "Erreur de la procédure stocké de modification" }));
-
-                  }
-                  else {
-                    return res.status(400).json({ error: "Le télephone doit être unique " })
-                  }
-                })
-                .catch()
+              Prestataire.updatePrestataireInModel(prestataireObj)
+                .then(() => res.status(201).json({ succes: "la modification a reussi" }))
+                .catch(() => res.status(400).json({ error: "Erreur de la procédure stocké de modification" }));
 
             }
             else {
-              return res.status(400).json({ error: "Duplicata du sigle du prestataire" })
+              return res.status(400).json({ error: "Le télephone doit être unique " })
             }
           })
           .catch()
+      
 
       }
       else {
@@ -170,7 +143,7 @@ function disablePrestataire(req, res, next) {
     modifUserId: req.body.modifUserId,
     modifDate: req.body.modifDate,
   }
-    ("dis", obj);
+
 
   Prestataire.disablePrestataireInModel(obj)
     .then(() => res.status(201).json({ succes: "la suppression a reussi" }))

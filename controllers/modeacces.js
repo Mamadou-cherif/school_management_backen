@@ -18,15 +18,15 @@ function addModeAcces(req, res,next){
           .then(modeaccess=> {
                 if(modeaccess.length==0){
                       ModeAcces.addModeAccesInModel(req)
-                          .then(()=> res.status(201).json({succes: "la création a reussi"}))
-                          .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
+                          .then(()=> res.status(201).json({succes: "Ajout effectué avec succès"}))
+                          .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
                 }
                 else
                    {
-                     res.status(500).json({error: "Ce ModeAcces existe déjà"})
+                     res.status(500).json({error: "Ce mode accès existe déjà"})
                    }
           })
-          .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
+          .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
 }
 
 function getAllModeAccess(req, res, next) {
@@ -141,22 +141,23 @@ function updateModeAcces(req, res, next){
         }
         ModeAcces.checkIfModeAccesExists(objModeAcces)
             .then(modeaccess=> {
+              console.log(modeaccess)
                   if((modeaccess.length==0) || (modeaccess[0].id== req.body.id)){
                     initModeAccesClass.modeaccess.id= req.body.id
                     initModeAccesClass.modeaccess.libelle= req.body.libelle
                     initModeAccesClass.modeaccess.modifDate= req.body.modifDate
                     initModeAccesClass.modeaccess.modifUserId= req.body.modifUserId
                       ModeAcces.updateModeAccesInModel(initModeAccesClass.modeaccess)
-                          .then(()=> res.status(201).json({succes: "la modification a reussi"}))
-                          .catch(()=> res.status(400).json({error: "erreur de la procédure stockée de modification"}));
+                          .then(()=> res.status(201).json({succes: "Modification effectuée avec succès"}))
+                          .catch(()=> res.status(400).json({error: "Erreur de la procédure stockée de modification"}));
                   
                   }
                   else
                       {
-                        res.status(500).json({error: "Ce ModeAcces existe déjà"})
+                        res.status(500).json({error: "Ce mode accès existe déjà"})
                       }
             })
-            .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
+            .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
         
       
  
@@ -170,20 +171,14 @@ function selectModeAccesById(req, res, next) {
     .catch(() => res.status(400).json({}))
 }
 
-
-function updateModeAcces(req, res, next) {
-
-  initModeAccesClass.modeaccess.id = req.body.id
-  initModeAccesClass.modeaccess.libelle = req.body.libelle
-  initModeAccesClass.modeaccess.modifDate = req.body.modifDate
-  initModeAccesClass.modeaccess.modifUserId = req.body.modifUserId
-  ModeAcces.updateModeAccesInModel(initModeAccesClass.modeaccess)
-    .then(() => res.status(201).json({ succes: "la modification a reussi" }))
-    .catch(() => res.status(400).json({ error: "erreur de la procédure stockée de modification" }));
-
+function deleteModeAcces(req, res, next) {
+  ModeAcces.deleteModeAccesInModel(req.params.id)
+    .then(() => res.status(201).json({ succes: "Suppression effectuée avec succès" }))
+    .catch(() => res.status(400).json({ error: "Suppression impossible, cette donnée est dans une autre table" }));
 }
 
 module.exports = {
+  deleteModeAcces,
   selectModeAccesById,
   updateModeAcces,
   getAffectedByOngletAndGroupe,

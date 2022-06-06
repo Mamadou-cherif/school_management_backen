@@ -2,59 +2,31 @@ const Intervention = require("../models/intervention")
 
 const initInterventionClass = require("../classes/intervention")
 
-function interventionSelectBy(req, res, next) {
-  const intervention = {
-    id: req.body.id || null,
-    prestataireId: req.body.prestataireId || null,
-    projetId: req.body.projetId || null,
-    categorie: req.body.categorie || null,
-    observations: req.body.observations || null,
-    estActif: 1,
-    creationDate: req.body.creationDate || null,
-    creationUserId: req.body.creationUserId || null,
-    modifDate: req.body.modifDate || null,
-    modifUserId: req.body.modifUserId || null,
-    debut: req.body.debut || null,
-    fin: req.body.fin || null
-  }
-
-  Intervention.InterventionSelectByInModel(intervention)
-    .then(intervention => res.status(200).json(intervention))
-    .catch(error => res.status(400).json({ error }))
-
-}
-
 
 function addIntervention(req, res, next) {
   const interventionObj = {
+
     prestataireId: req.body.prestataireId,
+    projetId: req.body.projetId,
     estActif: 1,
 
   }
   Intervention.InterventionSelectByInModel(interventionObj)
-    .then(intervention => {
-      console.log(intervention)
+  .then(intervention => {
       if ((intervention.length == 0)) {
         const interventionObj = {
-          id: req.body.id ,
-          prestataireId: req.body.prestataireId ,
-          projetId: req.body.projetId ,
-          categorie: req.body.categorie ,
-          observations: req.body.observations ,
-          estActif: 1,
-          creationDate: req.body.creationDate ,
-          creationUserId: req.body.creationUserId ,
-          modifDate: req.body.modifDate ,
-          modifUserId: req.body.modifUserId ,
-          debut: req.body.debut ,
-          fin: req.body.fin 
+            prestataireId: req.body.prestataireId,
+            projetId: req.body.projetId,
+            categorie: req.body.categorie,
+            observations: req.body.observations,
+            creationUserId: req.body.creationUserId
         }
         Intervention.addInterventionInModel(interventionObj)
           .then(() => res.status(200).json({ succes: "L'ajout a réussi!" }))
           .catch(error => console.log(error))
       }
       else {
-        res.status(400).json({ error: "duplicata du prestataire" })
+        res.status(400).json({ error: "Ce prestataire intervient déjà sur ce projet" })
       }
     })
     .catch(error => res.status(400).json(error))
@@ -84,38 +56,32 @@ function disableIntervention(req, res, next) {
 }
 
 
-
-
-
 function updateIntervention(req, res, next) {
   const interventionObj = {
     prestataireId: req.body.prestataireId,
+    projetId: req.body.projetId,
     estActif: 1
   }
   Intervention.InterventionSelectByInModel(interventionObj)
     .then(intervention => {
-      console.log(intervention)
+
       if ((intervention.length == 0) || (intervention[0].id == req.body.id)) {
         const interventionObj = {
           id: req.body.id ,
           prestataireId: req.body.prestataireId ,
           projetId: req.body.projetId ,
           categorie: req.body.categorie ,
-          observations: req.body.observations ,
-          estActif: 1,
-          creationDate: req.body.creationDate ,
-          creationUserId: req.body.creationUserId ,
-          modifDate: req.body.modifDate ,
-          modifUserId: req.body.modifUserId ,
-          debut: req.body.debut ,
-          fin: req.body.fin 
+          observations: req.body.observations,
+          modifDate: req.body.modifDate,
+          modifUserId: req.body.modifUserId,
+         
         }
         Intervention.updateInterventionInModel(interventionObj)
           .then(() => res.status(200).json({ succes: "La modification a réussi!" }))
           .catch(() => res.status(400).json({ error: "Echec de la modification!" }))
       }
       else {
-        res.status(400).json({ error: "duplicata du prestataire" })
+        res.status(400).json({ error: "Ce prestataire intervient déjà sur ce projet" })
       }
     })
     .catch(error => res.status(400).json(error))
@@ -131,7 +97,25 @@ function getAsingleIntervention(req, res, next) {
 }
 
 
-function getAllInterventions(req, res, next) {
+function interventionSelectBy(req, res, next) {
+  const intervention = {
+    id: req.body.id || null,
+    prestataireId: req.body.prestataireId || null,
+    projetId: req.body.projetId || null,
+    categorie: req.body.categorie || null,
+    observations: req.body.observations || null,
+    estActif: 1,
+    creationDate: req.body.creationDate || null,
+    creationUserId: req.body.creationUserId || null,
+    modifDate: req.body.modifDate || null,
+    modifUserId: req.body.modifUserId || null,
+    debut: req.body.debut || null,
+    fin: req.body.fin || null
+  }
+
+  Intervention.InterventionSelectByInModel(intervention)
+    .then(intervention => res.status(200).json(intervention))
+    .catch(error => res.status(400).json({ error }))
 
 }
 
@@ -145,6 +129,5 @@ module.exports = {
   addIntervention,
   updateIntervention,
   getAsingleIntervention,
-  getAllInterventions,
 }
 

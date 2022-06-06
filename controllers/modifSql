@@ -1,93 +1,140 @@
 USE `suiviprojetpublic`;
-DROP procedure IF EXISTS `projets_selectBy`;
+DROP procedure IF EXISTS `menus_getMenuFilsByGroupe`;
 
 USE `suiviprojetpublic`;
-DROP procedure IF EXISTS `suiviprojetpublic`.`projets_selectBy`;
-
+DROP procedure IF EXISTS `suiviprojetpublic`.`menus_getMenuFilsByGroupe`;
+;
 
 DELIMITER $$
 USE `suiviprojetpublic`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `projets_selectBy`(`id` INT, `programmeId` INT, `code` VARCHAR(5), `titre` TEXT, `description` TEXT, `prioriteId` INT, `nature` VARCHAR(45), `modalites` TEXT, `duree` INT, `debut` DATE, `fin` DATE, `statutId` INT, `observations` TEXT, `estActif` TINYINT, `creationDate` DATETIME, `creationUserId` INT, `modifDate` DATETIME, `modifUserId` INT, `debutDonnees` INT, `finDonnees` INT)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_getMenuFilsByGroupe`(`menuPereId` INT, `groupeId` INT)
 BEGIN
+    SELECT `menus`.`id`,
+    `menus`.`reference`,
+    `menus`.`libelle`,
+    `menus`.`descriptions`,
+    `menus`.`url`,
+    `menus`.`menuPereId`,
+    `menus`.`ordre`,
+    `menus`.`typeMenu`,
+    `menus`.`image`,
+    `menus`.`estActif`,
+    `menus`.`creationDate`,
+    `menus`.`creationUserId`,
+    `menus`.`modifDate`,
+    `menus`.`modifUserId`
+	FROM `menus`
+    WHERE `menus`.`menuPereId` = menuPereId
+    AND `menus`.`estActif` = 1
+    AND `menus`.`id` NOT IN (
+        SELECT distinct(`privileges`.`menuId`)
+        FROM `privileges`
+        INNER JOIN `menus` ON `privileges`.`menuId` = `menus`.`id`
+        WHERE `menus`.`menuPereId` = menuPereId
+        AND `privileges`.`groupeId` = groupeId
+        AND `privileges`.`modeAccesId` = 
+        (
+            SELECT `modeaccess`.`id` FROM `modeaccess` WHERE `modeaccess`.`libelle` ='Tout' and `modeaccess`.`estActif`=1
+        )
+    )
+    ORDER BY `menus`.`ordre`;
+END$$
+
+DELIMITER ;
+;
+
+
+
+USE `suiviprojetpublic`;
+DROP procedure IF EXISTS `onglets_getOngletByGroupe`;
+
+USE `suiviprojetpublic`;
+DROP procedure IF EXISTS `suiviprojetpublic`.`onglets_getOngletByGroupe`;
+;
+
+DELIMITER $$
+USE `suiviprojetpublic`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `onglets_getOngletByGroupe`(`menuId` INT, `groupeId` INT)
+BEGIN
+   SELECT 
+    `onglets`.`id`,
+    `onglets`.`menuId`,
+    `onglets`.`reference`,
+    `onglets`.`libelle`,
+    `onglets`.`descriptions`,
+    `onglets`.`type`,
+    `onglets`.`ordre`,
+    `onglets`.`url`,
+    `onglets`.`image`,
+    `onglets`.`estActif`,
+    `onglets`.`creationDate`,
+    `onglets`.`creationUserId`,
+    `onglets`.`modifDate`,
+    `onglets`.`modifUserId`
+    FROM `onglets`
+    WHERE `onglets`.`menuId` = menuId
+    AND `onglets`.`estActif` = 1
+    AND `onglets`.`id` NOT IN (
+        SELECT distinct(`privileges`.`ongletId`)
+        FROM `privileges`
+        INNER JOIN `onglets` ON `privileges`.`ongletId` = `onglets`.`id`
+        WHERE `onglets`.`menuId` = menuId
+        AND `privileges`.`groupeId` = groupeId
+        AND `privileges`.`modeAccesId` = 
+        (
+            SELECT `modeaccess`.`id` FROM `modeaccess` WHERE `modeaccess`.`libelle` ='Tout' and `modeaccess`.`estActif`=1
+        )
+    )
+    ORDER BY `onglets`.`ordre`;
+    
+END$$
+
+DELIMITER ;
+
+USE `suiviprojetpublic`;
+DROP procedure IF EXISTS `financement_selectBy`;
+
+DELIMITER $$
+CREATE  PROCEDURE `financement_selectBy`(IN `id` INT, IN `projetId` INT, IN `structureId` INT, IN `type` VARCHAR(20), IN `typeAppui` TEXT, IN `taux` INT, IN `observations` TEXT, IN `estActif` TINYINT, IN `creationDate` DATETIME, IN `creationUserId` INT, IN `modifDate` DATETIME, IN `modifUserId` INT, IN `debutDonnees` INT, IN `finDonnees` INT)  BEGIN
 	DECLARE requeteSql varchar(500);
-	SET @requeteSql := 'SELECT
-		`projets`.`id`,
-		`projets`.`programmeId`,
-		`projets`.`code`,
-		`projets`.`titre`,
-		`projets`.`description`,
-		`projets`.`prioriteId`,
-        `priorites`.`code` as priorite,
-		`projets`.`nature`,
-		`projets`.`modalites`,
-		`projets`.`duree`,
-		`projets`.`debut`,
-		`projets`.`fin`,
-		`projets`.`statutId`,
-        `statutprojets`.`code` as statutProjet,
-		`projets`.`observations`,
-		`projets`.`estActif`,
-		`projets`.`creationDate`,
-		`projets`.`creationUserId`,
-		`projets`.`modifDate`,
-		`projets`.`modifUserId`
-		FROM `projets`
-        INNER JOIN `priorites` ON `projets`.`prioriteId` =  `priorites`.`id`
-        INNER JOIN `statutprojets` ON `projets`.`statutId` =  `statutprojets`.`id`
-		WHERE 1';
+	SET @requeteSql := 'SELECT\r\n\t\t`financement`.`id`,\r\n\t\t`financement`.`projetId`,\r\n        `projets`.`titre` as projet,\r\n        `projets`.`code` as codeProjet,\r\n        `structures`.`nom` as structure,\r\n  `structures`.`telephone1` as telephone,\r\n\t\t`financement`.`structureId`,\r\n\t\t`financement`.`type`,\r\n        `priorites`.`code` as priorite,\r\n        `statutprojets`.`code` as statutProjet,\r\n\t\t`financement`.`typeAppui`,\r\n\t\t`financement`.`taux`,\r\n\t\t`financement`.`observations` \r\n\t\tFROM `financement`\r\n        INNER JOIN `projets` ON `financement`.`projetId`=`projets`.`id`\r\n        INNER JOIN `structures` ON `financement`.`structureId`=`structures`.`id`
+    INNER JOIN `priorites` ON `projets`.`prioriteId` =  `priorites`.`id`\r\n        INNER JOIN `statutprojets` ON `projets`.`statutId` =  `statutprojets`.`id`
+    \r\n\t\tWHERE 1';
 		IF id IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`id` = ',id);
+			SET @requeteSql := CONCAT(@requeteSql, ' AND `financement`.`id` = ',id);
 		END IF;
-		IF programmeId IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`programmeId` = ',programmeId);
+		IF projetId IS NOT NULL THEN
+			SET @requeteSql := CONCAT(@requeteSql, ' AND `financement`.`projetId` = ',projetId);
 		END IF;
-		IF code IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`code` = "',code,'"');
+		IF structureId IS NOT NULL THEN
+			SET @requeteSql := CONCAT(@requeteSql, ' AND `financement`.`structureId` = ',structureId);
 		END IF;
-		IF titre IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`titre` = "',titre,'"');
+		IF type IS NOT NULL THEN
+			SET @requeteSql := CONCAT(@requeteSql, ' AND `financement`.`type` = "',type,'"');
 		END IF;
-		IF description IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`description` = "',description,'"');
+		IF typeAppui IS NOT NULL THEN
+			SET @requeteSql := CONCAT(@requeteSql, ' AND `financement`.`typeAppui` = "',typeAppui,'"');
 		END IF;
-		IF prioriteId IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`prioriteId` = ',prioriteId);
-		END IF;
-		IF nature IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`nature` = "',nature,'"');
-		END IF;
-		IF modalites IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`modalites` = "',modalites,'"');
-		END IF;
-		IF duree IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`duree` = ',duree);
-		END IF;
-		IF debut IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`debut` = "',debut,'"');
-		END IF;
-		IF fin IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`fin` = "',fin,'"');
-		END IF;
-		IF statutId IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`statutId` = ',statutId);
+		IF taux IS NOT NULL THEN
+			SET @requeteSql := CONCAT(@requeteSql, ' AND `financement`.`taux` = ',taux);
 		END IF;
 		IF observations IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`observations` = "',observations,'"');
+			SET @requeteSql := CONCAT(@requeteSql, ' AND `financement`.`observations` = "',observations,'"');
 		END IF;
 		IF estActif IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`estActif` = ',estActif);
+			SET @requeteSql := CONCAT(@requeteSql, ' AND `financement`.`estActif` = ',estActif);
 		END IF;
 		IF creationDate IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`creationDate` = "',creationDate,'"');
+			SET @requeteSql := CONCAT(@requeteSql, ' AND `financement`.`creationDate` = "',creationDate,'"');
 		END IF;
 		IF creationUserId IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`creationUserId` = ',creationUserId);
+			SET @requeteSql := CONCAT(@requeteSql, ' AND `financement`.`creationUserId` = ',creationUserId);
 		END IF;
 		IF modifDate IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`modifDate` = "',modifDate,'"');
+			SET @requeteSql := CONCAT(@requeteSql, ' AND `financement`.`modifDate` = "',modifDate,'"');
 		END IF;
 		IF modifUserId IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`modifUserId` = ',modifUserId);
+			SET @requeteSql := CONCAT(@requeteSql, ' AND `financement`.`modifUserId` = ',modifUserId);
 		END IF;
 		IF debutDonnees IS NOT NULL THEN
 			SET @requeteSql := CONCAT(@requeteSql, ' LIMIT ', debutDonnees, ',', finDonnees);
@@ -101,18 +148,62 @@ END$$
 
 DELIMITER ;
 
+USE `suiviprojetpublic`;
+DROP procedure IF EXISTS `prestataires_selectById`;
 
+USE `suiviprojetpublic`;
+DROP procedure IF EXISTS `suiviprojetpublic`.`prestataires_selectById`;
+;
 
+DELIMITER $$
+USE `suiviprojetpublic`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `prestataires_selectById`(IN `id` INT)
+BEGIN
+	SELECT
+		`prestataires`.`id`,
+		`prestataires`.`type`,
+		`prestataires`.`categorie`,
+		`prestataires`.`localisation`,
+		`prestataires`.`nom`,
+		`prestataires`.`sigle`,
+		`prestataires`.`telephone`,
+		`prestataires`.`email`,
+		`prestataires`.`adresse`,
+		`prestataires`.`localiteId`,
+         `communes`.`id` as communeId,
+         `prefectures`.`id` as prefectureId,
+          `regions`.`id` as regionId,
+          `regions`.`paysId` as paysId,
+            `payss`.`indicatifTel`,
+		`prestataires`.`partenaireLocalId`,
+		`prestataires`.`observations`,
+		`prestataires`.`estActif`,
+		`prestataires`.`creationDate`,
+		`prestataires`.`creationUserId`,
+		`prestataires`.`modifDate`,
+		`prestataires`.`modifUserId`
+	FROM `prestataires`
+    INNER JOIN `quartierdistricts` ON `prestataires`.`localiteId`=`quartierdistricts`.`id`
+    INNER JOIN `communes` ON `quartierdistricts`.`communeId`=`communes`.`id`
+    INNER JOIN `prefectures` ON `communes`.`prefectureId`=`prefectures`.`id`
+     INNER JOIN `regions` ON `prefectures`.`regionId`=`regions`.`id`
+      INNER JOIN `payss` ON `regions`.`paysId`=`payss`.`id`
+	WHERE `prestataires`.`id` = id;
+END$$
 
-
-
+DELIMITER ;
+;
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `interventions_selectBy`;
 
+USE `suiviprojetpublic`;
+DROP procedure IF EXISTS `suiviprojetpublic`.`interventions_selectBy`;
+;
 
 DELIMITER $$
-CREATE  PROCEDURE `interventions_selectBy`(`id` INT, `prestataireId` INT, `projetId` INT, `categorie` VARCHAR(20), `observations` TEXT, `estActif` TINYINT, `creationDate` DATETIME, `creationUserId` INT, `modifDate` DATETIME, `modifUserId` INT, `debutDonnees` INT, `finDonnees` INT)
+USE `suiviprojetpublic`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `interventions_selectBy`(`id` INT, `prestataireId` INT, `projetId` INT, `categorie` VARCHAR(20), `observations` TEXT, `estActif` TINYINT, `creationDate` DATETIME, `creationUserId` INT, `modifDate` DATETIME, `modifUserId` INT, `debutDonnees` INT, `finDonnees` INT)
 BEGIN
 	DECLARE requeteSql varchar(500);
 	SET @requeteSql := 'SELECT
@@ -123,6 +214,7 @@ BEGIN
         `prestataires`.`categorie`,
         `prestataires`.`telephone`,
         `projets`.`titre` as projet,
+         `projets`.`code` as codeProjet,
         `statutprojets`.`code` as statutProjet,
 		`interventions`.`projetId`,
 	   `priorites`.`code` as priorite,
@@ -175,330 +267,8 @@ BEGIN
 END$$
 
 DELIMITER ;
+;
 
 
-
-
-
-ALTER TABLE `suiviprojetpublic`.`projets` 
-ADD COLUMN `objectif` TEXT NOT NULL AFTER `modalites`,
-CHANGE COLUMN `modalites` `modalites` VARCHAR(45) NULL DEFAULT NULL ;
-
-
-USE `suiviprojetpublic`;
-DROP procedure IF EXISTS `projets_selectBy`;
-
-USE `suiviprojetpublic`;
-DROP procedure IF EXISTS `suiviprojetpublic`.`projets_selectBy`;
-
-
-DELIMITER $$
-USE `suiviprojetpublic`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `projets_selectBy`(`id` INT, `programmeId` INT, `code` VARCHAR(5), `titre` TEXT, `description` TEXT, `prioriteId` INT, `nature` VARCHAR(45),`modalites` VARCHAR(45), `objectif` TEXT, `duree` INT, `debut` DATE, `fin` DATE, `statutId` INT, `observations` TEXT, `estActif` TINYINT, `creationDate` DATETIME, `creationUserId` INT, `modifDate` DATETIME, `modifUserId` INT, `debutDonnees` INT, `finDonnees` INT)
-BEGIN
-	DECLARE requeteSql varchar(500);
-	SET @requeteSql := 'SELECT
-		`projets`.`id`,
-		`projets`.`programmeId`,
-		`projets`.`code`,
-		`projets`.`titre`,
-		`projets`.`description`,
-		`projets`.`prioriteId`,
-        `priorites`.`code` as priorite,
-		`projets`.`nature`,
-		`projets`.`modalites`,
-		`projets`.`duree`,
-		`projets`.`debut`,
-		`projets`.`fin`,
-		`projets`.`statutId`,
-        `statutprojets`.`code` as statutProjet,
-		`projets`.`observations`,
-		`projets`.`estActif`,
-		`projets`.`creationDate`,
-		`projets`.`creationUserId`,
-		`projets`.`modifDate`,
-		`projets`.`modifUserId`
-		FROM `projets`
-        INNER JOIN `priorites` ON `projets`.`prioriteId` =  `priorites`.`id`
-        INNER JOIN `statutprojets` ON `projets`.`statutId` =  `statutprojets`.`id`
-		WHERE 1';
-		IF id IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`id` = ',id);
-		END IF;
-		IF programmeId IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`programmeId` = ',programmeId);
-		END IF;
-		IF code IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`code` = "',code,'"');
-		END IF;
-		IF titre IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`titre` = "',titre,'"');
-		END IF;
-		IF description IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`description` = "',description,'"');
-		END IF;
-		IF prioriteId IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`prioriteId` = ',prioriteId);
-		END IF;
-		IF nature IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`nature` = "',nature,'"');
-		END IF;
-		IF modalites IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`modalites` = "',modalites,'"');
-		END IF;
-        IF objectif IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`objectif` = "',objectif,'"');
-		END IF;
-		IF duree IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`duree` = ',duree);
-		END IF;
-		IF debut IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`debut` = "',debut,'"');
-		END IF;
-		IF fin IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`fin` = "',fin,'"');
-		END IF;
-		IF statutId IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`statutId` = ',statutId);
-		END IF;
-		IF observations IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`observations` = "',observations,'"');
-		END IF;
-		IF estActif IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`estActif` = ',estActif);
-		END IF;
-		IF creationDate IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`creationDate` = "',creationDate,'"');
-		END IF;
-		IF creationUserId IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`creationUserId` = ',creationUserId);
-		END IF;
-		IF modifDate IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`modifDate` = "',modifDate,'"');
-		END IF;
-		IF modifUserId IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`modifUserId` = ',modifUserId);
-		END IF;
-		IF debutDonnees IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' LIMIT ', debutDonnees, ',', finDonnees);
-		END IF;
-
-		PREPARE statement FROM @requeteSql;
-		EXECUTE statement;
-		DEALLOCATE PREPARE statement;
-
-END$$
-
-DELIMITER ;
-
-
-USE `suiviprojetpublic`;
-DROP procedure IF EXISTS `projets_update`;
-
-USE `suiviprojetpublic`;
-DROP procedure IF EXISTS `suiviprojetpublic`.`projets_update`;
-
-
-DELIMITER $$
-USE `suiviprojetpublic`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `projets_update`(`id` INT, `programmeId` INT, `code` VARCHAR(5), `titre` TEXT, `description` TEXT, `prioriteId` INT, `nature` VARCHAR(45),`modalites` VARCHAR(45), `objectif` TEXT, `duree` INT, `debut` DATE, `fin` DATE, `statutId` INT, `observations` TEXT, `modifDate` DATETIME, `modifUserId` INT)
-BEGIN
-	UPDATE `projets`
-	SET
-		`programmeId`= programmeId,
-		`code`= code,
-		`titre`= titre,
-		`description`= description,
-		`prioriteId`= prioriteId,
-		`nature`= nature,
-		`modalites`= modalites,
-        `objectif`= objectif,
-		`duree`= duree,
-		`debut`= debut,
-		`fin`= fin,
-		`statutId`= statutId,
-		`observations`= observations,
-		`modifDate`= CURRENT_TIMESTAMP,
-		`modifUserId`= modifUserId
-		WHERE `projets`.`id` = id 
- 		AND `modifDate` = modifDate;
-END$$
-
-DELIMITER ;
-
-
-USE `suiviprojetpublic`;
-DROP procedure IF EXISTS `projets_insert`;
-
-USE `suiviprojetpublic`;
-DROP procedure IF EXISTS `suiviprojetpublic`.`projets_insert`;
-
-
-DELIMITER $$
-USE `suiviprojetpublic`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `projets_insert`(`programmeId` INT, `code` VARCHAR(5), `titre` TEXT, `description` TEXT, `prioriteId` INT, `nature` VARCHAR(45),`modalites` VARCHAR(45), `objectif` TEXT, `duree` INT, `debut` DATE, `fin` DATE, `statutId` INT, `observations` TEXT, `creationUserId` INT)
-BEGIN
-	INSERT INTO `suiviprojetpublic`.`projets`(
-		`id`,
-		`programmeId`,
-		`code`,
-		`titre`,
-		`description`,
-		`prioriteId`,
-		`nature`,
-		`modalites`,
-        `objectif`,
-		`duree`,
-		`debut`,
-		`fin`,
-		`statutId`,
-		`observations`,
-		`creationDate`,
-		`creationUserId`,
-		`modifDate`,
-		`modifUserId`)
-		VALUES
-		(
-			null,
-			programmeId,
-			code,
-			titre,
-			description,
-			prioriteId,
-			nature,
-			modalites,
-            objectif,
-			duree,
-			debut,
-			fin,
-			statutId,
-			observations,
-			CURRENT_TIMESTAMP,
-			creationUserId,
-			CURRENT_TIMESTAMP,
-			creationUserId
-		);
-END$$
-
-DELIMITER ;
-
-
-USE `suiviprojetpublic`;
-DROP procedure IF EXISTS `projets_selectById`;
-
-USE `suiviprojetpublic`;
-DROP procedure IF EXISTS `suiviprojetpublic`.`projets_selectById`;
-
-
-DELIMITER $$
-USE `suiviprojetpublic`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `projets_selectById`(`id` INT)
-BEGIN
-	SELECT
-		`projets`.`id`,
-		`projets`.`programmeId`,
-		`projets`.`code`,
-		`projets`.`titre`,
-		`projets`.`description`,
-		`projets`.`prioriteId`,
-		`projets`.`nature`,
-		`projets`.`modalites`,
-        `projets`.`objectif`,
-		`projets`.`duree`,
-		`projets`.`debut`,
-		`projets`.`fin`,
-		`projets`.`statutId`,
-		`projets`.`observations`,
-		`projets`.`estActif`,
-		`projets`.`creationDate`,
-		`projets`.`creationUserId`,
-		`projets`.`modifDate`,
-		`projets`.`modifUserId`
-	FROM `projets`
-	WHERE `projets`.`id` = id;
-END$$
-
-DELIMITER ;
-
-
-
-
-USE `suiviprojetpublic`;
-DROP procedure IF EXISTS `suiviprojetpublic`.`projets_getStatutByProgrammeIdOrAxeId`;
-
-
-DELIMITER $$
-USE `suiviprojetpublic`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `projets_getStatutByProgrammeIdOrAxeId`(`programmeId` INT, `axeId` INT)
-BEGIN
-	DECLARE requeteSql varchar(500);
-	Set @requeteSql := 'SELECT
-		`projets`.`id`,
-        `projets`.`statutId`,
-        `statutprojets`.`libelle` as statutProjet,
-        `statutprojets`.`code` as codeStatut
-		FROM `projets`
-        INNER JOIN `statutprojets` ON `projets`.`statutId` =  `statutprojets`.`id`
-        INNER JOIN `programmes` ON `projets`.`programmeId` =  `programmes`.`id`
-        WHERE `projets`.`estActif` = 1  ';
-	    IF programmeId IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `projets`.`programmeId` = ',programmeId);
-		END IF;
-		IF axeId IS NOT NULL THEN
-			SET @requeteSql := CONCAT(@requeteSql, ' AND `programmes`.`axeId` = ',axeId);
-		END IF;
-	PREPARE statement FROM @requeteSql;
-	EXECUTE statement;
-	DEALLOCATE PREPARE statement;
-END$$
-
-DELIMITER ;
-
-USE `suiviprojetpublic`;
-DROP procedure IF EXISTS `structures_selectById`;
-
-USE `suiviprojetpublic`;
-DROP procedure IF EXISTS `suiviprojetpublic`.`structures_selectById`;
-
-
-DELIMITER $$
-USE `suiviprojetpublic`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `structures_selectById`(`id` INT)
-BEGIN
-	SELECT
-		`structures`.`id`,
-		`structures`.`categorieId`,
-		`structures`.`nom`,
-		`structures`.`sigle`,
-		`structures`.`logo`,
-		`structures`.`website`,
-		`structures`.`telephone1`,
-		`structures`.`telephone2`,
-		`structures`.`email`,
-		`structures`.`adresse`,
-		`structures`.`localiteId`,
-         `communes`.`id` as communeId,
-         `prefectures`.`id` as prefectureId,
-          `regions`.`id` as regionId,
-          `regions`.`paysId` as paysId,
-              `payss`.`indicatifTel`,
-		`structures`.`header`,
-		`structures`.`footer`,
-		`structures`.`observations`,
-		`structures`.`estActif`,
-		`structures`.`creationDate`,
-		`structures`.`creationUserId`,
-		`structures`.`modifDate`,
-		`structures`.`modifUserId`
-	FROM `structures`
-		INNER JOIN `quartierdistricts` ON `structures`.`localiteId`=`quartierdistricts`.`id`
-		INNER JOIN `communes` ON `quartierdistricts`.`communeId`=`communes`.`id`
-		INNER JOIN `prefectures` ON `communes`.`prefectureId`=`prefectures`.`id`
-		INNER JOIN `regions` ON `prefectures`.`regionId`=`regions`.`id`
-		INNER JOIN `payss` ON `regions`.`paysId`=`payss`.`id`
-	WHERE `structures`.`id` = id;
-END$$
-
-DELIMITER ;
 
 

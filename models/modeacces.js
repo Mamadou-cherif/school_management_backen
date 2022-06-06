@@ -35,6 +35,24 @@ function checkIfModeAccesExists(theReq) {
   })
 }
 
+function deleteModeAccesInModel(id) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL modeaccess_delete(?)",
+      [
+        id,
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
+}
 
 function addModeAccesInModel(theReq) {
   return new Promise((resolve, reject) => {
@@ -326,6 +344,7 @@ module.exports = {
   getNotAffectedByOngletAndGroupeInModel,
   getAffectedByOngletAndGroupeInModel,
   updateModeAccesInModel,
-  getModeAccesById
+  getModeAccesById,
+  deleteModeAccesInModel
 
 }

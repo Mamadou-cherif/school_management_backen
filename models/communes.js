@@ -33,9 +33,9 @@ function selectAllCommuneInModel(theReq) {
   return new Promise((resolve, reject) => {
     connection.query("CALL communes_selectAll(?,?,?)",
       [
-        theReq.body.estActif,
-        theReq.body.debut,
-        theReq.body.fin
+        1,
+        null,
+        null,
       ],
 
       ((err, results, fields) => {
@@ -111,7 +111,7 @@ function deleteCommuneInModel(id) {
       ((err, results, fields) => {
         if (err) {
           reject(err)
-        }else{
+        } else {
           resolve(results[0])
         }
       })

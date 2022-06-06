@@ -75,6 +75,7 @@ function addProjet(req, res,next){
         code: req.body.code,
         estActif: 1
       }
+      
 
       Projet.projetSelectByInModel(objProjet)
         .then(projet => {
