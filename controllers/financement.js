@@ -2,29 +2,37 @@ const Financement = require("../models/financement")
 const express = require("express")
 const bodyParser = require("body-parser")
 const app = express()
+const jwt = require("jsonwebtoken")
 app.use(bodyParser.json())
+const bcrypt = require("bcrypt")
 const initFinancementClass = require("../classes/financement")
 
 
 function addFinancement(req, res, next) {
-
-
     const financementObj = {
         structureId: req.body.structureId,
         projetId: req.body.projetId,
         estActif: 1
     }
+    console.log(financementObj)
     Financement.financementSelectByInModel(financementObj)
         .then(financement => {
             if (financement.length == 0) {
                 const financementObj = {
+                    id: req.body.id,
                     projetId: req.body.projetId,
                     structureId: req.body.structureId,
                     type: req.body.type,
                     typeAppui: req.body.typeAppui,
                     taux: req.body.taux,
                     observations: req.body.observations,
+                    estActif: 1,
+                    creationDate: req.body.creationDate,
                     creationUserId: req.body.creationUserId,
+                    modifDate: req.body.modifDate,
+                    modifUserId: req.body.modifUserId,
+                    debut: req.body.debut,
+                    fin: req.body.fin
 
                 }
                 Financement.addFinancementInModel(financementObj)
@@ -32,12 +40,13 @@ function addFinancement(req, res, next) {
                     .catch(() => res.status(400).json({ error: "erreur de la procédure stocké d'ajout" }));
             }
             else {
-                res.status(400).json({ succes: "dupplicata de la structure" })
+                res.status(400).json({ error: "dupplicata de la structure" })
             }
 
 
         })
         .catch(error => res.status(400).json(error))
+
 }
 
 
@@ -59,12 +68,10 @@ function disableFinancement(req, res, next) {
 
 function updateFinancement(req, res, next) {
     const financementObj = {
-        structureId: req.body.structureId,
         projetId: req.body.projetId,
+        structureId: req.body.structureId,
         estActif: 1,
     }
-
-
     Financement.financementSelectByInModel(financementObj)
         .then(financement => {
             if ((financement.length == 0) || (financement[0].id == req.body.id)) {
@@ -75,10 +82,11 @@ function updateFinancement(req, res, next) {
                     type: req.body.type,
                     typeAppui: req.body.typeAppui,
                     taux: req.body.taux,
-                    observations: req.body.observations || null,
-                    estActif: 1,
+                    observations: req.body.observations,
+                    creationDate: req.body.creationDate,
                     modifDate: req.body.modifDate,
                     modifUserId: req.body.modifUserId,
+
 
                 }
                 Financement.updateFinancementInModel(financementObj)
@@ -88,12 +96,7 @@ function updateFinancement(req, res, next) {
             else {
                 res.status(400).json({ succes: "dupplicata de la structure" })
             }
-
-
         })
-        .catch(error => res.status(400).json(error))
-
-
 }
 
 function financementSelectBy(req, res, next) {

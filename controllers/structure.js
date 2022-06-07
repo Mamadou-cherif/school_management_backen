@@ -19,55 +19,39 @@ function addStructure(req, res, next) {
 
       if ((structure.length == 0)) {
         const structureObj = {
-          sigle: req.body.sigle,
+          telephone1: req.body.telephone1,
           estActif: 1
         }
+
         Structure.structureSelectByInModel(structureObj)
-          .then(structure => {
+          .then(stru => {
+            if ((stru.length == 0)) {
+              const structure = {
 
-
-            if ((structure.length == 0)) {
-              const structureObj = {
+                categorieId: req.body.categorieId,
+                nom: req.body.nom,
+                sigle: req.body.sigle,
+                logo: req.body.logo,
+                website: req.body.website,
                 telephone1: req.body.telephone1,
-                estActif: 1
+                telephone2: req.body.telephone2,
+                email: req.body.email,
+                adresse: req.body.adresse,
+                localiteId: req.body.localiteId,
+                header: req.body.header,
+                footer: req.body.footer,
+                observations: req.body.observations,
+                creationUserId: req.body.creationUserId
+
               }
 
-              Structure.structureSelectByInModel(structureObj)
-                .then(stru => {
-                  if ((stru.length == 0)) {
-                    const structure = {
-
-                      categorieId: req.body.categorieId,
-                      nom: req.body.nom,
-                      sigle: req.body.sigle,
-                      logo: req.body.logo,
-                      website: req.body.website,
-                      telephone1: req.body.telephone1,
-                      telephone2: req.body.telephone2,
-                      email: req.body.email,
-                      adresse: req.body.adresse,
-                      localiteId: req.body.localiteId,
-                      header: req.body.header,
-                      footer: req.body.footer,
-                      observations: req.body.observations,
-                      creationUserId: req.body.creationUserId
-
-                    }
-
-                    Structure.addStructureInModel(structure)
-                      .then(() => res.status(200).json({ succes: "la création a reussi" }))
-                      .catch(() => res.status(400).json({ error: "Erreur de la procédure stocké d'ajout" }));
-
-                  }
-                  else {
-                    return res.status(400).json({ error: "Le télephone1 doit être unique " })
-                  }
-                })
-                .catch()
+              Structure.addStructureInModel(structure)
+                .then(() => res.status(200).json({ succes: "la création a reussi" }))
+                .catch(() => res.status(400).json({ error: "Erreur de la procédure stocké d'ajout" }));
 
             }
             else {
-              return res.status(400).json({ error: "Duplicata du sigle de la structure" })
+              return res.status(400).json({ error: "Le télephone1 doit être unique " })
             }
           })
           .catch()
@@ -96,57 +80,42 @@ function updateStructure(req, res, next) {
     .then(structure => {
 
       if ((structure.length == 0) || (structure[0].id == req.body.id)) {
-        const prestataireObj = {
-          sigle: req.body.sigle,
+        const StructureObj = {
+          telephone1: req.body.telephone1,
           estActif: 1
         }
-        Structure.structureSelectByInModel(prestataireObj)
+
+        Structure.structureSelectByInModel(StructureObj)
           .then(structure => {
             if (((structure.length == 0) || (structure[0].id == req.body.id))) {
-              const StructureObj = {
+              const structure = {
+                id: req.body.id,
+                categorieId: req.body.categorieId,
+                nom: req.body.nom,
+                sigle: req.body.sigle,
+                logo: req.body.logo,
+                website: req.body.website,
                 telephone1: req.body.telephone1,
-                estActif: 1
+                telephone2: req.body.telephone2,
+                email: req.body.email,
+                adresse: req.body.adresse,
+                localiteId: req.body.localiteId,
+                header: req.body.header,
+                footer: req.body.footer,
+                observations: req.body.observations,
+                modifDate: req.body.modifDate,
+                modifUserId: req.body.modifUserId
               }
-
-              Structure.structureSelectByInModel(StructureObj)
-                .then(structure => {
-                  if (((structure.length == 0) || (structure[0].id == req.body.id))) {
-                    const structure = {
-                      id: req.body.id,
-                      categorieId: req.body.categorieId,
-                      nom: req.body.nom,
-                      sigle: req.body.sigle,
-                      logo: req.body.logo,
-                      website: req.body.website,
-                      telephone1: req.body.telephone1,
-                      telephone2: req.body.telephone2,
-                      email: req.body.email,
-                      adresse: req.body.adresse,
-                      localiteId: req.body.localiteId,
-                      header: req.body.header,
-                      footer: req.body.footer,
-                      observations: req.body.observations,
-                      modifDate: req.body.modifDate,
-                      modifUserId: req.body.modifUserId
-                    }
-                    Structure.updateStructureInModel(structure)
-                      .then(() => res.status(201).json({ succes: "la modification a reussi" }))
-                      .catch(() => res.status(400).json({ error: "Erreur de la procédure stocké de modification" }));
-
-                  }
-                  else {
-                    return res.status(400).json({ error: "Le télephone1 doit être unique " })
-                  }
-                })
-                .catch()
+              Structure.updateStructureInModel(structure)
+                .then(() => res.status(201).json({ succes: "la modification a reussi" }))
+                .catch(() => res.status(400).json({ error: "Erreur de la procédure stocké de modification" }));
 
             }
             else {
-              return res.status(400).json({ error: "Duplicata du sigle de la structure" })
+              return res.status(400).json({ error: "Le télephone1 doit être unique " })
             }
           })
           .catch()
-
       }
       else {
         res.status(500).json({ error: "Ce nom existe déjà" })

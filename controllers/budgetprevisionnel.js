@@ -35,18 +35,12 @@ BudgetPrevisionnel.budgetPrevisionnelSelectByInModel(budgetprevisionnelObj)
   .then(budgeprevisionnel=>{
     if(budgeprevisionnel.length==0){
       const budgetprevisionnelObj={
-        id: req.body.id || null,
-        projetId: req.body.projetId || null,
-        anneeCibleId: req.body.anneeCibleId || null,
-        montant: req.body.montant || null,
-        deviseId: req.body.deviseId || null,
-        estActif: 1,
-        creationDate: req.body.creationDate || null,
-        creationUserId: req.body.creationUserId || null,
-        modifDate: req.body.modifDate || null,
-        modifUserId: req.body.modifUserId || null,
-        debut: req.body.debut || null, 
-        fin: req.body.fin || null
+        projetId: req.body.projetId,
+        anneeCibleId: req.body.anneeCibleId,
+        montant: req.body.montant,
+        deviseId: req.body.deviseId,
+        creationUserId: req.body.creationUserId,
+     
     }
       BudgetPrevisionnel.addBudgetPrevisionnelInModel(budgetprevisionnelObj)
       .then(()=> res.status(200).json({succes: "L'adjout du budget prévisionnel a réussi!"}))
@@ -73,18 +67,10 @@ function deleteBudgetPrevisionnel(req, res, next){
 function disableBudgetPrevisionnel(req, res, next){
   
     const budgetprevisionnelObj={
-      id: req.body.id || null,
-      projetId: req.body.projetId || null,
-      anneeCibleId: req.body.anneeCibleId || null,
-      montant: req.body.montant || null,
-      deviseId: req.body.deviseId || null,
-      estActif: 1,
-      creationDate: req.body.creationDate || null,
-      creationUserId: req.body.creationUserId || null,
-      modifDate: req.body.modifDate || null,
-      modifUserId: req.body.modifUserId || null,
-      debut: req.body.debut || null, 
-      fin: req.body.fin || null
+      id: req.body.id,
+      modifDate: req.body.modifDate,
+      modifUserId: req.body.modifUserId,
+
   }
     BudgetPrevisionnel.disableBudgetPrevisionnelInModel(budgetprevisionnelObj)
     .then(()=> res.status(200).json({succes: "la suppression a reussi"}))
@@ -99,23 +85,19 @@ function updateBudgetPrevisionnel(req,res, next){
     projetId: req.body.projetId,
     anneeCibleId: req.body.anneeCibleId,
     estActif: 1,
-}
+} 
 BudgetPrevisionnel.budgetPrevisionnelSelectByInModel(budgetprevisionnelObj)
   .then(budgeprevisionnel=>{
-    if(budgeprevisionnel.length==0){
+    if((budgeprevisionnel.length==0) || (budgeprevisionnel[0].anneeCibleId == req.body.anneeCibleId) || (budgeprevisionnel[0].id == req.body.id)){
       const budgetprevisionnelObj={
-        id: req.body.id || null,
-        projetId: req.body.projetId || null,
-        anneeCibleId: req.body.anneeCibleId || null,
-        montant: req.body.montant || null,
-        deviseId: req.body.deviseId || null,
-        estActif: 1,
-        creationDate: req.body.creationDate || null,
-        creationUserId: req.body.creationUserId || null,
-        modifDate: req.body.modifDate || null,
-        modifUserId: req.body.modifUserId || null,
-        debut: req.body.debut || null, 
-        fin: req.body.fin || null
+        id: req.body.id,
+        projetId: req.body.projetId,
+        anneeCibleId: req.body.anneeCibleId,
+        montant: req.body.montant,
+        deviseId: req.body.deviseId,
+        modifDate: req.body.modifDate,
+        modifUserId: req.body.modifUserId,
+      
     }
     BudgetPrevisionnel.updateBudgetPrevisionnelInModel(budgetprevisionnelObj)
     .then(()=> res.status(200).json({succes: "La modification du budget prévisionnel a réussi!"}))

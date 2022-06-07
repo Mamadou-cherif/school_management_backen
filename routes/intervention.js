@@ -6,7 +6,6 @@ const interventionController= require("../controllers/intervention")
     router.put("/disableIntervention", interventionController.disableIntervention)
     router.put("/updateIntervention", interventionController.updateIntervention)
     router.get("/getOneIntervention/:id", interventionController.getAsingleIntervention)
-    router.post("/getAllIntervention", interventionController.getAllInterventions)
     router.post("/interventionSelectBy", interventionController.interventionSelectBy)
   
     module.exports= router 
