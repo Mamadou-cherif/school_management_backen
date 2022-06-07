@@ -272,3 +272,38 @@ DELIMITER ;
 
 
 
+
+USE `suiviprojetpublic`;
+DROP procedure IF EXISTS `services_selectById`;
+
+
+DELIMITER $$
+CREATE PROCEDURE `services_selectById`(`id` INT)
+BEGIN
+	SELECT
+		`services`.`id`,
+		`services`.`structureId`,
+         `payss`.`indicatifTel`,
+		`services`.`nom`,
+		`services`.`responsableService`,
+		`services`.`telephone`,
+		`services`.`email`,
+		`services`.`observations`,
+		`services`.`estActif`,
+		`services`.`creationDate`,
+		`services`.`creationUserId`,
+		`services`.`modifDate`,
+		`services`.`modifUserId`
+	FROM `services`
+		INNER JOIN `structures` ON `services`.`structureId`=`structures`.`id`
+		INNER JOIN `quartierdistricts` ON `structures`.`localiteId`=`quartierdistricts`.`id`
+		INNER JOIN `communes` ON `quartierdistricts`.`communeId`=`communes`.`id`
+		INNER JOIN `prefectures` ON `communes`.`prefectureId`=`prefectures`.`id`
+		INNER JOIN `regions` ON `prefectures`.`regionId`=`regions`.`id`
+		INNER JOIN `payss` ON `regions`.`paysId`=`payss`.`id`
+	WHERE `services`.`id` = id;
+END$$
+
+DELIMITER ;
+
+
