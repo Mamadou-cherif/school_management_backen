@@ -46,6 +46,7 @@ function addDocument(req, res, next) {
 
 function updateDocument(req, res, next) {
   const objDocument = {
+    projetId: req.body.projetId || null,
     reference: req.body.reference,
     estActif: 1
   }

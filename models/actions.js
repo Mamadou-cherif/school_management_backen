@@ -11,7 +11,7 @@ const { reject } = require("bcrypt/promises");
 function addActionInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL actions_insert(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL actions_insert(?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.projetId,
         theReq.categorieActionId,
@@ -31,9 +31,12 @@ function addActionInModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+          console.log(err)
           reject(err)
         }
+        else{
         resolve(results[0])
+        }
       })
     )
   })
@@ -142,9 +145,12 @@ function updateActionInModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+          console.log(err)
           reject(err)
         }
+        else{
         resolve(results[0])
+        }
       })
     )
   })

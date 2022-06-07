@@ -18,8 +18,8 @@ function addIntervention(req, res, next) {
             prestataireId: req.body.prestataireId,
             projetId: req.body.projetId,
             categorie: req.body.categorie,
-            observations: req.body.observations || null,
-            creationUserId: req.body.creationUserId || null
+            observations: req.body.observations,
+            creationUserId: req.body.creationUserId
         }
         Intervention.addInterventionInModel(interventionObj)
           .then(() => res.status(200).json({ succes: "L'ajout a réussi!" }))
@@ -71,7 +71,7 @@ function updateIntervention(req, res, next) {
           prestataireId: req.body.prestataireId ,
           projetId: req.body.projetId ,
           categorie: req.body.categorie ,
-          observations: req.body.observations || null,
+          observations: req.body.observations,
           modifDate: req.body.modifDate,
           modifUserId: req.body.modifUserId,
          

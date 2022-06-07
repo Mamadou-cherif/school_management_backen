@@ -61,7 +61,29 @@ function chainederesultatSelectByInModel(theReq){
 
 
      
-function addChaineResultatInModel(req, res,next){
+function addChaineResultatInModel(theReq){
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL chaineresultats_insert(?,?,?,?,?,?)",
+      [
+        theReq.projetId,
+        theReq.rubriqueId,
+        theReq.libelle,
+        theReq.sourceMoyenVerif,
+        theReq.observations,
+        theReq.creationUserId
+
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
 }
 
 
@@ -74,18 +96,75 @@ function deleteChaineResultatInModel(theReq){
 }
 
 //supression logique d'un utilisateur
-function disableChaineResultatInModel(id){
+
+function disableChaineResultatInModel(theReq){
+  return new Promise((resolve,reject)=> {
+    
+    connection.query("CALL chaineresultats_disable(?,?,?)",
+          [ 
+            theReq.id,
+            theReq.modifUserId,
+            theReq.modifDate,
+            
+          ],
+
+      ((err,results, fields)=>{
+        if(err){
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
 }
 
 
 
-function updateChaineResultatInModel(req,res, next){
-    
+function updateChaineResultatInModel(theReq){
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL chaineresultats_update(?,?,?,?,?,?,?,?)",
+      [
+
+        theReq.id,
+        theReq.projetId,
+        theReq.rubriqueId,
+        theReq.libelle,
+        theReq.sourceMoyenVerif,
+        theReq.observations,
+        theReq.modifDate,
+        theReq.modifUserId
+
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
  
 }
 
-function getAsingleChaineResultatInModel(theReq){
+function getAsingleChaineResultatInModel(id){
+  return new Promise((resolve,reject)=> {
+    
+    connection.query("CALL chaineresultats_selectById(?)",
+          [ 
+            id
+          ],
 
+      ((err,results, fields)=>{
+        if(err){
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
 }
 
 

@@ -27,6 +27,7 @@ const express= require("express")
     
   function addIndicateur(req, res,next){
     const indicateurObj={
+      chaineResultatId: req.body.chaineResultatId ,
       libelle: req.body.libelle,
     }
       
@@ -34,18 +35,12 @@ const express= require("express")
       .then(indicateur=> {
         if(indicateur.length==0){
           const indicateurObj={
-            id: req.body.id || null,
-            chaineResultatId: req.body.chaineResultatId || null,
-            libelle: req.body.libelle|| null,
-            valeurInitiale: req.body.valeurInitiale|| null,
-            observations: req.body.observations|| null,
-            estActif: 1|| null,
-            creationDate: req.body.creationDate|| null,
-            creationUserId: req.body.creationUserId|| null,
-            modifDate: req.body.modifDate|| null,
-            modifUserId: req.body.modifUserId|| null,
-            debutDonnees: req.body.debutDonnees|| null,
-            finDonnees: req.body.finDonnees|| null,
+            chaineResultatId: req.body.chaineResultatId ,
+            libelle: req.body.libelle,
+            valeurInitiale: req.body.valeurInitiale,
+            observations: req.body.observations,
+            creationUserId: req.body.creationUserId
+           
           }
           Indicateur.addIndicateurInModel(indicateurObj)
             .then(()=> res.status(201).json({succes: "Ajout effectué avec succès"}))
@@ -72,18 +67,10 @@ const express= require("express")
   //supression logique d'un utilisateur
   function disableIndicateur(req, res, next){
     const indicateur={
-      id: req.body.id || null,
-      chaineResultatId: req.body.chaineResultatId || null,
-      libelle: req.body.libelle|| null,
-      valeurInitiale: req.body.valeurInitiale|| null,
-      observations: req.body.observations|| null,
-      estActif: 1|| null,
-      creationDate: req.body.creationDate|| null,
-      creationUserId: req.body.creationUserId|| null,
-      modifDate: req.body.modifDate|| null,
-      modifUserId: req.body.modifUserId|| null,
-      debutDonnees: req.body.debutDonnees|| null,
-      finDonnees: req.body.finDonnees|| null,
+      id: req.body.id ,
+      modifDate: req.body.modifDate,
+      modifUserId: req.body.modifUserId,
+    
     }
 
     Indicateur.disableIndicateurInModel(indicateur)
@@ -95,6 +82,7 @@ const express= require("express")
   
   function updateIndicateur(req,res, next){
     const indicateurObj={
+      chaineResultatId: req.body.chaineResultatId,
       libelle: req.body.libelle,
     }
       
@@ -102,18 +90,14 @@ const express= require("express")
       .then(indicateur=> {
         if((indicateur.length==0) || (indicateur[0].id== req.body.id)){
           const indicateurObj={
-            id: req.body.id || null,
-            chaineResultatId: req.body.chaineResultatId || null,
-            libelle: req.body.libelle|| null,
-            valeurInitiale: req.body.valeurInitiale|| null,
-            observations: req.body.observations|| null,
-            estActif: 1|| null,
-            creationDate: req.body.creationDate|| null,
-            creationUserId: req.body.creationUserId|| null,
-            modifDate: req.body.modifDate|| null,
-            modifUserId: req.body.modifUserId|| null,
-            debutDonnees: req.body.debutDonnees|| null,
-            finDonnees: req.body.finDonnees|| null,
+            id: req.body.id ,
+            chaineResultatId: req.body.chaineResultatId ,
+            libelle: req.body.libelle,
+            valeurInitiale: req.body.valeurInitiale,
+            observations: req.body.observations,
+            modifDate: req.body.modifDate,
+            modifUserId: req.body.modifUserId,
+           
           }
           Indicateur.updateIndicateurInModel(indicateurObj)
             .then(()=> res.status(201).json({succes: "Modification effectué avec succès"}))

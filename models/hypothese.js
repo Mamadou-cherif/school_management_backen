@@ -30,7 +30,6 @@ const { reject } = require("bcrypt/promises");
 
 
  function hypotheseSelectByInModel(theReq){
-  console.log(theReq)
   return new Promise((resolve, reject) => {
     
     connection.query("CALL hypotheses_selectBy(?,?,?,?,?,?,?,?,?,?)",
@@ -61,7 +60,7 @@ const { reject } = require("bcrypt/promises");
 function addHypotheseInModel(theReq){
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL hypotheses_insert(?,?)",
+    connection.query("CALL hypotheses_insert(?,?,?)",
       [
         theReq.chaineResultatId,
         theReq.libelle,
@@ -114,7 +113,7 @@ function disableHypotheseInModel(theReq){
 function updateHypotheseInModel(theReq){
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL hypotheses_update(?,?,?,?,?,?,?)",
+    connection.query("CALL hypotheses_update(?,?,?,?,?)",
       [
         theReq.id,
         theReq.chaineResultatId,
@@ -125,9 +124,13 @@ function updateHypotheseInModel(theReq){
 
       ((err, results, fields) => {
         if (err) {
+          console.log(err)
           reject(err)
         }
+        else{
         resolve(results[0])
+
+        }
       })
     )
   })
