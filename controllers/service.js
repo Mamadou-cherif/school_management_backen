@@ -11,22 +11,18 @@ const initServiceClass = require("../classes/service")
 function addService(req, res, next) {
 
   const service = {
-    id: req.body.id || null,
-    structureId: req.body.structureId || null,
-    nom: req.body.nom || null,
-    responsableService: req.body.responsableService || null,
-    email: req.body.email || null,
-    observations: req.body.observations || null,
-    estActif: 1,
-    creationDate: req.body.creationDate || null,
-    creationUserId: req.body.creationUserId || null,
-    modifDate: req.body.modifDate || null,
-    modifUserId: req.body.modifUserId || null,
-    debut: req.body.debut || null,
-    fin: req.body.fin || null
+
+    structureId: req.body.structureId,
+    nom: req.body.nom,
+    responsableService: req.body.responsableService,
+    email: req.body.email,
+    telephone: req.body.telephone,
+    observations: req.body.observations,
+    creationUserId: req.body.creationUserId,
+
   }
 
-  console.log(service);
+
   Service.addServiceInModel(service)
     .then(() => res.status(201).json({ succes: "la création a reussi" }))
     .catch(() => res.status(400).json({ error: "erreur de la procédure stocké d'ajout" }));
@@ -48,17 +44,17 @@ function serviceSelectBy(req, res, next) {
 
 
   const intervention = {
-    id: req.body.id || null,
-    structureId: req.body.structureId || null,
-    nom: req.body.nom || null,
-    responsableService: req.body.responsableService || null,
-    email: req.body.email || null,
-    telephone: req.body.telephone || null,
+    id: req.body.id,
+    structureId: req.body.structureId,
+    nom: req.body.nom,
+    responsableService: req.body.responsableService,
+    email: req.body.email,
+    telephone: req.body.telephone,
     estActif: 1,
-    creationDate: req.body.creationDate || null,
-    creationUserId: req.body.creationUserId || null,
-    modifDate: req.body.modifDate || null,
-    modifUserId: req.body.modifUserId || null,
+    creationDate: req.body.creationDate,
+    creationUserId: req.body.creationUserId,
+    modifDate: req.body.modifDate,
+    modifUserId: req.body.modifUserId,
     debut: req.body.debut || null,
     fin: req.body.fin || null
   }
@@ -73,21 +69,20 @@ function serviceSelectBy(req, res, next) {
 function updateService(req, res, next) {
 
   const service = {
-    id: req.body.id || null,
-    structureId: req.body.structureId || null,
-    nom: req.body.nom || null,
-    responsableService: req.body.responsableService || null,
-    email: req.body.email || null,
-    observations: req.body.observations || null,
-    estActif: 1,
-    modifDate: req.body.modifDate || null,
-    modifUserId: req.body.modifUserId || null
+    id: req.body.id,
+    structureId: req.body.structureId,
+    nom: req.body.nom,
+    responsableService: req.body.responsableService,
+    email: req.body.email,
+    telephone: req.body.telephone,
+    observations: req.body.observations,
+    modifDate: req.body.modifDate,
+    modifUserId: req.body.modifUserId
 
   }
   Service.updateServiceInModel(service)
     .then(() => res.status(200).json({ succes: "la modification a reussi" }))
     .catch(() => res.status(400).json({ error: "erreur de la procédure stocké de modification" }));
-  //   .catch(() => res.status(400).json({ error: "erreur retournée par la procédure stockée de selectBy" }))
 
 }
 
