@@ -7,6 +7,27 @@ const bcrypt = require("bcrypt");
 const res = require("express/lib/response");
 const { reject } = require("bcrypt/promises");
 
+function disableEvaluationInModel(theReq){
+  return new Promise((resolve,reject)=> {
+  
+      connection.query("CALL evaluations_disable(?,?,?)",
+            [ 
+              theReq.id,
+              theReq.modifUserId,
+              theReq.modifDate,
+              
+            ],
+  
+        ((err,results, fields)=>{
+          if(err){
+            reject(err)
+          }
+          resolve(results[0])
+        })
+      )
+    })
+}
+
 function getAllEvaluationInModel(theReq) {
   return new Promise((resolve, reject) => {
 
@@ -29,128 +50,118 @@ function getAllEvaluationInModel(theReq) {
 
 
 
-// function getPaysByIdInModel(id){
-//   return new Promise((resolve,reject)=> {
+function evaluationSelectByIdInModel(id){
+  return new Promise((resolve,reject)=> {
 
-//     connection.query("CALL payss_selectById(?)",
-//           [ 
-//             id
-//           ],
+    connection.query("CALL evaluations_selectById(?)",
+          [ 
+            id
+          ],
 
-//       ((err,results, fields)=>{
-//         if(err){
-//           reject(err)
-//         }
-//         resolve(results[0])
-//       })
-//     )
-//   })
-// }
+      ((err,results, fields)=>{
+        if(err){
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
+}
 
 
-// function addPaysInModel(data){
+function addEvaluationInModel(theReq){
 
-//   return new Promise((resolve,reject)=> {
-//     connection.query("CALL payss_insert(?,?,?,?)",
-//           [
-//             data.libelle,
-//             data.indicatifTel,
-//             data.deviseId,
-//             data.creationUserId,
-//           ],
+  return new Promise((resolve,reject)=> {
+    connection.query("CALL evaluations_insert(?,?,?,?,?)",
+          [
+            theReq.valeurCibleId,
+            theReq.tauxAtteint,
+            theReq.observations,
+            theReq.creationDate,
+            theReq.creationUserId,
+          ],
 
-//       ((err,results, fields)=>{
-//         if(err){
+      ((err,results, fields)=>{
+        if(err){
 
-//           reject(err)
-//           //connection.end();
-//         }
-//         else{
-//         resolve(results);
-//         }
+          reject(err)
+          //connection.end();
+        }
+        else{
+        resolve(results);
+        }
 
-//       })
-//     )
-//   })
-// }
+      })
+    )
+  })
+}
 
-// function updatePaysInModel(data){
-//   return new Promise((resolve,reject)=> {
-//     connection.query("CALL payss_update(?,?,?,?,?,?)",
-//           [
-//             data.id, 
-//             data.libelle,
-//             data.indicatifTel,
-//             data.deviseId,
-//             data.modifDate,
-//             data.modifUserId,
-//           ],
 
-//       ((err,results, fields)=>{
-//         if(err){
+function evaluationSelectBy(theReq){
+  return new Promise((resolve,reject)=> {
+    connection.query("CALL evaluations_selectBy(?,?,?,?,?,?,?,?,?,?,?,?)",
+          [
+            theReq.id, 
+            theReq.valeurCibleId,
+            theReq.tauxAtteint,
+            theReq.observations,
+            theReq.estActif,
+            theReq.creationDate,
+            theReq.creationUserId,
+            theReq.modifDate,
+            theReq.modifUserId,
+            theReq.debutDonnees,
+            theReq.finDonnees,
+          ],
 
-//           reject(err)
-//           //connection.end();
-//         }
-//         else{
-//         resolve(results);
-//         }
+      ((err,results, fields)=>{
+        if(err){
 
-//       })
-//     )
-//   })
-// }
-// function paysSelectByInModel(data){
-//     return new Promise((resolve,reject)=> {
-//       connection.query("CALL payss_selectBy(?,?,?,?,?,?,?,?,?,?,?)",
-//             [
-//              data.id,
-//              data.libelle,
-//              data.indicatifTel,
-//              data.deviseId,
-//              data.estActif,
-//              data.creationDate,
-//              data.creationUserId,
-//              data.modifDate,
-//              data.modifUserId, 
-//              data.debutDonnees, 
-//              data.finDonnees,
-//             ],
+          reject(err)
+          //connection.end();
+        }
+        else{
+        resolve(results);
+        }
 
-//         ((err,results, fields)=>{
-//           if(err){
-//             reject(err)
-//           }
-//           resolve(results[0])
-//         })
-//       )
-//     })
-// }
+      })
+    )
+  })
+}
 
-// function deletePaysInModel(id){
-//   return new Promise((resolve,reject)=> {
+function updateEvaluationInModel(theReq){
+  return new Promise((resolve,reject)=> {
+    connection.query("CALL evaluations_update(?,?,?,?,?,?)",
+          [
+            theReq.id, 
+            theReq.valeurCibleId,
+            theReq.tauxAtteint,
+            theReq.observations,
+            theReq.modifDate,
+            theReq.modifUserId,
+          ],
 
-//     connection.query("CALL payss_delete(?)",
-//           [ 
-//             id,
+      ((err,results, fields)=>{
+        if(err){   
 
-//           ],
+          reject(err)
+          //connection.end();
+        }
+        else{
+        resolve(results);
+        }
 
-//       ((err,results, fields)=>{
-//         if(err){
-//           reject(err)
-//         }
-//         resolve(results[0])
-//       })
-//     )
-//   })
-//}
+      })
+    )
+  })
+}
+
 
 module.exports = {
   getAllEvaluationInModel,
-  // getPaysByIdInModel,
-  // addPaysInModel,
-  // updatePaysInModel,
-  // deletePaysInModel,
-  // paysSelectByInModel
+  updateEvaluationInModel,
+  evaluationSelectBy,
+  addEvaluationInModel,
+  evaluationSelectByIdInModel,
+  disableEvaluationInModel
 }

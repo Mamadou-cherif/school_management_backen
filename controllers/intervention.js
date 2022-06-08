@@ -11,8 +11,10 @@ function addIntervention(req, res, next) {
     estActif: 1,
 
   }
+  console.log(interventionObj)
   Intervention.InterventionSelectByInModel(interventionObj)
   .then(intervention => {
+    console.log(intervention)
       if ((intervention.length == 0)) {
         const interventionObj = {
             prestataireId: req.body.prestataireId,

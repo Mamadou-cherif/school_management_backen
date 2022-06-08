@@ -32,6 +32,34 @@ const Hypothese= require("../models/hypothese")
       .catch(error=> res.status(400).json({error}))
   }
   
+  function updateHypothese(req, res,next){
+    const hypotheseObj={
+      chaineResultatId: req.body.chaineResultatId,
+      libelle: req.body.libelle,
+      estActif:1
+    }
+      Hypothese.hypotheseSelectByInModel(hypotheseObj)
+      .then(hypothese=> {
+        if((hypothese.length==0) || (hypothese[0].id== req.body.id)){
+          const hypotheseObj={
+            id: req.body.id,
+            chaineResultatId: req.body.chaineResultatId ,
+            libelle: req.body.libelle,
+            modifUserId: req.body.modifUserId,
+            modifDate: req.body.modifDate,
+          }
+          Hypothese.updateHypotheseInModel(hypotheseObj)
+            .then(()=> res.status(200).json({succes: "Ajout effectué avec succès"}))
+            .catch(()=> res.status(400).json({error: "Erreur de la procedure stockée d'ajout"}));
+          
+        }
+        else
+          {
+                res.status(500).json({error: "Cet hypothese existe déjà"})
+          }
+      })
+      .catch(error=> res.status(400).json({error}))
+  }
   
   
   
@@ -53,35 +81,7 @@ const Hypothese= require("../models/hypothese")
   
   
   
-  function updateHypothese(req,res, next){
-    const hypotheseObj={
-      chaineResultatId: req.body.chaineResultatId,
-      libelle: req.body.libelle,
-      estActif: 1
-    }
-      
-      Hypothese.hypotheseSelectByInModel(hypotheseObj)
-      .then(hypothese=> {
-        console.log(hypothese)
-        if((hypothese.length==0) || (hypothese[0].id== req.body.id)){
-          const hypotheseObj={
-            chaineResultatId: req.body.chaineResultatId ,
-            libelle: req.body.libelle,
-            creationUserId: req.body.creationUserId,
-          }
-          Hypothese.updateHypotheseInModel(hypotheseObj)
-            .then(()=> res.status(200).json({succes: "Modification effectué avec succès"}))
-            .catch(()=> res.status(400).json({error: "Erreur de la procedure stockée de Modification"}));
-          
-        }
-        else
-          {
-                res.status(500).json({error: "Cet hypothese existe déjà"})
-          }
-      })
-      .catch(error=> res.status(400).json({error}))
-   
-  }
+
   
   function getAsingleHypothese(req, res, next){
     const id= req.params.id
@@ -104,7 +104,7 @@ const Hypothese= require("../models/hypothese")
       finDonnees: req.body.finDonnees || null
   
      }
-       
+     
       Hypothese.hypotheseSelectByInModel(hypotheseObj)
       .then(hypothese=> res.status(200).json(hypothese))
       .catch(error=> res.status(400).json({error}))
@@ -119,7 +119,7 @@ const Hypothese= require("../models/hypothese")
  
 
   module.exports={    
-     disableHypothese,
+    disableHypothese,
     addHypothese,
     updateHypothese,
     getAsingleHypothese,
