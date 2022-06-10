@@ -9,9 +9,7 @@ const { reject } = require("bcrypt/promises");
 
 
 
-function checkIfUniteExists(theReq) {
 
-}
 
 function checkIfUniteExists(theReq) {
   return new Promise((resolve, reject) => {

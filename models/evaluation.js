@@ -72,12 +72,11 @@ function evaluationSelectByIdInModel(id){
 function addEvaluationInModel(theReq){
 
   return new Promise((resolve,reject)=> {
-    connection.query("CALL evaluations_insert(?,?,?,?,?)",
+    connection.query("CALL evaluations_insert(?,?,?,?)",
           [
             theReq.valeurCibleId,
             theReq.tauxAtteint,
             theReq.observations,
-            theReq.creationDate,
             theReq.creationUserId,
           ],
 

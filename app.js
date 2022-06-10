@@ -18,7 +18,6 @@ const prefectureRoutes = require("./routes/prefectures")
 const quartiersRoutes = require("./routes/quartier")
 const communesRoutes = require("./routes/communes")
 const axeRoutes = require("./routes/axe")
-const evaluationRoutes = require("./routes/evaluation")
 const chaineRoutes = require("./routes/chaineResultat")
 const programmeRoutes = require("./routes/programme")
 const prioriteRoutes = require("./routes/priorite")
@@ -46,6 +45,8 @@ const indicateurRoutes = require("./routes/indicateur")
 const investissementRoute = require("./routes/investissement")
 const hypotheseRoute = require("./routes/hypothese")
 const rubriqueRoute = require("./routes/rubrique")
+const evaluationRoute = require("./routes/evaluation")
+const valeurCibleRoute = require("./routes/valeurcible")
 
 
 app.use(bodyParser.json())
@@ -103,6 +104,8 @@ app.use("/api", chaineRoutes)
 app.use("/api", indicateurRoutes)
 app.use("/api", hypotheseRoute)
 app.use("/api", rubriqueRoute)
+app.use("/api", evaluationRoute)
+app.use("/api", valeurCibleRoute)
 
 
 
