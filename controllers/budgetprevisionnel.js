@@ -30,7 +30,7 @@ function addBudgetPrevisionnel(req, res,next){
     projetId: req.body.projetId,
     anneeCibleId: req.body.anneeCibleId,
     estActif: 1,
-}
+  }
 BudgetPrevisionnel.budgetPrevisionnelSelectByInModel(budgetprevisionnelObj)
   .then(budgeprevisionnel=>{
     if(budgeprevisionnel.length==0){
@@ -43,11 +43,11 @@ BudgetPrevisionnel.budgetPrevisionnelSelectByInModel(budgetprevisionnelObj)
      
     }
       BudgetPrevisionnel.addBudgetPrevisionnelInModel(budgetprevisionnelObj)
-      .then(()=> res.status(200).json({succes: "L'adjout du budget prévisionnel a réussi!"}))
+      .then(()=> res.status(200).json({succes: "L'ajout du budget prévisionnel a réussi!"}))
       .catch(()=> res.status(400).json({error: "Echec de l'ajout!"}))
     }
     else{
-      res.status(400).json({error: "dupplicata de cette année cible"})
+      res.status(400).json({error: "Ce projet à déjà un budget prévisionnel sur cette année"})
     }
   })
   .catch(error=> res.status(400).json(error))
@@ -88,7 +88,7 @@ function updateBudgetPrevisionnel(req,res, next){
 } 
 BudgetPrevisionnel.budgetPrevisionnelSelectByInModel(budgetprevisionnelObj)
   .then(budgeprevisionnel=>{
-    if((budgeprevisionnel.length==0) || (budgeprevisionnel[0].anneeCibleId == req.body.anneeCibleId) || (budgeprevisionnel[0].id == req.body.id)){
+    if((budgeprevisionnel.length==0) || (budgeprevisionnel[0].id == req.body.id)){
       const budgetprevisionnelObj={
         id: req.body.id,
         projetId: req.body.projetId,
@@ -104,7 +104,7 @@ BudgetPrevisionnel.budgetPrevisionnelSelectByInModel(budgetprevisionnelObj)
     .catch(()=> res.status(400).json({error: "Echec de la modification!"}))
     }
     else{
-      res.status(400).json({error: "dupplicata de cette année cible"})
+      res.status(400).json({error: "Ce projet à déjà un budget prévisionnel sur cette année"})
     }
   })
   .catch(error=> res.status(400).json(error))

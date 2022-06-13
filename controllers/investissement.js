@@ -42,6 +42,8 @@ const initInvestissementClass= require("../classes/investissement")
   function addInvestissement(req, res,next){
     const investissementObj={
       libelle: req.body.libelle,
+      projetId: req.body.projetId,
+      estActif: 1,
     }
       
       Investissement.investissementSelectByInModel(investissementObj)
@@ -68,7 +70,7 @@ const initInvestissementClass= require("../classes/investissement")
         }
         else
           {
-                res.status(500).json({error: "Cet investissement existe déjà"})
+                res.status(500).json({error: "Cet investissement existe déjà sur ce projet"})
           }
       })
       .catch(error=> res.status(400).json({error}))
@@ -101,6 +103,8 @@ const initInvestissementClass= require("../classes/investissement")
   function updateInvestissement(req,res, next){
     const investissementObj={
       libelle: req.body.libelle,
+      projetId: req.body.projetId,
+      estActif: 1,
     }
       
       Investissement.investissementSelectByInModel(investissementObj)
@@ -120,6 +124,7 @@ const initInvestissementClass= require("../classes/investissement")
             modifDate: req.body.modifDate,
             modifUserId: req.body.modifUserId,
         }
+        
           Investissement.updateInvestissementInModel(investissement)
             .then(()=> res.status(201).json({succes: "Modification effectué avec succès"}))
             .catch(()=> res.status(400).json({error: "Erreur de la procedure stockée de Modification"}));
@@ -127,7 +132,7 @@ const initInvestissementClass= require("../classes/investissement")
         }
         else
           {
-                res.status(500).json({error: "Cet investissement existe déjà"})
+                res.status(500).json({error: "Cet investissement existe déjà sur ce projet"})
           }
       })
       .catch(error=> res.status(400).json({error}))
