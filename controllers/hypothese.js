@@ -63,11 +63,11 @@ const Hypothese= require("../models/hypothese")
       .then(hypothese=> {
         if((hypothese.length==0) || (hypothese[0].id== req.body.id)){
           const hypotheseObj={
-            id:req.body.id,
-            chaineResultatId:req.body.chaineResultatId,
-            libelle:req.body.libelle,
-            modifDate:req.body.modifDate,
-            modifUserId:req.body.modifUserId,
+              id:req.body.id,
+              chaineResultatId:req.body.chaineResultatId,
+              libelle:req.body.libelle,
+              modifDate:req.body.modifDate,
+              modifUserId:req.body.modifUserId,
           }
           Hypothese.updateHypotheseInModel(hypotheseObj)
             .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))

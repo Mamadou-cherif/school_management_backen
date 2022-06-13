@@ -4,7 +4,6 @@ const bodyParser = require("body-parser")
 const app = express()
 const jwt = require("jsonwebtoken")
 app.use(bodyParser.json())
-const bcrypt = require("bcrypt")
 const initUserGroupeClass = require("../classes/userGroupes")
 
 
@@ -14,10 +13,6 @@ function addUserGroupe(req, res, next) {
         .then(() => res.status(201).json({ succes: "la création a reussi" }))
         .catch(() => res.status(400).json({ error: "erreur de la procédure stocké d'ajout" }));
 }
-
-
-
-
 
 //supression en dur
 function deleteUserGroupe(req, res, next) {
@@ -40,10 +35,10 @@ function deleteUserGroupe(req, res, next) {
         userId: req.body.userId,
         groupeId: req.body.groupeId
     }
-
+    console.log("usergroupe", usergroupe);
     UserGroupe.checkIfUserGroupeExists(usergroupe)
         .then(usergroupe => {
-
+            console.log("usergroupe1", usergroupe);
             if (usergroupe.length > 0) {
 
                 UserGroupe.deleteUserGroupeInModel(usergroupe[0].id)
@@ -57,7 +52,6 @@ function deleteUserGroupe(req, res, next) {
         })
 }
 
-//supression logique d'un utilisateur
 function disableUserGroupe(req, res, next) {
     UserGroupe.disableUserGroupeInModel(req, res)
 }
