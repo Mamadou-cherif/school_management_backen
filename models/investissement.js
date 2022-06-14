@@ -47,9 +47,9 @@ function investissementSelectByInModel(theReq) {
 }
 
 
- 
-     
-function addInvestissementInModel(theReq){
+
+
+function addInvestissementInModel(theReq) {
   return new Promise((resolve, reject) => {
 
     connection.query("CALL investissements_insert(?,?,?,?,?,?,?,?,?,?)",
@@ -81,24 +81,24 @@ function addInvestissementInModel(theReq){
 
 
 //supression en dur
-function deleteInvestissementInModel(theReq){
-    
+function deleteInvestissementInModel(theReq) {
+
 }
 
 //supression logique d'un utilisateur
-function disableInvestissementInModel(theReq){
-  return new Promise((resolve,reject)=> {
-    
-    connection.query("CALL investissements_disable(?,?,?)",
-          [ 
-            theReq.id,
-            theReq.modifUserId,
-            theReq.modifDate,
-            
-          ],
+function disableInvestissementInModel(theReq) {
+  return new Promise((resolve, reject) => {
 
-      ((err,results, fields)=>{
-        if(err){
+    connection.query("CALL investissements_disable(?,?,?)",
+      [
+        theReq.id,
+        theReq.modifUserId,
+        theReq.modifDate,
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
           reject(err)
         }
         resolve(results[0])
@@ -109,7 +109,7 @@ function disableInvestissementInModel(theReq){
 
 
 
-function updateInvestissementInModel(theReq){
+function updateInvestissementInModel(theReq) {
   return new Promise((resolve, reject) => {
 
     connection.query("CALL investissements_update(?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -129,6 +129,30 @@ function updateInvestissementInModel(theReq){
       ],
 
       ((err, results, fields) => {
+
+        if (err) {
+          console.log(err);
+          reject(err)
+        } else {
+          resolve(results[0])
+        }
+
+      })
+    )
+  })
+
+}
+
+function getAsingleInvestissementInModel(id) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL investissements_selectById(?)",
+      [
+        id
+
+      ],
+
+      ((err, results, fields) => {
         if (err) {
           reject(err)
         }
@@ -136,26 +160,6 @@ function updateInvestissementInModel(theReq){
       })
     )
   })
-  
-}
-
-function getAsingleInvestissementInModel(id){
-  return new Promise((resolve,reject)=> {
-    
-    connection.query("CALL investissements_selectById(?)",
-          [ 
-            id
-            
-          ],
-
-      ((err,results, fields)=>{
-        if(err){
-          reject(err)
-        }
-        resolve(results[0])
-      })
-    )
-  })
 }
 
 
@@ -163,13 +167,13 @@ function getAsingleInvestissementInModel(id){
 
 
 
-module.exports={  
+module.exports = {
   disableInvestissementInModel,
   deleteInvestissementInModel,
   addInvestissementInModel,
   updateInvestissementInModel,
   getAsingleInvestissementInModel,
-  investissementSelectByInModel 
+  investissementSelectByInModel
 }
 
 

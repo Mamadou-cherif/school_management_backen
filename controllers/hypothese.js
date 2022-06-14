@@ -10,7 +10,6 @@ const Hypothese= require("../models/hypothese")
       libelle: req.body.libelle,
       estActif:1
     }
-      
       Hypothese.hypotheseSelectByInModel(hypotheseObj)
       .then(hypothese=> {
         if(hypothese.length==0){
@@ -42,15 +41,15 @@ const Hypothese= require("../models/hypothese")
       .then(hypothese=> {
         if((hypothese.length==0) || (hypothese[0].id== req.body.id)){
           const hypotheseObj={
-            id: req.body.id,
-            chaineResultatId: req.body.chaineResultatId ,
-            libelle: req.body.libelle,
-            modifUserId: req.body.modifUserId,
-            modifDate: req.body.modifDate,
+              id:req.body.id,
+              chaineResultatId:req.body.chaineResultatId,
+              libelle:req.body.libelle,
+              modifDate:req.body.modifDate,
+              modifUserId:req.body.modifUserId,
           }
           Hypothese.updateHypotheseInModel(hypotheseObj)
-            .then(()=> res.status(200).json({succes: "Ajout effectué avec succès"}))
-            .catch(()=> res.status(400).json({error: "Erreur de la procedure stockée d'ajout"}));
+            .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
+            .catch(()=> res.status(400).json({error: "Erreur de la procedure stockée de Modification"}));
           
         }
         else
@@ -124,6 +123,5 @@ const Hypothese= require("../models/hypothese")
     updateHypothese,
     getAsingleHypothese,
     getAllHypotheses,
-    hypotheseSelectBy,
-    
+    hypotheseSelectBy
   }

@@ -36,11 +36,11 @@ function addFinancement(req, res, next) {
 
                 }
                 Financement.addFinancementInModel(financementObj)
-                    .then(() => res.status(200).json({ succes: "la création a reussi" }))
-                    .catch(() => res.status(400).json({ error: "erreur de la procédure stocké d'ajout" }));
+                    .then(() => res.status(200).json({ succes: "Ajout effectué avec succès" }))
+                    .catch(() => res.status(400).json({ error: "Erreur de la procédure stocké d'ajout" }));
             }
             else {
-                res.status(400).json({ error: "dupplicata de la structure" })
+                res.status(400).json({ error: "Cette structure finance déjà ce projet"})
             }
 
 
@@ -90,11 +90,11 @@ function updateFinancement(req, res, next) {
 
                 }
                 Financement.updateFinancementInModel(financementObj)
-                    .then(() => res.status(200).json({ succes: "la modification a reussi" }))
+                    .then(() => res.status(200).json({ succes: "Modification effectuée avec succès" }))
                     .catch(() => res.status(400).json({ error: "erreur de la procédure stocké d'ajout" }));
             }
             else {
-                res.status(400).json({ succes: "dupplicata de la structure" })
+                res.status(400).json({ error: "Cette structure finance déjà ce projet"})
             }
         })
 }
