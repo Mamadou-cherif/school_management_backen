@@ -22,7 +22,6 @@ function addService(req, res, next) {
 
   }
 
-
   Service.addServiceInModel(service)
     .then(() => res.status(201).json({ succes: "la création a reussi" }))
     .catch(() => res.status(400).json({ error: "erreur de la procédure stocké d'ajout" }));
