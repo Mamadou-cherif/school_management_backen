@@ -1,6 +1,6 @@
-const Intervention= require("../models/execution")
+const Execution= require("../models/execution")
 
-const initInterventionClass= require("../classes/execution")
+const initExecutionClass= require("../classes/execution")
 
   function executionSelectBy(req, res, next){
     const executionObj={
@@ -19,50 +19,108 @@ const initInterventionClass= require("../classes/execution")
 }
 
 
-    Intervention.executionSelectByInModel(executionObj)
+    Execution.executionSelectByInModel(executionObj)
     .then(execution=> res.status(200).json(execution))
     .catch(error=> res.status(400).json({error}))
     
   }
 
   
-     
-function addExecution(req, res,next){
-}
-
-
-
-
-
-//supression en dur
-function deleteExecution(req, res, next){
-    
-}
-
-//supression logique d'un utilisateur
-function disableExecution(req, res, next){
-}
-
-
-
-function updateExecution(req,res, next){
-    
  
+function getAllExecution(req, res, next) {
+
+  Execution.getAllExecutionInModel(req)
+    .then(execution => res.status(200).json(execution))
+    .catch(error => res.status(400).json(error))
 }
 
-function getAsingleExecution(req, res, next){
+
+
+function selectByIdExecution(req, res, next) {
+  const id = req.params.id
+  Execution.executionSelectByIdInModel(id)
+    .then(execution => res.status(200).json(execution))
+    .catch(error => res.status(400).json(error))
+}
+
+
+function addExecution(req, res, next) {
+  // const executionObj = {
+  //   valeurCibleId: req.body.valeurCibleId,
+  //   estActif: 1
+  // }
+  //       Execution.executionSelectBy(executionObj)
+  //         .then(execution => {
+  //           if (execution.length == 0) {
+    const executionObj={
+      projetId: req.body.projetId,
+      date: req.body.date  ,
+      taux: req.body.taux ,
+      observations: req.body.observations ,
+      creationUserId: req.body.creationUserId ,
+    
+      }
+        Execution.addExecutionInModel(executionObj)
+          .then(() => res.status(201).json({ succes: "Ajout effectué avec succès" }))
+          .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée executions_insert" }));
+//         }
+    // })
+    // .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée executions_selectBy" }))
+}
+
+
+function updateExecution(req, res, next) {
+  // const executionObj = {
+  //   valeurCibleId: req.body.valeurCibleId,
+  //   estActif: 1
+  // }
+  //       Execution.executionSelectBy(executionObj)
+  //         .then(execution => {
+  //           if (execution.length == 0) {
+                const executionObj={
+                  id: req.body.id ,
+                  projetId: req.body.projetId,
+                  date: req.body.date  ,
+                  taux: req.body.taux ,
+                  observations: req.body.observations,
+                  modifDate: req.body.modifDate,
+                  modifUserId: req.body.modifUserId
+                }
+
+              Execution.updateExecutionInModel(executionObj)
+                .then(() => res.status(200).json({ succes: "modification effectué avec succès" }))
+                .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée executions_insert" }));
+    //         }
+    // })
+    // .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée executions_selectBy" }))
+}
+
+
+
+function disableExecution(req, res, next) {
+
+  const objExecution = {
+    id: req.body.id,
+    modifUserId: req.body.modifUserId,
+    modifDate: req.body.modifDate,
+  }
+
+  Execution.disableExecutionInModel(objExecution)
+    .then(() => res.status(200).json({ succes: "La suppression a reussi" }))
+    .catch(() => res.status(400).json({ error: "Erreur de la procédure stocké de disable" }));
 
 }
+
 
 
 
 
 module.exports={  
-  disableExecution,
-  deleteExecution,
+  selectByIdExecution,
+  getAllExecution,
   addExecution,
+  disableExecution,
   updateExecution,
-  getAsingleExecution,
   executionSelectBy
 }
 
