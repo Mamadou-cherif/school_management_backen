@@ -3,11 +3,10 @@ DROP procedure IF EXISTS `menus_getMenuFilsByGroupe`;
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `suiviprojetpublic`.`menus_getMenuFilsByGroupe`;
-;
 
 DELIMITER $$
-USE `suiviprojetpublic`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_getMenuFilsByGroupe`(`menuPereId` INT, `groupeId` INT)
+
+CREATE  PROCEDURE `menus_getMenuFilsByGroupe`(`menuPereId` INT, `groupeId` INT)
 BEGIN
     SELECT `menus`.`id`,
     `menus`.`reference`,
@@ -41,7 +40,6 @@ BEGIN
 END$$
 
 DELIMITER ;
-;
 
 
 
@@ -50,11 +48,10 @@ DROP procedure IF EXISTS `onglets_getOngletByGroupe`;
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `suiviprojetpublic`.`onglets_getOngletByGroupe`;
-;
 
 DELIMITER $$
-USE `suiviprojetpublic`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `onglets_getOngletByGroupe`(`menuId` INT, `groupeId` INT)
+
+CREATE  PROCEDURE `onglets_getOngletByGroupe`(`menuId` INT, `groupeId` INT)
 BEGIN
    SELECT 
     `onglets`.`id`,
@@ -153,11 +150,10 @@ DROP procedure IF EXISTS `prestataires_selectById`;
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `suiviprojetpublic`.`prestataires_selectById`;
-;
 
 DELIMITER $$
-USE `suiviprojetpublic`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `prestataires_selectById`(IN `id` INT)
+
+CREATE  PROCEDURE `prestataires_selectById`(IN `id` INT)
 BEGIN
 	SELECT
 		`prestataires`.`id`,
@@ -192,18 +188,16 @@ BEGIN
 END$$
 
 DELIMITER ;
-;
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `interventions_selectBy`;
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `suiviprojetpublic`.`interventions_selectBy`;
-;
 
 DELIMITER $$
-USE `suiviprojetpublic`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `interventions_selectBy`(`id` INT, `prestataireId` INT, `projetId` INT, `categorie` VARCHAR(20), `observations` TEXT, `estActif` TINYINT, `creationDate` DATETIME, `creationUserId` INT, `modifDate` DATETIME, `modifUserId` INT, `debutDonnees` INT, `finDonnees` INT)
+
+CREATE  PROCEDURE `interventions_selectBy`(`id` INT, `prestataireId` INT, `projetId` INT, `categorie` VARCHAR(20), `observations` TEXT, `estActif` TINYINT, `creationDate` DATETIME, `creationUserId` INT, `modifDate` DATETIME, `modifUserId` INT, `debutDonnees` INT, `finDonnees` INT)
 BEGIN
 	DECLARE requeteSql varchar(500);
 	SET @requeteSql := 'SELECT
@@ -267,7 +261,6 @@ BEGIN
 END$$
 
 DELIMITER ;
-;
 
 
 
@@ -322,11 +315,10 @@ DROP procedure IF EXISTS `serviceconcernes_selectById`;
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `suiviprojetpublic`.`serviceconcernes_selectById`;
-;
 
 DELIMITER $$
-USE `suiviprojetpublic`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `serviceconcernes_selectById`(`id` INT)
+
+CREATE  PROCEDURE `serviceconcernes_selectById`(`id` INT)
 BEGIN
 	SELECT
 		`serviceconcernes`.`id`,
@@ -345,18 +337,16 @@ BEGIN
 END$$
 
 DELIMITER ;
-;
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `serviceconcernes_selectBy`;
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `suiviprojetpublic`.`serviceconcernes_selectBy`;
-;
 
 DELIMITER $$
-USE `suiviprojetpublic`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `serviceconcernes_selectBy`(`id` INT, `projetId` INT, `serviceId` INT, `observations` TEXT, `estActif` TINYINT, `creationDate` DATETIME, `creationUserId` INT, `modifDate` DATETIME, `modifUserId` INT, `debutDonnees` INT, `finDonnees` INT)
+
+CREATE  PROCEDURE `serviceconcernes_selectBy`(`id` INT, `projetId` INT, `serviceId` INT, `observations` TEXT, `estActif` TINYINT, `creationDate` DATETIME, `creationUserId` INT, `modifDate` DATETIME, `modifUserId` INT, `debutDonnees` INT, `finDonnees` INT)
 BEGIN
 	DECLARE requeteSql varchar(500);
 	SET @requeteSql := 'SELECT
@@ -413,7 +403,6 @@ BEGIN
 END$$
 
 DELIMITER ;
-;
 
 
 
@@ -422,11 +411,10 @@ DROP procedure IF EXISTS `investissements_selectBy`;
 
 USE `suiviprojetpublic`;
 DROP procedure IF EXISTS `suiviprojetpublic`.`investissements_selectBy`;
-;
 
 DELIMITER $$
-USE `suiviprojetpublic`$$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `investissements_selectBy`(`id` INT, `projetId` INT, `categorieInvestId` INT, `libelle` TEXT, `unite` VARCHAR(45), `quantite` INT, `uniteId` INT, `cout` DOUBLE, `deviseId` INT, `observations` TEXT, `estActif` TINYINT, `creationDate` DATETIME, `creationUserId` INT, `modifDate` DATETIME, `modifUserId` INT, `debutDonnees` INT, `finDonnees` INT)
+
+CREATE  PROCEDURE `investissements_selectBy`(`id` INT, `projetId` INT, `categorieInvestId` INT, `libelle` TEXT, `unite` VARCHAR(45), `quantite` INT, `uniteId` INT, `cout` DOUBLE, `deviseId` INT, `observations` TEXT, `estActif` TINYINT, `creationDate` DATETIME, `creationUserId` INT, `modifDate` DATETIME, `modifUserId` INT, `debutDonnees` INT, `finDonnees` INT)
 BEGIN
 	DECLARE requeteSql varchar(500);
 	SET @requeteSql := 'SELECT
@@ -509,5 +497,4 @@ BEGIN
 END$$
 
 DELIMITER ;
-;
 
