@@ -3,7 +3,53 @@ const express = require("express")
 const bodyParser = require("body-parser")
 const app = express()
 app.use(bodyParser.json())
+const crypto = require('crypto');
+const multersd = require('multer')
+const path = require('path');
+const fs = require("fs")
 
+
+let documentUrl = '';
+
+
+const storage = multersd.diskStorage({
+  destination: './uploads/documents/',
+  filename: function (req, file, callback) {
+    crypto.pseudoRandomBytes(16, function (err, raw) {
+      if (err) return callback(err);
+      let derniereImage = raw.toString('hex') + path.extname(file.originalname);
+      console.log('derniereImage' + derniereImage);
+      callback(null, derniereImage);
+    })
+  }
+})
+
+const upload = multersd({ storage: storage });
+
+const singleUpload = upload.single('image');
+
+function files(req, res, next) {
+  console.log("bnjr", req.file);
+  try {
+    singleUpload(req, res, function (err) {
+      if (err) {
+        return res.status(422).send({ errors: [{ title: 'File Upload Error', detail: err.message }] });
+      }
+      if (!req.file.originalname.match(/\.(jpg|png|jpeg|pdf)$/)) {
+        return res.status(400).json({ msg: 'only image autoried' })
+      }
+      console.log("bnjr1", req.file);
+      documentUrl = req.file.filename;
+      console.log("image", req.file.filename);
+      console.log("originalename", req.file.originalname);
+
+      return res.json({ 'imageUrl': documentUrl });
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(400).send(err)
+  }
+}
 
 function addDocument(req, res, next) {
   const objDocument = {
@@ -24,11 +70,12 @@ function addDocument(req, res, next) {
           reference: req.body.reference,
           debut: req.body.debut,
           fin: req.body.fin,
-          copie: req.body.copie,
+          copie: documentUrl,
           renouvelerId: req.body.renouvelerId,
           observations: req.body.observations,
           creationUserId: req.body.creationUserId
         }
+        console.log("documentUrl", objDocument);
         Document.addDocumentInModel(objDocument)
           .then(() => res.status(201).json({ succes: "Ajout effectué avec succès" }))
           .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée documents_insert" }));
@@ -65,7 +112,7 @@ function updateDocument(req, res, next) {
           reference: req.body.reference,
           debut: req.body.debut,
           fin: req.body.fin,
-          copie: req.body.copie,
+          copie: documentUrl,
           renouvelerId: req.body.renouvelerId,
           observations: req.body.observations,
           modifDate: req.body.modifDate,
@@ -86,7 +133,16 @@ function updateDocument(req, res, next) {
 
 }
 
-
+function getImageFile(req, res) {
+  console.log("file", req.params);
+  var image_file = req.params.File;
+  var path_file = './uploads/documents/' + image_file;
+  fs.exists(path_file, (exists) => {
+    if (exists) {
+      res.sendFile(path.resolve(path_file));
+    }
+  });
+}
 
 
 function disableDocument(req, res, next) {
@@ -150,4 +206,6 @@ module.exports = {
   addDocument,
   updateDocument,
   selectByIdDocument,
+  files,
+  getImageFile
 }
