@@ -33,15 +33,15 @@ function addAction(req, res,next){
                 }
 
                       Action.addActionInModel(actionsObj)
-                          .then(()=> res.status(201).json({succes: "la création a reussi"}))
-                          .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
+                          .then(()=> res.status(201).json({succes: "Ajout effectué avec succès"}))
+                          .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
                 }
                 else
                    {
-                     res.status(500).json({error: "cet action existe déjà"})
+                     res.status(500).json({error: "Cette action existe déjà pour ce projet"})
                    }
           })
-          .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
+          .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
 }
 
 
@@ -107,18 +107,18 @@ function updateAction(req,res, next){
                         unite2Id: req.body.unite2Id,
                         cout: req.body.cout,
                         deviseId: req.body.deviseId,
-                        observations: req.body.observation,
+                        observations: req.body.observations,
                         modifDate: req.body.modifDate,
                         modifUserId: req.body.modifUserId,
                 }
 
                       Action.updateActionInModel(actionsObj)
-                          .then(()=> res.status(200).json({succes: "la modification a reussi"}))
-                          .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
+                          .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
+                          .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
                 }
                 else
                    {
-                     res.status(500).json({error: "cet action existe déjà"})
+                     res.status(500).json({error: "Cette action existe déjà pour ce projet"})
                    }
           })
           .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))

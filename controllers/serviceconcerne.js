@@ -28,11 +28,11 @@ function addServiceConcerne(req, res,next){
             fin: req.body.fin || null
     } 
         ServiceConcerne.addServiceConcerneInModel(serviceConcerneObj)
-            .then(()=> res.status(201).json({succes: "la création a reussi"}))
-            .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
+            .then(()=> res.status(201).json({succes: "Affectation effectuée avec succès"}))
+            .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
     }
     else{
-        res.status(400).json({error: "dupplicata du service concerné!"})
+        res.status(400).json({error: "Ce service est déjà rattaché à ce projet"})
     }
     })
     .catch(error=> res.status(400).json(error))
@@ -92,13 +92,13 @@ function updateServiceConcerne(req,res, next){
             fin: req.body.fin || null
     } 
     ServiceConcerne.updateServiceConcerneInModel(serviceConcerneObj)
-    .then(()=> res.status(200).json({succes: "la modification a reussi"}))
-    .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
+    .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
+    .catch(()=> res.status(400).json({error: "erreur de la procédure stocké de modification"}));
     
     
     }
     else{
-        res.status(400).json({error: "dupplicata du service concerné!"})
+        res.status(400).json({error: "Ce service est déjà rattaché à ce projet"})
     }
     })
     .catch(error=> res.status(400).json(error))

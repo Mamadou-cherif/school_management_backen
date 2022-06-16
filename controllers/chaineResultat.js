@@ -48,7 +48,7 @@ function addChaineResultat(req, res,next){
   const chaineresultatObj={
     libelle: req.body.libelle,
     estActif:1
-}
+  }
 ChaineResultat.chainederesultatSelectByInModel(chaineresultatObj)
       .then(chaineresultat=> {
             if(chaineresultat.length==0){

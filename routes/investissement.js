@@ -6,6 +6,7 @@ router.post("/investissementSelectBy", investissementController.investissementSe
 router.post("/addInvestissement", investissementController.addInvestissement)
 router.put("/disableInvestissement", investissementController.disableInvestissement)
 router.put("/updateInvestissement", investissementController.updateInvestissement)
+router.post("/addInvestissement", investissementController.addInvestissement)
 router.get("/getOneInvestissement/:id", investissementController.getAsingleInvestissement)
 router.get("/getAllInvestissement", investissementController.getAllInvestissement)
 

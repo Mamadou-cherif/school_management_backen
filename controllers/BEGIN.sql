@@ -42,7 +42,6 @@ BEGIN
 		IF debutDonnees IS NOT NULL THEN
 			SET @requeteSql := CONCAT(@requeteSql, ' LIMIT ', debutDonnees, ',', finDonnees);
 		END IF;
-
 		PREPARE statement FROM @requeteSql;
 		EXECUTE statement;
 		DEALLOCATE PREPARE statement;

@@ -31,7 +31,6 @@ function addServiceConcerneInModel(theReq){
 
 function serviceConcerneSelectByInModel(theReq){
     return new Promise((resolve,reject)=> {
-    
         connection.query("CALL serviceconcernes_selectBy(?,?,?,?,?,?,?,?,?,?,?)",
               [ 
                 theReq.id,              

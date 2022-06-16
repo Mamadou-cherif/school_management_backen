@@ -39,55 +39,62 @@ function getAllInvestissement(req, res, next) {
 }
 
 
-function addInvestissement(req, res, next) {
-  const investissementObj = {
-    libelle: req.body.libelle,
-  }
-
-  Investissement.investissementSelectByInModel(investissementObj)
-    .then(investissement => {
-      if (investissement.length == 0) {
-        const investissement = {
-          projetId: req.body.projetId,
-          categorieInvestId: req.body.categorieInvestId,
-          libelle: req.body.libelle,
-          unite: req.body.unite,
-          quantite: req.body.quantite,
-          uniteId: req.body.uniteId,
-          cout: req.body.cout,
-          deviseId: req.body.deviseId,
-          observations: req.body.observations,
-          creationUserId: req.body.creationUserId,
 
 
+
+  
+  function addInvestissement(req, res,next){
+    const investissementObj={
+      libelle: req.body.libelle,
+      projetId: req.body.projetId,
+      estActif: 1,
+    }
+      
+      Investissement.investissementSelectByInModel(investissementObj)
+      .then(investissement=> {
+        if(investissement.length==0){
+          const investissement={
+            projetId: req.body.projetId,
+            categorieInvestId: req.body.categorieInvestId, 
+            libelle: req.body.libelle,
+            unite: req.body.unite,
+            quantite: req.body.quantite,
+            uniteId: req.body.uniteId,
+            cout: req.body.cout,
+            deviseId: req.body.deviseId,
+            observations: req.body.observations,
+            creationUserId: req.body.creationUserId,
+           
+          
         }
-        Investissement.addInvestissementInModel(investissement)
-          .then(() => res.status(201).json({ succes: "Ajout effectué avec succès" }))
-          .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée d'ajout" }));
-
-      }
-      else {
-        res.status(500).json({ error: "Cet investissement existe déjà" })
-      }
-    })
-    .catch(error => res.status(400).json({ error }))
-}
-
-
-
-
-
-//supression en dur
-function deleteInvestissement(req, res, next) {
-
-}
-
-//supression logique d'un utilisateur
-function disableInvestissement(req, res, next) {
-  const investissement = {
-    id: req.body.id,
-    modifDate: req.body.modifDate,
-    modifUserId: req.body.modifUserId,
+          Investissement.addInvestissementInModel(investissement)
+            .then(()=> res.status(201).json({succes: "Ajout effectué avec succès"}))
+            .catch(()=> res.status(400).json({error: "Erreur de la procedure stockée d'ajout"}));
+          
+        }
+        else
+          {
+                res.status(500).json({error: "Cet investissement existe déjà sur ce projet"})
+          }
+      })
+      .catch(error=> res.status(400).json({error}))
+  }
+  
+  
+  
+  
+  
+  //supression en dur
+  function deleteInvestissement(req, res, next){
+      
+  }
+  
+  //supression logique d'un utilisateur
+  function disableInvestissement(req, res, next){
+    const investissement={
+      id: req.body.id,
+      modifDate: req.body.modifDate,
+      modifUserId: req.body.modifUserId,
   }
 
   Investissement.disableInvestissementInModel(investissement)
@@ -95,20 +102,20 @@ function disableInvestissement(req, res, next) {
     .catch(() => res.status(400).json({ error: "le disable n'a pas marché!" }));
 }
 
-
-
-function updateInvestissement(req, res, next) {
-  const investissementObj = {
+function updateInvestissement(req,res, next){
+  const investissementObj={
     libelle: req.body.libelle,
+    projetId: req.body.projetId,
+    estActif: 1,
   }
-
-  Investissement.investissementSelectByInModel(investissementObj)
-    .then(investissement => {
-      if ((investissement.length == 0) || (investissement[0].id == req.body.id)) {
-        const investissement = {
+    
+    Investissement.investissementSelectByInModel(investissementObj)
+    .then(investissement=> {
+      if((investissement.length==0) || (investissement[0].id== req.body.id)){
+        const investissement={
           id: req.body.id,
           projetId: req.body.projetId,
-          categorieInvestId: req.body.categorieInvestId,
+          categorieInvestId: req.body.categorieInvestId, 
           libelle: req.body.libelle,
           unite: req.body.unite,
           quantite: req.body.quantite,
@@ -118,33 +125,28 @@ function updateInvestissement(req, res, next) {
           observations: req.body.observations,
           modifDate: req.body.modifDate,
           modifUserId: req.body.modifUserId,
-        }
-        console.log("modifIn", investissement);
+      }
+      
         Investissement.updateInvestissementInModel(investissement)
-          .then(() => res.status(201).json({ succes: "Modification effectué avec succès" }))
-          .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée de Modification" }));
-
+          .then(()=> res.status(201).json({succes: "Modification effectué avec succès"}))
+          .catch(()=> res.status(400).json({error: "Erreur de la procedure stockée de Modification"}));
+        
       }
-      else {
-        res.status(500).json({ error: "Cet investissement existe déjà" })
-      }
+      else
+        {
+              res.status(500).json({error: "Cet investissement existe déjà sur ce projet"})
+        }
     })
-    .catch(error => res.status(400).json({ error }))
-
+    .catch(error=> res.status(400).json({error}))
+ 
 }
 
-function getAsingleInvestissement(req, res, next) {
-  const id = req.params.id
+function getAsingleInvestissement(req, res, next){
+  const id= req.params.id
   Investissement.getAsingleInvestissementInModel(id)
-    .then(investissement => res.status(200).json(investissement))
-    .catch(error => res.status(400).json(error))
+  .then(investissement=> res.status(200).json(investissement))
+  .catch(error=> res.status(400).json(error))
 }
-
-
-function getAllInvestissements(req, res, next) {
-
-}
-
 
 
 
