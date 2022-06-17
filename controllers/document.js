@@ -18,7 +18,6 @@ const storage = multersd.diskStorage({
     crypto.pseudoRandomBytes(16, function (err, raw) {
       if (err) return callback(err);
       let derniereImage = raw.toString('hex') + path.extname(file.originalname);
-      console.log('derniereImage' + derniereImage);
       callback(null, derniereImage);
     })
   }
@@ -29,7 +28,6 @@ const upload = multersd({ storage: storage });
 const singleUpload = upload.single('image');
 
 function files(req, res, next) {
-  console.log("bnjr", req.file);
   try {
     singleUpload(req, res, function (err) {
       if (err) {
@@ -38,10 +36,8 @@ function files(req, res, next) {
       if (!req.file.originalname.match(/\.(jpg|png|jpeg|pdf)$/)) {
         return res.status(400).json({ msg: 'only image autoried' })
       }
-      console.log("bnjr1", req.file);
       documentUrl = req.file.filename;
-      console.log("image", req.file.filename);
-      console.log("originalename", req.file.originalname);
+
 
       return res.json({ 'imageUrl': documentUrl });
     });
@@ -75,7 +71,7 @@ function addDocument(req, res, next) {
           observations: req.body.observations,
           creationUserId: req.body.creationUserId
         }
-        console.log("documentUrl", objDocument);
+
         Document.addDocumentInModel(objDocument)
           .then(() => res.status(201).json({ succes: "Ajout effectué avec succès" }))
           .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée documents_insert" }));
@@ -134,7 +130,7 @@ function updateDocument(req, res, next) {
 }
 
 function getImageFile(req, res) {
-  console.log("file", req.params);
+
   var image_file = req.params.File;
   var path_file = './uploads/documents/' + image_file;
   fs.exists(path_file, (exists) => {

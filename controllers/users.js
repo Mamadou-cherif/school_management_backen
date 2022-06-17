@@ -27,7 +27,6 @@ const storage = multersd.diskStorage({
         crypto.pseudoRandomBytes(16, function (err, raw) {
             if (err) return callback(err);
             let derniereImage = raw.toString('hex') + path.extname(file.originalname);
-            console.log('derniereImage' + derniereImage);
             callback(null, derniereImage);
         })
     }
@@ -121,7 +120,6 @@ function addUser(req, res, next) {
 function getImageFile(req, res) {
     var image_file = req.params.imageFile;
     var path_file = './uploads/users/' + image_file;
-    console.log("path", path_file);
     fs.exists(path_file, (exists) => {
         if (exists) {
             res.sendFile(path.resolve(path_file));
@@ -264,7 +262,6 @@ function updateUser(req, res, next) {
                     modifUserId: req.body.modifUserId
                 }
 
-                console.log("objUser", objUser);
 
                 User.updateUserInModel(objUser)
                     .then(() => { return res.status(200).json({ succes: "La modification de l'utilisateur a réussi" }) })
