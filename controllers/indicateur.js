@@ -122,8 +122,10 @@ const express= require("express")
   
   
   function getAllIndicateurs(req,res, next){ 
-   
-  }
+    Indicateur.getAllIndicateurInModel(req)
+    .then(execution => res.status(200).json(execution))
+    .catch(error => res.status(400).json(error))
+  }  
   
 
  

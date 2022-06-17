@@ -147,8 +147,26 @@ function getAsingleIndicateurInModel(id){
 }
 
 
+function getAllIndicateurInModel(){
+  return new Promise((resolve,reject)=> {
+    
+    connection.query("CALL indicateurs_selectAll(?,?,?)",
+          [ 
+            1,
+            null,
+            null
+            
+          ],
 
-
+      ((err,results, fields)=>{
+        if(err){
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
+}
 
 
 module.exports={  
@@ -157,7 +175,8 @@ module.exports={
   addIndicateurInModel,
   updateIndicateurInModel,
   getAsingleIndicateurInModel,
-  indicateurSelectByInModel 
+  indicateurSelectByInModel ,
+  getAllIndicateurInModel
 }
 
 
