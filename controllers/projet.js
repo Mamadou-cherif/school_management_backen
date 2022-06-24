@@ -216,8 +216,30 @@ function projetSelectBy(req, res, next) {
         .catch(error => res.status(400).json(error))
 }
 
+function countAllProjet(req,res, next){
+  Projet.countAllProjetInModel()
+      .then(nombre=> res.status(200).json(nombre))
+      .catch(error=> res.status(400).json(error))
+}
+
+
+function projetSelectByParams(req,res, next){
+  const objProjet={
+      axeId:req.body.axeId,
+      programmeId:req.body.programmeId,
+      statutId:req.body.statutId,
+      debut:req.body.debut,
+      fin:req.body.fin,
+  }
+  Projet.projetSelectByParamsInModel(objProjet)
+      .then(projets=> res.status(200).json(projets))
+      .catch(error=> res.status(400).json(error))
+}
+
 module.exports = {
+    projetSelectByParams,
     disableProjet,
+    countAllProjet,
     addProjet,
     updateProjet,
     getAsingleProjet,

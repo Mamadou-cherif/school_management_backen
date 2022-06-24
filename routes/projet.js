@@ -10,6 +10,7 @@ router.put("/disableProjet", projetController.disableProjet)
 router.put("/updateProjet", projetController.updateProjet)
 router.get("/getOneProjet/:id", projetController.getAsingleProjet)
 router.post("/getAllProjet", projetController.getAllProjets)
+router.post("/projetSelectByParams", projetController.projetSelectByParams)
 router.post("/getStatutByProgrammeIdOrAxeId", projetController.getStatutByProgrammeIdOrAxeId)
-
+router.get("/countAllProjet", projetController.countAllProjet)
 module.exports = router

@@ -157,11 +157,50 @@ function getAllFinancementInModel(theReq) {
   })
 }
 
+function countAllFinancementInModel(){
+  return new Promise((resolve,reject)=> {
+  
+      connection.query("CALL financements_countAll()",
+            [],
+  
+        ((err,results, fields)=>{
+          if(err){
+            reject(err)
+          }
+          resolve(results[0])
+        })
+      )
+    })
+}
+function financementSelectByParamsInModel(theReq){
+  return new Promise((resolve,reject)=> {
+
+      connection.query("CALL financements_selectByParams(?,?,?,?,?)",
+            [ 
+              theReq.structureId,
+              theReq.projetId,
+              theReq.typeFinancement,
+              theReq.debut,
+              theReq.fin,
+            ],
+  
+        ((err,results, fields)=>{
+          if(err){
+            reject(err)
+          }else{}
+          resolve(results[0])
+        })
+      )
+    })
+}
+
 module.exports = {
+  financementSelectByParamsInModel,
   addFinancementInModel,
   disableFinancementInModel,
   updateFinancementInModel,
   getFinancementByIdInModel,
   getAllFinancementInModel,
-  financementSelectByInModel
+  financementSelectByInModel,
+  countAllFinancementInModel
 }

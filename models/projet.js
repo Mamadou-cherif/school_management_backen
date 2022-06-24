@@ -198,7 +198,47 @@ function selectAllProjetInModel(theReq) {
   })
 }
 
+function countAllProjetInModel(){
+  return new Promise((resolve,reject)=> {
+  
+      connection.query("CALL projets_countAll()",
+            [],
+  
+        ((err,results, fields)=>{
+          if(err){
+            reject(err)
+          }
+          resolve(results[0])
+        })
+      )
+    })
+}
+
+function projetSelectByParamsInModel(theReq){
+  return new Promise((resolve,reject)=> {
+
+      connection.query("CALL projets_selectByParams(?,?,?,?,?)",
+            [ 
+              theReq.axeId,
+              theReq.programmeId,
+              theReq.statutId,
+              theReq.debut,
+              theReq.fin,
+            ],
+  
+        ((err,results, fields)=>{
+          if(err){
+            reject(err)
+          }else{}
+          resolve(results[0])
+        })
+      )
+    })
+}
+
 module.exports = {
+  countAllProjetInModel,
+  projetSelectByParamsInModel,
   addProjetInModel,
   disableProjetInModel,
   updateProjetInModel,

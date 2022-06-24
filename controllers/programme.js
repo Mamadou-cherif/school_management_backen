@@ -152,8 +152,27 @@ function programmeSelectBy(req, res, next){
         .catch(error=> res.status(400).json(error))
 }
 
+function countAllProgramme(req,res, next){
+  Programme.countAllProgrammeInModel()
+      .then(nombre=> res.status(200).json(nombre))
+      .catch(error=> res.status(400).json(error))
+}
+
+function programmeSelectByParams(req,res, next){
+  const objProgramme={
+      axeId:req.body.axeId,
+      debut:req.body.debut,
+      fin:req.body.fin,
+  }
+  Programme.programmesSelectByParamsInModel(objProgramme)
+      .then(programmes=> res.status(200).json(programmes))
+      .catch(error=> res.status(400).json(error))
+}
+
 module.exports={
+  programmeSelectByParams,
     programmeSelectBy,
+    countAllProgramme,
     disableProgramme,
     addProgramme,
     updateProgramme,

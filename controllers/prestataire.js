@@ -171,7 +171,11 @@ function getAllPrestataire(req, res, next) {
 
 
 
-
+function countAllPrestataire(req,res, next){
+  Prestataire.countAllPrestataireInModel()
+      .then(nombre=> res.status(200).json(nombre))
+      .catch(error=> res.status(400).json(error))
+}
 
 
 function getAsinglePrestataire(req, res, next) {
@@ -189,6 +193,7 @@ module.exports = {
   updatePrestataire,
   getAsinglePrestataire,
   prestataireSelectBy,
-  getAllPrestataire
+  getAllPrestataire,
+  countAllPrestataire
 }
 

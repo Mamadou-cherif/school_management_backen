@@ -179,11 +179,26 @@ function getPrestataireByIdInModel(id) {
 
 
 
-
+function countAllPrestataireInModel(){
+  return new Promise((resolve,reject)=> {
+  
+      connection.query("CALL prestataires_countAll()",
+            [],
+  
+        ((err,results, fields)=>{
+          if(err){
+            reject(err)
+          }
+          resolve(results[0])
+        })
+      )
+    })
+}
 
 
 module.exports = {
   getAllPrestataireInModel,
+  countAllPrestataireInModel,
   prestataireSelectByInModel,
   disablePrestataireInModel,
   updatePrestataireInModel,
