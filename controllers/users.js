@@ -2,7 +2,6 @@ const User = require("../models/users")
 const express = require("express")
 const bodyParser = require("body-parser")
 const app = express()
-//const jwt= require("../services/jwt")
 app.use(bodyParser.json())
 const bcrypt = require("bcrypt")
 const initUserClass = require("../classes/users")
@@ -12,6 +11,53 @@ const userConnexion = require("../models/userConnexion")
 const userPassword = require("../models/userPassword")
 const initUserPassword = require("../classes/userPassword")
 const jwt = require("../services/jwt")
+const crypto = require('crypto');
+const multersd = require('multer')
+const path = require('path');
+const fs = require("fs")
+
+
+
+let imageUrl = '';
+
+
+const storage = multersd.diskStorage({
+    destination: './uploads/users',
+    filename: function (req, file, callback) {
+        crypto.pseudoRandomBytes(16, function (err, raw) {
+            if (err) return callback(err);
+            let derniereImage = raw.toString('hex') + path.extname(file.originalname);
+            callback(null, derniereImage);
+        })
+    }
+})
+
+const upload = multersd({ storage: storage });
+
+const singleUpload = upload.single('image');
+
+function files(req, res, next) {
+    console.log("bnjr", req.file);
+    try {
+        singleUpload(req, res, function (err) {
+            if (err) {
+                return res.status(422).send({ errors: [{ title: 'File Upload Error', detail: err.message }] });
+            }
+            if (!req.file.originalname.match(/\.(jpg|png|jpeg|pdf)$/)) {
+                return res.status(400).json({ msg: 'only image autoried' })
+            }
+            imageUrl = req.file.filename;
+            console.log("image", req.filename);
+            console.log("originalename", req.file.originalname);
+
+            return res.json({ 'imageUrl': imageUrl });
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(400).send(err)
+    }
+}
+
 
 function addUser(req, res, next) {
     initUserClass.user.telephone1 = req.body.indicatifTel.toString() + req.body.telephone1
@@ -38,7 +84,7 @@ function addUser(req, res, next) {
                     telephone1: initUserClass.user.telephone1,
                     telephone2: initUserClass.user.telephone2,
                     email: req.body.email,
-                    photo: "",
+                    photo: imageUrl,
                     password: md5(req.body.password),
                     quartierdistrictId: req.body.quartierdistrictId,
                     observations: req.body.observations,
@@ -71,8 +117,15 @@ function addUser(req, res, next) {
 
 }
 
-
-
+function getImageFile(req, res) {
+    var image_file = req.params.imageFile;
+    var path_file = './uploads/users/' + image_file;
+    fs.exists(path_file, (exists) => {
+        if (exists) {
+            res.sendFile(path.resolve(path_file));
+        }
+    });
+}
 function login(req, res, next) {
     bool = false
     const login = {
@@ -199,7 +252,7 @@ function updateUser(req, res, next) {
                     telephone1: req.body.telephone1,
                     telephone2: req.body.telephone2,
                     email: req.body.email,
-                    photo: "",
+                    photo: imageUrl,
                     password: req.body.password,
                     quartierdistrictId: req.body.quartierdistrictId,
                     observations: req.body.observations,
@@ -323,5 +376,7 @@ module.exports = {
     getAllUsers,
     activateUser,
     updatePassword,
-    UserSelectBy
+    UserSelectBy,
+    files,
+    getImageFile
 }
