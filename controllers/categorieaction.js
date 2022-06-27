@@ -113,7 +113,7 @@ function getAllCategorieActions(req, res, next) {
     initCategorieActionClass.estActif = req.body.estActif
     initCategorieActionClass.debut = req.body.debut
     initCategorieActionClass.fin = req.body.fin
-
+    
     CategorieAction.getAllCategorieActionInModel(initCategorieActionClass)
         .then(categorieactions => res.status(200).json(categorieactions))
         .catch(error => res.status(400).json(error))
@@ -121,7 +121,7 @@ function getAllCategorieActions(req, res, next) {
 
 
 function deleteCategorieAction(req, res, next) {
-    (req.params.id)
+   
     CategorieAction.deleteCategorieActionInModel(req.params.id)
         .then(() => res.status(200).json({ succes: "Suppression effectuée avec succès" }))
         .catch(() => res.status(400).json({ error: "Suppression impossible car cette catégorie action appartient dans une autre table" }));

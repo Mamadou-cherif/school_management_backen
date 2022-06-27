@@ -18,6 +18,7 @@ const bcrypt = require("bcrypt")
     const valeurcibleObj = {
       indicateurId: req.body.indicateurId,
       anneeCibleId: req.body.anneeCibleId,
+      estActif:1
     } 
     ValeurCible.valeurcibleSelectByInModel(valeurcibleObj)
       .then(valeurcible=>{
@@ -29,7 +30,6 @@ const bcrypt = require("bcrypt")
             valeurProjetee: req.body.valeurProjetee,
             observations: req.body.observations,
             creationUserId: req.body.creationUserId,
-        
           }
                      
           ValeurCible.addValeurCibleInModel(valeurcibleObj)
@@ -52,9 +52,11 @@ const bcrypt = require("bcrypt")
     const valeurcibleObj = {
       indicateurId: req.body.indicateurId,
       anneeCibleId: req.body.anneeCibleId,
+      estActif:1
     } 
     ValeurCible.valeurcibleSelectByInModel(valeurcibleObj)
       .then(valeurcible=>{ 
+        console.log(valeurcible)
         if((valeurcible.length==0) || (valeurcible[0].id == req.body.id)){
           const valeurcibleObj = {
             id: req.body.id,

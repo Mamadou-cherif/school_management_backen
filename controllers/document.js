@@ -33,8 +33,9 @@ function files(req, res, next) {
       if (err) {
         return res.status(422).send({ errors: [{ title: 'File Upload Error', detail: err.message }] });
       }
-      if (!req.file.originalname.match(/\.(jpg|png|jpeg|pdf)$/)) {
-        return res.status(400).json({ msg: 'only image autoried' })
+      if (!req.file.originalname.match(/\.(docx|pdf)$/)) {
+        console.log("not downloaded")
+        return res.status(400).json({ error: 'only  autorized' })
       }
       documentUrl = req.file.filename;
 

@@ -125,9 +125,9 @@ function getAllCategorieActionInModel(theReq) {
 
     connection.query("CALL categorieactions_selectAll(?,?,?)",
       [
-        theReq.estActif,
-        theReq.debut,
-        theReq.fin,
+        1,
+        null,
+        null,
 
       ],
 
