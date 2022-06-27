@@ -150,7 +150,46 @@ function selectAllProgrammeInModel(theReq){
       })
 }
 
+function countAllProgrammeInModel(){
+  return new Promise((resolve,reject)=> {
+  
+      connection.query("CALL programmes_countAll()",
+            [],
+  
+        ((err,results, fields)=>{
+          if(err){
+            reject(err)
+          }
+          resolve(results[0])
+        })
+      )
+    })
+}
+
+function programmesSelectByParamsInModel(theReq){
+  return new Promise((resolve,reject)=> {
+
+      connection.query("CALL programmes_selectByParams(?,?,?)",
+            [ 
+              theReq.axeId,
+              theReq.debut,
+              theReq.fin,
+              
+            ],
+  
+        ((err,results, fields)=>{
+          if(err){
+            reject(err)
+          }else{}
+          resolve(results[0])
+        })
+      )
+    })
+}
+
 module.exports={
+    programmesSelectByParamsInModel,
+    countAllProgrammeInModel,
     addProgrammeInModel,
     disableProgrammeInModel,
     updateProgrammeInModel,

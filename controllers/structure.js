@@ -159,8 +159,15 @@ function getAsingleStructure(req, res, next) {
     .then(structure => res.status(200).json(structure))
     .catch(error => res.status(400).json(console.log(error)))
 }
+
+function countAllStructure(req,res, next){
+  Structure.countAllStructureInModel()
+      .then(nombre=> res.status(200).json(nombre))
+      .catch(error=> res.status(400).json(error))
+}
 module.exports = {
   getAllStructure,
+  countAllStructure,
   addStructure,
   disableStructure,
   updateStructure,

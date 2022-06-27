@@ -2,14 +2,11 @@ const Intervention = require("../models/intervention")
 
 const initInterventionClass = require("../classes/intervention")
 
-
 function addIntervention(req, res, next) {
   const interventionObj = {
-
     prestataireId: req.body.prestataireId,
     projetId: req.body.projetId,
     estActif: 1,
-
   }
   console.log(interventionObj)
   Intervention.InterventionSelectByInModel(interventionObj)
@@ -122,14 +119,32 @@ function interventionSelectBy(req, res, next) {
 }
 
 
-
+function countAllIntervention(req,res, next){
+  Intervention.countAllInterventionInModel()
+      .then(nombre=> res.status(200).json(nombre))
+      .catch(error=> res.status(400).json(error))
+}
+function interventionSelectByParams(req,res, next){
+  const objInterventions={
+      prestataireId:req.body.prestataireId,
+      projetId:req.body.projetId,
+      categorie:req.body.categorie,
+      debut:req.body.debut,
+      fin:req.body.fin,
+  }
+  Intervention.interventionSelectByParamsInModel(objInterventions)
+      .then(interventions=> res.status(200).json(interventions))
+      .catch(error=> res.status(400).json(error))
+}
 
 module.exports = {
+  countAllIntervention,
   interventionSelectBy,
   disableIntervention,
   deleteIntervention,
   addIntervention,
   updateIntervention,
   getAsingleIntervention,
+  interventionSelectByParams
 }
 

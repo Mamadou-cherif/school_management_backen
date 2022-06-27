@@ -141,11 +141,30 @@ function getAllFinancements(req, res, next) {
 }
 
 
+ function countAllFinancement(req,res, next){
+    Financement.countAllFinancementInModel()
+        .then(nombre=> res.status(200).json(nombre))
+        .catch(error=> res.status(400).json(error))
+  }
+  function financementSelectByParams(req,res, next){
+        const objfinancements={
+            structureId:req.body.structureId,
+            projetId:req.body.projetId,
+            typeFinancement:req.body.typeFinancement,
+            debut:req.body.debut,
+            fin:req.body.fin,
+        }
+    Financement.financementSelectByParamsInModel(objfinancements)
+        .then(financements=> res.status(200).json(financements))
+        .catch(error=> res.status(400).json(error))
 
+  }
 
 
 
 module.exports = {
+    countAllFinancement,
+    financementSelectByParams,
     disableFinancement,
     addFinancement,
     updateFinancement,

@@ -140,17 +140,54 @@ function getAsingleInterventionInModel(id) {
     )
   })
 }
+function interventionSelectByParamsInModel(theReq){
+  return new Promise((resolve,reject)=> {
+
+      connection.query("CALL interventions_selectByParams(?,?,?,?,?)",
+            [ 
+              theReq.prestataireId,
+              theReq.projetId,
+              theReq.categorie,
+              theReq.debut,
+              theReq.fin,
+            ],
+  
+        ((err,results, fields)=>{
+          if(err){
+            reject(err)
+          }else{}
+          resolve(results[0])
+        })
+      )
+    })
+}
 
 
 
-
+function countAllInterventionInModel(){
+  return new Promise((resolve,reject)=> {
+  
+      connection.query("CALL interventions_countAll()",
+            [],
+  
+        ((err,results, fields)=>{
+          if(err){
+            reject(err)
+          }
+          resolve(results[0])
+        })
+      )
+    })
+}
 
 
 module.exports = {
   disableInterventionInModel,
+  countAllInterventionInModel,
   deleteInterventionInModel,
   addInterventionInModel,
   updateInterventionInModel,
   getAsingleInterventionInModel,
-  InterventionSelectByInModel
+  InterventionSelectByInModel,
+  interventionSelectByParamsInModel
 }

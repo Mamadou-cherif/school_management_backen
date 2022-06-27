@@ -21,12 +21,10 @@ function addService(req, res, next) {
     creationUserId: req.body.creationUserId,
 
   }
-
   Service.addServiceInModel(service)
     .then(() => res.status(201).json({ succes: "la création a reussi" }))
     .catch(() => res.status(400).json({ error: "erreur de la procédure stocké d'ajout" }));
 }
-
 
 
 //supression logique d'un service

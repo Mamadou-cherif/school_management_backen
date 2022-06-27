@@ -8,6 +8,6 @@ router.get("/getAllPrestataire", prestataireController.getAllPrestataire)
 router.post("/addPrestataire", prestataireController.addPrestataire)
 router.put("/updatePrestataire", prestataireController.updatePrestataire)
 router.put("/disablePrestataire", prestataireController.disablePrestataire)
-
+router.get("/countAllPrestataire", prestataireController.countAllPrestataire)
 
 module.exports = router

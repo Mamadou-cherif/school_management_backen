@@ -9,5 +9,7 @@ const ensure_auth= require("../middlewares/authenticated")
     router.put("/updateProgramme", programmeController.updateProgramme)
     router.get("/getOneProgramme/:id", programmeController.getAsingleProgramme)
     router.post("/getAllProgramme", programmeController.getAllProgrammes)
+    router.post("/programmeSelectByParams", programmeController.programmeSelectByParams)
+    router.get("/countAllProgramme", programmeController.countAllProgramme)
 
 module.exports= router

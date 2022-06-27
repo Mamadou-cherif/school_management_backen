@@ -125,10 +125,30 @@ function getAllAxes(req, res, next) {
 
 
 
+function countAllAxe(req,res, next){
+    Axe.countAllAxeInModel()
+        .then(nombre=> res.status(200).json(nombre))
+        .catch(error=> res.status(400).json(error))
+}
 
+<<<<<<< HEAD
+function axeSelectByParams(req,res, next){
+    const objAxe={
+        debut:req.body.debut,
+        fin:req.body.fin,
+    }
+    Axe.axesSelectByParamsInModel(objAxe)
+        .then(axes=> res.status(200).json(axes))
+        .catch(error=> res.status(400).json(error))
+}
+module.exports={
+    axeSelectByParams,
+    countAllAxe,
+=======
 
 
 module.exports = {
+>>>>>>> 8822fab6171b2d236c9a2043cefb771f6603955c
     disableAxe,
     addAxe,
     updateAxe,

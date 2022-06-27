@@ -146,11 +146,48 @@ function getAllAxeInModel(theReq){
       })
 }
 
+function countAllAxeInModel(){
+  return new Promise((resolve,reject)=> {
+  
+      connection.query("CALL axes_countAll()",
+            [],
+  
+        ((err,results, fields)=>{
+          if(err){
+            reject(err)
+          }
+          resolve(results[0])
+        })
+      )
+    })
+}
+
+function axesSelectByParamsInModel(theReq){
+  return new Promise((resolve,reject)=> {
+
+      connection.query("CALL axes_selectByParams(?,?)",
+            [ 
+              theReq.debut,
+              theReq.fin,
+              
+            ],
+  
+        ((err,results, fields)=>{
+          if(err){
+            reject(err)
+          }else{}
+          resolve(results[0])
+        })
+      )
+    })
+}
 module.exports={
     addAxeInModel,
     disableAxeInModel,
     updateAxeInModel,
     getAxeByIdInModel,
     getAllAxeInModel,
-    axeSelectByInModel
+    axeSelectByInModel,
+    countAllAxeInModel,
+    axesSelectByParamsInModel
 }

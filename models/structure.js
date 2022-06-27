@@ -213,8 +213,23 @@ function getStructureByIdInModel(id) {
   })
 }
 
+function countAllStructureInModel(){
+  return new Promise((resolve,reject)=> {
+  
+      connection.query("CALL structures_countAll()",
+            [],
+  
+        ((err,results, fields)=>{
+          if(err){
+            reject(err)
+          }
+          resolve(results[0])
+        })
+      )
+    })
+}
 module.exports = {
-
+  countAllStructureInModel,
   getAllStructureInModel,
   disableStructureInModel,
   updateStructureInModel,
