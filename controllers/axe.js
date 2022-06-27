@@ -131,7 +131,6 @@ function countAllAxe(req,res, next){
         .catch(error=> res.status(400).json(error))
 }
 
-<<<<<<< HEAD
 function axeSelectByParams(req,res, next){
     const objAxe={
         debut:req.body.debut,
@@ -144,11 +143,6 @@ function axeSelectByParams(req,res, next){
 module.exports={
     axeSelectByParams,
     countAllAxe,
-=======
-
-
-module.exports = {
->>>>>>> 8822fab6171b2d236c9a2043cefb771f6603955c
     disableAxe,
     addAxe,
     updateAxe,
