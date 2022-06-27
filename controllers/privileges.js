@@ -30,7 +30,6 @@ function getCountPrivilegeForActionOnglet(req,res, next){
                 referenceMenu:req.body.referenceMenu,
                 referenceOnglet:req.body.referenceOnglet,
             }
-          
     Privilege.getCountPrivilegeForActionOnglet(objPrivilege)
        .then(privileges=> res.status(200).json(privileges))
        .catch(error=> res.status(400).json(error))

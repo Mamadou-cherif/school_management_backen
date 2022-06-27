@@ -130,7 +130,6 @@ function getAllPriorites(req, res, next) {
     initPrioriteClass.estActif = req.body.estActif
     initPrioriteClass.debut = req.body.debut
     initPrioriteClass.fin = req.body.fin
-
     Priorite.getAllPrioriteInModel(initPrioriteClass)
         .then(priorites => res.status(200).json(priorites))
         .catch(error => res.status(400).json(error))
