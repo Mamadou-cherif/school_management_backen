@@ -34,7 +34,6 @@ function files(req, res, next) {
         return res.status(422).send({ errors: [{ title: 'File Upload Error', detail: err.message }] });
       }
       if (!req.file.originalname.match(/\.(docx|pdf)$/)) {
-        console.log("not downloaded")
         return res.status(400).json({ error: 'only  autorized' })
       }
       documentUrl = req.file.filename;
@@ -50,6 +49,7 @@ function files(req, res, next) {
 
 function addDocument(req, res, next) {
   const objDocument = {
+    projetId: req.body.projetId,
     reference: req.body.reference,
     estActif: 1
   }
@@ -191,7 +191,6 @@ function documentSelectBy(req, res, next) {
     debutDonnees: req.body.debutDonnees || null,
     finDonnees: req.body.finDonnees || null,
   }
-
   Document.documentSelectByInModel(objDocument)
     .then(document => res.status(200).json(document))
     .catch(error => res.status(400).json(error))

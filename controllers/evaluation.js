@@ -44,7 +44,6 @@ function addEvaluation(req, res, next) {
                   observations: req.body.observations ,
                   creationUserId: req.body.creationUserId ,
                 }
-                console.log(evaluationObj)
 
               Evaluation.addEvaluationInModel(evaluationObj)
                 .then(() => res.status(201).json({ succes: "Ajout effectué avec succès" }))

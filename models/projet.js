@@ -234,6 +234,29 @@ function projetSelectByParamsInModel(theReq){
         })
       )
     })
+
+
+}
+
+
+function selectAllProjectEncourInModel(id){
+  return new Promise((resolve,reject)=> {
+
+      connection.query("CALL projets_selectEncours()",
+            [ 
+            
+            ],
+  
+        ((err,results, fields)=>{
+          if(err){
+            reject(err)
+          }else{}
+          resolve(results[0])
+        })
+      )
+    })
+
+
 }
 
 module.exports = {
@@ -244,6 +267,7 @@ module.exports = {
   updateProjetInModel,
   selectByIdProjetInModel,
   selectAllProjetInModel,
+  selectAllProjectEncourInModel,
   projetSelectByInModel,
   getStatutByProgrammeIdOrAxeId
 }

@@ -130,7 +130,6 @@ function updateStructureInModel(data) {
 
 
 function addStructureInModel(data) {
-  console.log('data', data)
   return new Promise((resolve, reject) => {
     connection.query("CALL structures_insert(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [

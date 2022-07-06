@@ -10,7 +10,6 @@ const { reject } = require("bcrypt/promises");
 
 function addFinancementInModel(theReq) {
   return new Promise((resolve, reject) => {
-    console.log(theReq)
     connection.query("CALL financement_insert(?,?,?,?,?,?,?)",
       [
         theReq.projetId,

@@ -56,7 +56,6 @@ const bcrypt = require("bcrypt")
     } 
     ValeurCible.valeurcibleSelectByInModel(valeurcibleObj)
       .then(valeurcible=>{ 
-        console.log(valeurcible)
         if((valeurcible.length==0) || (valeurcible[0].id == req.body.id)){
           const valeurcibleObj = {
             id: req.body.id,

@@ -42,7 +42,6 @@ function prestataireSelectByInModel(data) {
 }
 
 function addPrestataireInModel(data) {
-  console.log(data)
   return new Promise((resolve, reject) => {
     connection.query("CALL prestataires_insert(?,?,?,?,?,?,?,?,?,?,?,?)",
       [

@@ -141,7 +141,6 @@ function updateModeAcces(req, res, next){
         }
         ModeAcces.checkIfModeAccesExists(objModeAcces)
             .then(modeaccess=> {
-              console.log(modeaccess)
                   if((modeaccess.length==0) || (modeaccess[0].id== req.body.id)){
                     initModeAccesClass.modeaccess.id= req.body.id
                     initModeAccesClass.modeaccess.libelle= req.body.libelle
@@ -191,6 +190,4 @@ module.exports = {
   getNotAffectedByOngletAndGroupe,
   getAllModeAccess,
   getFilsAffecteAUnGroupe
-
-
 }

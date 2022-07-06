@@ -124,10 +124,9 @@ function getAllAnneeCibles(req, res, next) {
 
 
 function deleteAnneeCible(req, res, next) {
-    (req.params.id)
     AnneeCible.deleteAnneeCibleInModel(req.params.id)
         .then(() => res.status(200).json({ succes: "Suppression effectuée avec succès" }))
-        .catch(() => res.status(400).json({ error: "Suppression impossible car ce cette année cible appartient dans une autre table" }));
+        .catch(() => res.status(400).json({ error: "Suppression impossible car cette cette année cible appartient dans une autre table" }));
 }
 
 

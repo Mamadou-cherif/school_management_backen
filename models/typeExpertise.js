@@ -1,7 +1,6 @@
 const mysql= require("mysql2");
 const config= require("../configs/dbconfig")
 let connection= mysql.createConnection(config)
-const express= require("express")
 
 function selectByIdTypeExpertiseInModel(id){
   return new Promise((resolve,reject)=> {

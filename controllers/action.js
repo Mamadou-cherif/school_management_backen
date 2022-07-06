@@ -130,7 +130,6 @@ function disableAction(req, res, next) {
     initActionClass.id = req.body.id
     initActionClass.modifUserId = req.body.modifUserId
     initActionClass.modifDate = req.body.modifDate
-    console.log(req.body)
     Action.disableActionInModel(initActionClass)
         .then(() => res.status(200).json({ succes: "la suppression a reussi" }))
         .catch(() => res.status(400).json({ error: "erreur de la procédure stocké d'ajout" }));

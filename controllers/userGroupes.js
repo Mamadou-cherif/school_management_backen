@@ -35,12 +35,9 @@ function deleteUserGroupe(req, res, next) {
         userId: req.body.userId,
         groupeId: req.body.groupeId
     }
-    console.log("usergroupe", usergroupe);
     UserGroupe.checkIfUserGroupeExists(usergroupe)
         .then(usergroupe => {
-            console.log("usergroupe1", usergroupe);
             if (usergroupe.length > 0) {
-
                 UserGroupe.deleteUserGroupeInModel(usergroupe[0].id)
                     .then(() => res.status(200).json({ succes: "suppression succes" }))
                     .catch(error => res.status(400).json({ error }))

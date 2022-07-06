@@ -37,7 +37,6 @@ const upload = multersd({ storage: storage });
 const singleUpload = upload.single('image');
 
 function files(req, res, next) {
-    console.log("bnjr", req.file);
     try {
         singleUpload(req, res, function (err) {
             if (err) {
@@ -47,9 +46,6 @@ function files(req, res, next) {
                 return res.status(400).json({ msg: 'only image autoried' })
             }
             imageUrl = req.file.filename;
-            console.log("image", req.filename);
-            console.log("originalename", req.file.originalname);
-
             return res.json({ 'imageUrl': imageUrl });
         });
     } catch (err) {

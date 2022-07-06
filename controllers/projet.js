@@ -12,6 +12,7 @@ const initProjetClass = require("../classes/projet")
 
 
 function getStatutByProgrammeIdOrAxeId(req, res,next){
+
         const objProjet={
             programmeId:req.body.programmeId,
             axeId:req.body.axeId,
@@ -29,30 +30,33 @@ function getStatutByProgrammeIdOrAxeId(req, res,next){
                 res.forEach(element => {
 
                     if(element.statutProjet === "Encours"){
+                      
                       encours=true;
                     }
                     if(element.statutProjet === "Terminé"){
                       termine=true;
                     }
-                    if(element.statutProjet === "Non demarré"){
+                   if(element.statutProjet === "Non demarré"){
                       nonDemare=true;
                     }
+                    
                 });
                 if(encours==true){
                   
-                retour= "encours";
+                  retour= "encours";
+
                 }
-                if((nonDemare==true) && (termine==true) ){
+                else if((nonDemare==true) && (termine==true) ){
                   
                 retour= "encours";
 
                 }
-                if((nonDemare==true) && (termine==false) ){
+                else if((nonDemare==true) && (termine==false) ){
                 
                 retour= "Non demarré";
 
                 }
-                if((termine==true) && (nonDemare==false) && (encours==false) ){
+                else if((termine==true) && (nonDemare==false) && (encours==false) ){
                 retour= "Terminé";
 
                 }
@@ -174,6 +178,13 @@ function getAsingleProjet(req, res, next){
 }
 
 
+function selectAllProjectEncour(req, res, next) {
+
+
+  Projet.selectAllProjectEncourInModel(req.params.id)
+      .then(projets => res.status(200).json(projets))
+      .catch(error => res.status(400).json(error))
+}
 function getAllProjets(req, res, next) {
     initProjetClass.estActif = req.body.estActif
     initProjetClass.debut = req.body.debut
@@ -245,5 +256,6 @@ module.exports = {
     getAsingleProjet,
     getAllProjets,
     projetSelectBy,
+    selectAllProjectEncour,
     getStatutByProgrammeIdOrAxeId
 }

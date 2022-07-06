@@ -126,7 +126,7 @@ function getAllCategorieInvests(req,res, next){
 function deleteCategorieInvest(req, res, next){
     CategorieInvest.deleteCategorieInvestInModel(req.params.id)
     .then(()=> res.status(201).json({succes: "Suppression effectuée avec succès"}))
-    .catch(()=> res.status(400).json({error: "erreur de la procedure de suppression"}));
+    .catch(()=> res.status(400).json({error: "suppression impossible car cet élément est lié à une autre table"}));
 }
 
 

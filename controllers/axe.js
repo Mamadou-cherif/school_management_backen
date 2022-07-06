@@ -10,7 +10,6 @@ const initAxeClass = require("../classes/axe")
 
 function addAxe(req, res, next) {
 
-    console.log(req.body)
     const objAxe = {
         libelle: req.body.libelle,
         estActif: 1
