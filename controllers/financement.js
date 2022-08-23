@@ -25,6 +25,7 @@ function addFinancement(req, res, next) {
                     type: req.body.type,
                     typeAppui: req.body.typeAppui,
                     taux: req.body.taux,
+                    activiteId: req.body.activiteId,
                     observations: req.body.observations,
                     estActif: 1,
                     creationDate: req.body.creationDate,
@@ -33,7 +34,6 @@ function addFinancement(req, res, next) {
                     modifUserId: req.body.modifUserId,
                     debut: req.body.debut,
                     fin: req.body.fin
-
                 }
                 Financement.addFinancementInModel(financementObj)
                     .then(() => res.status(200).json({ succes: "Ajout effectué avec succès" }))
@@ -82,6 +82,7 @@ function updateFinancement(req, res, next) {
                     type: req.body.type,
                     typeAppui: req.body.typeAppui,
                     taux: req.body.taux,
+                    activiteId: req.body.activiteId,
                     observations: req.body.observations,
                     creationDate: req.body.creationDate,
                     modifDate: req.body.modifDate,
@@ -107,6 +108,7 @@ function financementSelectBy(req, res, next) {
         type: req.body.type || null,
         typeAppui: req.body.typeAppui || null,
         taux: req.body.taux || null,
+        activiteId: req.body.activiteId || null,
         observations: req.body.observations || null,
         estActif: 1,
         creationDate: req.body.creationDate || null,

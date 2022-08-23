@@ -10,13 +10,14 @@ const { reject } = require("bcrypt/promises");
 
 function addFinancementInModel(theReq) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL financement_insert(?,?,?,?,?,?,?)",
+    connection.query("CALL financement_insert(?,?,?,?,?,?,?,?)",
       [
         theReq.projetId,
         theReq.structureId,
         theReq.type,
         theReq.typeAppui,
         theReq.taux,
+        theReq.activiteId,
         theReq.observations,
         theReq.creationUserId
       ],
@@ -37,7 +38,7 @@ function addFinancementInModel(theReq) {
 function financementSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL financement_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL financement_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.projetId,
@@ -45,6 +46,7 @@ function financementSelectByInModel(theReq) {
         theReq.type,
         theReq.typeAppui,
         theReq.taux,
+        theReq.activiteId,
         theReq.observations,
         theReq.estActif,
         theReq.creationDate,
@@ -58,9 +60,13 @@ function financementSelectByInModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+          console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+          resolve(results[0])
+        }
+        
       })
     )
   })
@@ -111,7 +117,7 @@ function disableFinancementInModel(theReq) {
 function updateFinancementInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL financement_update(?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL financement_update(?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.projetId,
@@ -119,6 +125,7 @@ function updateFinancementInModel(theReq) {
         theReq.type,
         theReq.typeAppui,
         theReq.taux,
+        theReq.activiteId,
         theReq.observations,
         theReq.modifDate,
         theReq.modifUserId
@@ -174,11 +181,12 @@ function countAllFinancementInModel(){
 function financementSelectByParamsInModel(theReq){
   return new Promise((resolve,reject)=> {
 
-      connection.query("CALL financements_selectByParams(?,?,?,?,?)",
+      connection.query("CALL financements_selectByParams(?,?,?,?,?,?)",
             [ 
               theReq.structureId,
               theReq.projetId,
               theReq.typeFinancement,
+              theReq.activiteId,
               theReq.debut,
               theReq.fin,
             ],

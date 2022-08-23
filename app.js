@@ -47,6 +47,11 @@ const hypotheseRoute = require("./routes/hypothese")
 const rubriqueRoute = require("./routes/rubrique")
 const evaluationRoute = require("./routes/evaluation")
 const valeurCibleRoute = require("./routes/valeurcible")
+const chapitreRoute = require("./routes/chapitre")
+const sousProgrammeRoute = require("./routes/sousprogramme")
+const papbRoute = require("./routes/papb")
+const programmegrleRoute = require("./routes/programmegrle")
+const pgprioritaireRoute = require("./routes/programmeprioritaire")
 
 
 app.use(bodyParser.json())
@@ -66,7 +71,7 @@ app.use("/api", userRoute)
 app.use("/api", groupeRoute)
 app.use("/api", userGroupeRoute)
 app.use("/api", menuRoute),
-    app.use("/api", ongletRoute)
+app.use("/api", ongletRoute)
 app.use("/api", modeAccesRoute)
 app.use("/api", privilegeRoute)
 app.use("/api", paysRoute)
@@ -105,7 +110,11 @@ app.use("/api", indicateurRoutes)
 app.use("/api", hypotheseRoute)
 app.use("/api", rubriqueRoute)
 app.use("/api", evaluationRoute)
-app.use("/api", valeurCibleRoute)
+app.use("/api", chapitreRoute)
+app.use("/api", programmegrleRoute)
+app.use("/api", pgprioritaireRoute)
+app.use("/api", papbRoute)
+app.use("/api", sousProgrammeRoute)
 
 
 

@@ -11,7 +11,7 @@ const { reject } = require("bcrypt/promises");
 function addDocumentInModel(theReq){
     return new Promise((resolve,reject)=> {
     
-        connection.query("CALL documents_insert(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        connection.query("CALL documents_insert(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               [ 
                 theReq.axeId,
                 theReq.programmeId,
@@ -20,6 +20,9 @@ function addDocumentInModel(theReq){
                 theReq.structureId,
                 theReq.evaluationId,
                 theReq.typeDocumentId,
+                theReq.programmeGleId,
+                theReq.papbId,
+                theReq.paabId,
                 theReq.reference,
                 theReq.debut,
                 theReq.fin,
@@ -31,9 +34,12 @@ function addDocumentInModel(theReq){
     
           ((err,results, fields)=>{
             if(err){
+              console.log(err)
               reject(err)
             }
-            resolve(results[0])
+            else{
+              resolve(results[0])
+            }
           })
         )
       })
@@ -42,7 +48,7 @@ function addDocumentInModel(theReq){
 function documentSelectByInModel(theReq){
     return new Promise((resolve,reject)=> {
     
-        connection.query("CALL documents_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        connection.query("CALL documents_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               [ 
                 theReq.id,
                 theReq.axeId,
@@ -52,6 +58,9 @@ function documentSelectByInModel(theReq){
                 theReq.structureId,
                 theReq.evaluationId,
                 theReq.typeDocumentId,
+                theReq.programmeGleId,
+                theReq.papbId,
+                theReq.paabId,
                 theReq.reference,
                 theReq.debut,
                 theReq.fin,
@@ -70,9 +79,12 @@ function documentSelectByInModel(theReq){
     
           ((err,results, fields)=>{
             if(err){
+              console.log(err)
               reject(err)
             }
-            resolve(results[0])
+            else{
+              resolve(results[0])
+            }
           })
         )
       })
@@ -123,7 +135,7 @@ function disableDocumentInModel(theReq){
 function updateDocumentInModel(theReq){
     return new Promise((resolve,reject)=> {
     
-        connection.query("CALL documents_update(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        connection.query("CALL documents_update(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               [ 
                 theReq.id,
                 theReq.axeId,
@@ -133,6 +145,9 @@ function updateDocumentInModel(theReq){
                 theReq.structureId,
                 theReq.evaluationId,
                 theReq.typeDocumentId,
+                theReq.programmeGleId,
+                theReq.papbId,
+                theReq.paabId,
                 theReq.reference,
                 theReq.debut,
                 theReq.fin,

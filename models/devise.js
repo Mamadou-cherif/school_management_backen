@@ -9,9 +9,7 @@ const { reject } = require("bcrypt/promises");
 
 
 
-function checkIfDeviseExists(theReq) {
 
-}
 
 function checkIfDeviseExists(theReq) {
   return new Promise((resolve, reject) => {

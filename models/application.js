@@ -148,13 +148,13 @@ function applicationSelectByInModel(data){
               data.couleur2Id,
               data.version,
               data.observations,
-             data.estActif,
-             data.creationDate,
-             data.creationUserId,
-             data.modifDate,
-             data.modifUserId,
-             data.debutDonnees,
-             data.finDonnees
+              data.estActif,
+              data.creationDate,
+              data.creationUserId,
+              data.modifDate,
+              data.modifUserId,
+              data.debutDonnees,
+              data.finDonnees
             ],
   
         ((err,results, fields)=>{

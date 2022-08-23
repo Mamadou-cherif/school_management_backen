@@ -49,7 +49,8 @@ function files(req, res, next) {
 
 function addDocument(req, res, next) {
   const objDocument = {
-    projetId: req.body.projetId,
+    projetId: req.body.projetId || null,
+    programmeGleId: req.body.programmeGleId || null,
     reference: req.body.reference,
     estActif: 1
   }
@@ -57,13 +58,16 @@ function addDocument(req, res, next) {
     .then(document => {
       if ((document.length == 0)) {
         const objDocument = {
-          axeId: req.body.axeId || null,
-          programmeId: req.body.programmeId || null,
-          projetId: req.body.projetId || null,
-          prestataireId: req.body.prestataireId || null,
-          structureId: req.body.structureId || null,
-          evaluationId: req.body.evaluationId || null,
+          axeId: req.body.axeId,
+          programmeId: req.body.programmeId,
+          projetId: req.body.projetId,
+          prestataireId: req.body.prestataireId,
+          structureId: req.body.structureId,
+          evaluationId: req.body.evaluationId,
           typeDocumentId: req.body.typeDocumentId,
+          programmeGleId: req.body.programmeGleId,
+          papbId: req.body.papbId,
+          paabId: req.body.paabId,
           reference: req.body.reference,
           debut: req.body.debut,
           fin: req.body.fin,
@@ -72,6 +76,7 @@ function addDocument(req, res, next) {
           observations: req.body.observations,
           creationUserId: req.body.creationUserId
         }
+        console.log(objDocument)
 
         Document.addDocumentInModel(objDocument)
           .then(() => res.status(201).json({ succes: "Ajout effectué avec succès" }))
@@ -91,6 +96,7 @@ function addDocument(req, res, next) {
 function updateDocument(req, res, next) {
   const objDocument = {
     projetId: req.body.projetId || null,
+    programmeGleId: req.body.programmeGleId || null,
     reference: req.body.reference,
     estActif: 1
   }
@@ -106,6 +112,7 @@ function updateDocument(req, res, next) {
           structureId: req.body.structureId || null,
           evaluationId: req.body.evaluationId || null,
           typeDocumentId: req.body.typeDocumentId,
+          programmeGleId: req.body.programmeGleId,
           reference: req.body.reference,
           debut: req.body.debut,
           fin: req.body.fin,
@@ -177,6 +184,7 @@ function documentSelectBy(req, res, next) {
     structureId: req.body.structureId || null,
     evaluationId: req.body.evaluationId || null,
     typeDocumentId: req.body.typeDocumentId || null,
+    programmeGleId: req.body.programmeGleId || null,
     reference: req.body.reference || null,
     debut: req.body.debut || null,
     fin: req.body.fin || null,
