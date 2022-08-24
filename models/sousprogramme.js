@@ -7,12 +7,11 @@ let connection = mysql.createConnection(config)
 function addSousProgrammeInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL sousprogrammes_insert(?,?,?,?,?,?)",
+    connection.query("CALL sousprogrammes_insert(?,?,?,?,?)",
       [
         theReq.proPrioritaireId,
         theReq.numero,
         theReq.libelle,
-        theReq.observations,
         theReq.observations,
         theReq.creationUserId
       ],
