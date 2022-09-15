@@ -1,30 +1,27 @@
-const Paab = require("../models/paab")
+const CdmtProgramme = require("../models/cdmtprogrammes")
 
  
-function addPaab(req, res,next){
-    const objPaab={
-        papbId: req.body.papbId,
+function addCdmtProgramme(req, res,next){
+    const objCdmtProgramme={
         libelle: req.body.libelle,
         estActif:1
     }
-     Paab.paabSelectByInModel(objPaab)
-          .then(paab=> {
-                if(paab.length==0){
-                    const paabObj={
-                        papbId: req.body.papbId,
+     CdmtProgramme.cdmtprogrammeSelectByInModel(objCdmtProgramme)
+          .then(cdmtprogramme=> {
+                if(cdmtprogramme.length==0){
+                    const cdmtprogrammeObj={
                         libelle: req.body.libelle,
-                        debut: req.body.debut,
-                        fin: req.body.fin,
+                        code: req.body.code,
                         observations: req.body.observations,
                         creationUserId: req.body.creationUserId,
                 }
-                      Paab.addPaabInModel(paabObj)
+                      CdmtProgramme.addCdmtProgrammeInModel(cdmtprogrammeObj)
                           .then(()=> res.status(201).json({succes: "Ajout effectué avec succès"}))
                           .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
                 }
                 else
                    {
-                     res.status(500).json({error: "Cette paab existe déjà pour ce projet"})
+                     res.status(500).json({error: "Cette cdmtprogramme existe déjà pour ce projet"})
                    }
           })
           .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
@@ -32,13 +29,11 @@ function addPaab(req, res,next){
 
 
 
-function paabSelectBy(req, res, next){
-    const paabObj={
+function cdmtprogrammeSelectBy(req, res, next){
+    const cdmtprogrammeObj={
         id: req.body.id || null,
-        papbId: req.body.papbId || null,
         libelle: req.body.libelle || null,
-        debut: req.body.debut || null,
-        fin: req.body.fin || null,
+        code: req.body.code || null,
         observations: req.body.observations || null,
         estActif: 1,
         creationDate: req.body.creationDate || null,
@@ -47,9 +42,11 @@ function paabSelectBy(req, res, next){
         modifUserId: req.body.modifUserId || null,
         debut: req.body.debut || null,
         fin: req.body.fin || null
-    }
-    Paab.paabSelectByInModel(paabObj)
-        .then(paab=> res.status(200).json(paab))
+}
+
+
+    CdmtProgramme.cdmtprogrammeSelectByInModel(cdmtprogrammeObj)
+        .then(cdmtprogramme=> res.status(200).json(cdmtprogramme))
         .catch(error=> res.status(400).json(error))
 
 }
@@ -61,75 +58,72 @@ function paabSelectBy(req, res, next){
 
 
  
-function updatePaab(req,res, next){
+function updateCdmtProgramme(req,res, next){
         
-    const objPaab={
-        papbId: req.body.papbId,
+    const objCdmtProgramme={
         libelle: req.body.libelle,
         estActif:1
     }
    
-     Paab.paabSelectByInModel(objPaab)
-          .then(paab=> {
-                if((paab.length==0) || (paab[0].id == req.body.id)){
+     CdmtProgramme.cdmtprogrammeSelectByInModel(objCdmtProgramme)
+          .then(cdmtprogramme=> {
+                if((cdmtprogramme.length==0) || (cdmtprogramme[0].id == req.body.id)){
                     
-                    const paabObj={
+                    const cdmtprogrammeObj={
                         id: req.body.id,
-                        papbId: req.body.papbId,
                         libelle: req.body.libelle,
-                        debut: req.body.debut,
-                        fin: req.body.fin,
+                        code: req.body.code,
                         observations: req.body.observations,
                         modifDate: req.body.modifDate,
                         modifUserId: req.body.modifUserId,
                 }
 
-                      Paab.updatePaabInModel(paabObj)
+                      CdmtProgramme.updateCdmtProgrammeInModel(cdmtprogrammeObj)
                           .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
                           .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
                 }
                 else
                    {
-                     res.status(500).json({error: "Cette paab existe déjà pour ce projet"})
+                     res.status(500).json({error: "Cette cdmtprogramme existe déjà pour ce projet"})
                    }
           })
           .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
       
         }
 
-//supression logique d'un paab
-function disablePaab(req, res, next) {
- const paabObj={
+//supression logique d'un cdmtprogramme
+function disableCdmtProgramme(req, res, next) {
+ const cdmtprogrammeObj={
         id: req.body.id,
-       modifDate: req.body.modifDate,
+        modifDate: req.body.modifDate,
         modifUserId: req.body.modifUserId,
 }
-    Paab.disablePaabInModel(paabObj)
+    CdmtProgramme.disableCdmtProgrammeInModel(cdmtprogrammeObj)
         .then(() => res.status(200).json({ succes: "la suppression a reussi" }))
         .catch(() => res.status(400).json({ error: "erreur de la procédure stocké d'ajout" }));
 }
 
 
 
-function getAsinglePaab(req, res, next) {
+function getAsingleCdmtProgramme(req, res, next) {
     const id = req.params.id
-    Paab.getPaabByIdInModel(id)
-        .then(paab => res.status(200).json(paab))
+    CdmtProgramme.getCdmtProgrammeByIdInModel(id)
+        .then(cdmtprogramme => res.status(200).json(cdmtprogramme))
         .catch(error => res.status(400).json(error))
 }
 
 
-function getAllPaabs(req, res, next) {
-    Paab.getAllPaabInModel()
-        .then(paab => res.status(200).json(paab))
+function getAllCdmtProgramme(req, res, next) {
+    CdmtProgramme.getAllCdmtProgrammeInModel()
+        .then(cdmtprogramme => res.status(200).json(cdmtprogramme))
         .catch(error => res.status(400).json(error))
     }
 
 module.exports = {
-    disablePaab,
-    addPaab,
-    updatePaab,
-    getAsinglePaab,
-    getAllPaabs,
-    paabSelectBy
+    disableCdmtProgramme,
+    addCdmtProgramme,
+    updateCdmtProgramme,
+    getAsingleCdmtProgramme,
+    getAllCdmtProgramme,
+    cdmtprogrammeSelectBy
 }

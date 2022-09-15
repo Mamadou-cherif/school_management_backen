@@ -4,19 +4,20 @@ let connection = mysql.createConnection(config)
 
 
 
-function addPaabInModel(theReq) {
+function addActiviteProjetInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL paannuelbs_insert(?,?,?,?,?,?)",
+    connection.query("CALL projetactivites_insert(?,?,?,?,?,?,?,?,?)",
       [
-        theReq.papbId,
-        theReq.libelle,
-        theReq.debut,
-        theReq.fin,
-        theReq.observations,
+		theReq.projetId,
+		theReq.activiteId,
+		theReq.reference,
+		theReq.debut,
+		theReq.fin,
+		theReq.copie,
+		theReq.renouvelerId,
+		theReq.observations,
         theReq.creationUserId
-
-
       ],
 
       ((err, results, fields) => {
@@ -32,16 +33,19 @@ function addPaabInModel(theReq) {
   })
 }
 
-function paabSelectByInModel(theReq) {
+function activiteprojetSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL paannuelbs_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL projetactivites_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
-        theReq.papbId,
-        theReq.libelle,
-        theReq.debut,
-        theReq.fin,
+        theReq.projetId,
+		theReq.activiteId,
+		theReq.reference,
+		theReq.debut,
+		theReq.fin,
+		theReq.copie,
+		theReq.renouvelerId,
         theReq.observations,
         theReq.estActif,
         theReq.creationDate,
@@ -50,10 +54,11 @@ function paabSelectByInModel(theReq) {
         theReq.modifUserId,
         theReq.debutDonnees,
         theReq.finDonnees
-
       ],
-     ((err, results, fields) => {
+
+      ((err, results, fields) => {
         if (err) {
+          console.log(err)
           reject(err)
         }
         else{
@@ -64,10 +69,10 @@ function paabSelectByInModel(theReq) {
   })
 }
 
-function getPaabByIdInModel(id) {
+function getActiviteProjetByIdInModel(id) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL paannuelbs_selectById(?)",
+    connection.query("CALL projetactivites_selectById(?)",
       [
         id
 
@@ -88,10 +93,10 @@ function getPaabByIdInModel(id) {
 }
 
 
-function disablePaabInModel(theReq) {
+function disableActiviteProjetInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL paannuelbs_disable(?,?,?)",
+    connection.query("CALL projetactivites_disable(?,?,?)",
       [
         theReq.id,
         theReq.modifUserId,
@@ -110,20 +115,22 @@ function disablePaabInModel(theReq) {
 }
 
 
-function updatePaabInModel(theReq) {
+function updateActiviteProjetInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL paannuelbs_update(?,?,?,?,?,?,?,?)",
+    connection.query("CALL projetactivites_update(?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
-        theReq.papbId,
-        theReq.libelle,
+        theReq.projetId,
+        theReq.activiteId,
+        theReq.reference,
         theReq.debut,
         theReq.fin,
+        theReq.copie,
+        theReq.renouvelerId,
         theReq.observations,
         theReq.modifDate,
         theReq.modifUserId
-
       ],
 
       ((err, results, fields) => {
@@ -139,10 +146,12 @@ function updatePaabInModel(theReq) {
   })
 }
 
-function getAllPaabInModel() {
+
+
+function getAllActiviteProjetInModel() {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL paannuelbs_selectAll(?,?,?)",
+    connection.query("CALL projetactivites_selectAll(?,?,?)",
       [
         1,
         null,
@@ -154,19 +163,17 @@ function getAllPaabInModel() {
         if (err) {
           reject(err)
         }
-        else{
-          resolve(results[0])
-        }
+        resolve(results[0])
       })
     )
   })
 }
 
 module.exports = {
-  addPaabInModel,
-  disablePaabInModel,
-  updatePaabInModel,
-  getPaabByIdInModel,
-  getAllPaabInModel,
-  paabSelectByInModel
+  addActiviteProjetInModel,
+  disableActiviteProjetInModel,
+  updateActiviteProjetInModel,
+  getActiviteProjetByIdInModel,
+  getAllActiviteProjetInModel,
+  activiteprojetSelectByInModel
 }

@@ -3,7 +3,7 @@ const router= express.Router()
 const programmesprioritaireController= require("../controllers/programmeprioritaire")
 
     router.post("/documentPgprioritaires", programmesprioritaireController.files)
-    router.get("/getfile/:File", programmesprioritaireController.getImageFile)
+    router.get("/getProgrammePrioritairefile/:File", programmesprioritaireController.getImageFile)
     router.post("/addPgprioritaire", programmesprioritaireController.addPgprioritaire)
     router.put("/disablePgprioritaire", programmesprioritaireController.disablePgprioritaire)
     router.put("/updatePgprioritaire", programmesprioritaireController.updatePgprioritaire)

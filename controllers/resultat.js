@@ -1,30 +1,29 @@
-const Paab = require("../models/paab")
+const Resultat = require("../models/resultat")
 
  
-function addPaab(req, res,next){
-    const objPaab={
-        papbId: req.body.papbId,
+function addResultat(req, res,next){
+    const objResultat={
+        sousProgrammeId: req.body.sousProgrammeId,
         libelle: req.body.libelle,
         estActif:1
     }
-     Paab.paabSelectByInModel(objPaab)
-          .then(paab=> {
-                if(paab.length==0){
-                    const paabObj={
-                        papbId: req.body.papbId,
+     Resultat.sousProgrammeSelectByInModel(objResultat)
+          .then(resultat=> {
+                if(resultat.length==0){
+                    const resultatObj={
+                        sousProgrammeId: req.body.sousProgrammeId,
+                        numero: req.body.numero,
                         libelle: req.body.libelle,
-                        debut: req.body.debut,
-                        fin: req.body.fin,
                         observations: req.body.observations,
                         creationUserId: req.body.creationUserId,
                 }
-                      Paab.addPaabInModel(paabObj)
+                      Resultat.addResultatInModel(resultatObj)
                           .then(()=> res.status(201).json({succes: "Ajout effectué avec succès"}))
                           .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
                 }
                 else
                    {
-                     res.status(500).json({error: "Cette paab existe déjà pour ce projet"})
+                     res.status(500).json({error: "Cette resultat existe déjà pour ce projet"})
                    }
           })
           .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
@@ -32,13 +31,12 @@ function addPaab(req, res,next){
 
 
 
-function paabSelectBy(req, res, next){
-    const paabObj={
+function resultatSelectBy(req, res, next){
+    const resultatObj={
         id: req.body.id || null,
-        papbId: req.body.papbId || null,
+        sousProgrammeId: req.body.sousProgrammeId || null,
+        numero: req.body.numero || null,
         libelle: req.body.libelle || null,
-        debut: req.body.debut || null,
-        fin: req.body.fin || null,
         observations: req.body.observations || null,
         estActif: 1,
         creationDate: req.body.creationDate || null,
@@ -47,9 +45,11 @@ function paabSelectBy(req, res, next){
         modifUserId: req.body.modifUserId || null,
         debut: req.body.debut || null,
         fin: req.body.fin || null
-    }
-    Paab.paabSelectByInModel(paabObj)
-        .then(paab=> res.status(200).json(paab))
+}
+
+
+    Resultat.sousProgrammeSelectByInModel(resultatObj)
+        .then(resultat=> res.status(200).json(resultat))
         .catch(error=> res.status(400).json(error))
 
 }
@@ -61,75 +61,74 @@ function paabSelectBy(req, res, next){
 
 
  
-function updatePaab(req,res, next){
+function updateResultat(req,res, next){
         
-    const objPaab={
-        papbId: req.body.papbId,
+    const objResultat={
+        sousProgrammeId: req.body.sousProgrammeId,
         libelle: req.body.libelle,
         estActif:1
     }
    
-     Paab.paabSelectByInModel(objPaab)
-          .then(paab=> {
-                if((paab.length==0) || (paab[0].id == req.body.id)){
+     Resultat.sousProgrammeSelectByInModel(objResultat)
+          .then(resultat=> {
+                if((resultat.length==0) || (resultat[0].id == req.body.id)){
                     
-                    const paabObj={
+                    const resultatObj={
                         id: req.body.id,
-                        papbId: req.body.papbId,
+                        sousProgrammeId: req.body.sousProgrammeId,
+                        numero: req.body.numero,
                         libelle: req.body.libelle,
-                        debut: req.body.debut,
-                        fin: req.body.fin,
                         observations: req.body.observations,
                         modifDate: req.body.modifDate,
                         modifUserId: req.body.modifUserId,
                 }
 
-                      Paab.updatePaabInModel(paabObj)
+                      Resultat.updateResultatInModel(resultatObj)
                           .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
                           .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
                 }
                 else
                    {
-                     res.status(500).json({error: "Cette paab existe déjà pour ce projet"})
+                     res.status(500).json({error: "Cette resultat existe déjà pour ce projet"})
                    }
           })
           .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
       
         }
 
-//supression logique d'un paab
-function disablePaab(req, res, next) {
- const paabObj={
+//supression logique d'un resultat
+function disableResultat(req, res, next) {
+ const resultatObj={
         id: req.body.id,
-       modifDate: req.body.modifDate,
+        modifDate: req.body.modifDate,
         modifUserId: req.body.modifUserId,
 }
-    Paab.disablePaabInModel(paabObj)
+    Resultat.disableResultatInModel(resultatObj)
         .then(() => res.status(200).json({ succes: "la suppression a reussi" }))
         .catch(() => res.status(400).json({ error: "erreur de la procédure stocké d'ajout" }));
 }
 
 
 
-function getAsinglePaab(req, res, next) {
+function getAsingleResultat(req, res, next) {
     const id = req.params.id
-    Paab.getPaabByIdInModel(id)
-        .then(paab => res.status(200).json(paab))
+    Resultat.getResultatByIdInModel(id)
+        .then(resultat => res.status(200).json(resultat))
         .catch(error => res.status(400).json(error))
 }
 
 
-function getAllPaabs(req, res, next) {
-    Paab.getAllPaabInModel()
-        .then(paab => res.status(200).json(paab))
+function getAllResultat(req, res, next) {
+    Resultat.getAllResultatInModel()
+        .then(resultat => res.status(200).json(resultat))
         .catch(error => res.status(400).json(error))
     }
 
 module.exports = {
-    disablePaab,
-    addPaab,
-    updatePaab,
-    getAsinglePaab,
-    getAllPaabs,
-    paabSelectBy
+    disableResultat,
+    addResultat,
+    updateResultat,
+    getAsingleResultat,
+    getAllResultat,
+    resultatSelectBy
 }

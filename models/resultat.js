@@ -4,19 +4,16 @@ let connection = mysql.createConnection(config)
 
 
 
-function addPaabInModel(theReq) {
+function addResultatInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL paannuelbs_insert(?,?,?,?,?,?)",
+    connection.query("CALL resultats_insert(?,?,?,?,?)",
       [
-        theReq.papbId,
+        theReq.sousProgrammeId,
+        theReq.numero,
         theReq.libelle,
-        theReq.debut,
-        theReq.fin,
         theReq.observations,
         theReq.creationUserId
-
-
       ],
 
       ((err, results, fields) => {
@@ -32,16 +29,15 @@ function addPaabInModel(theReq) {
   })
 }
 
-function paabSelectByInModel(theReq) {
+function sousProgrammeSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL paannuelbs_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL resultats_selectBy(?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
-        theReq.papbId,
+        theReq.sousProgrammeId,
+        theReq.numero,
         theReq.libelle,
-        theReq.debut,
-        theReq.fin,
         theReq.observations,
         theReq.estActif,
         theReq.creationDate,
@@ -50,10 +46,11 @@ function paabSelectByInModel(theReq) {
         theReq.modifUserId,
         theReq.debutDonnees,
         theReq.finDonnees
-
       ],
-     ((err, results, fields) => {
+
+      ((err, results, fields) => {
         if (err) {
+          console.log(err)
           reject(err)
         }
         else{
@@ -64,10 +61,10 @@ function paabSelectByInModel(theReq) {
   })
 }
 
-function getPaabByIdInModel(id) {
+function getResultatByIdInModel(id) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL paannuelbs_selectById(?)",
+    connection.query("CALL resultats_selectById(?)",
       [
         id
 
@@ -88,10 +85,10 @@ function getPaabByIdInModel(id) {
 }
 
 
-function disablePaabInModel(theReq) {
+function disableResultatInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL paannuelbs_disable(?,?,?)",
+    connection.query("CALL resultats_disable(?,?,?)",
       [
         theReq.id,
         theReq.modifUserId,
@@ -110,20 +107,18 @@ function disablePaabInModel(theReq) {
 }
 
 
-function updatePaabInModel(theReq) {
+function updateResultatInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL paannuelbs_update(?,?,?,?,?,?,?,?)",
+    connection.query("CALL resultats_update(?,?,?,?,?,?,?)",
       [
         theReq.id,
-        theReq.papbId,
+        theReq.sousProgrammeId,
+        theReq.numero,
         theReq.libelle,
-        theReq.debut,
-        theReq.fin,
         theReq.observations,
         theReq.modifDate,
         theReq.modifUserId
-
       ],
 
       ((err, results, fields) => {
@@ -139,10 +134,10 @@ function updatePaabInModel(theReq) {
   })
 }
 
-function getAllPaabInModel() {
+function getAllResultatInModel() {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL paannuelbs_selectAll(?,?,?)",
+    connection.query("CALL resultats_selectAll(?,?,?)",
       [
         1,
         null,
@@ -154,19 +149,17 @@ function getAllPaabInModel() {
         if (err) {
           reject(err)
         }
-        else{
-          resolve(results[0])
-        }
+        resolve(results[0])
       })
     )
   })
 }
 
 module.exports = {
-  addPaabInModel,
-  disablePaabInModel,
-  updatePaabInModel,
-  getPaabByIdInModel,
-  getAllPaabInModel,
-  paabSelectByInModel
+  addResultatInModel,
+  disableResultatInModel,
+  updateResultatInModel,
+  getResultatByIdInModel,
+  getAllResultatInModel,
+  sousProgrammeSelectByInModel
 }

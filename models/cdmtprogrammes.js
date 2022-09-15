@@ -2,21 +2,14 @@ const mysql = require("mysql2");
 const config = require("../configs/dbconfig")
 let connection = mysql.createConnection(config)
 
-
-
-function addPaabInModel(theReq) {
+function addCdmtProgrammeInModel(theReq) {
   return new Promise((resolve, reject) => {
-
-    connection.query("CALL paannuelbs_insert(?,?,?,?,?,?)",
+    connection.query("CALL cdmtprogrammes_insert(?,?,?,?)",
       [
-        theReq.papbId,
-        theReq.libelle,
-        theReq.debut,
-        theReq.fin,
-        theReq.observations,
-        theReq.creationUserId
-
-
+            theReq.libelle,
+            theReq.code,
+            theReq.observations,
+            theReq.creationUserId
       ],
 
       ((err, results, fields) => {
@@ -32,17 +25,15 @@ function addPaabInModel(theReq) {
   })
 }
 
-function paabSelectByInModel(theReq) {
+function cdmtprogrammeSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL paannuelbs_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL cdmtprogrammes_selectBy(?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
-        theReq.papbId,
         theReq.libelle,
-        theReq.debut,
-        theReq.fin,
-        theReq.observations,
+		theReq.code,
+		theReq.observations,
         theReq.estActif,
         theReq.creationDate,
         theReq.creationUserId,
@@ -50,10 +41,11 @@ function paabSelectByInModel(theReq) {
         theReq.modifUserId,
         theReq.debutDonnees,
         theReq.finDonnees
-
       ],
-     ((err, results, fields) => {
+
+      ((err, results, fields) => {
         if (err) {
+          console.log(err)
           reject(err)
         }
         else{
@@ -64,10 +56,10 @@ function paabSelectByInModel(theReq) {
   })
 }
 
-function getPaabByIdInModel(id) {
+function getCdmtProgrammeByIdInModel(id) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL paannuelbs_selectById(?)",
+    connection.query("CALL cdmtprogrammes_selectById(?)",
       [
         id
 
@@ -88,10 +80,10 @@ function getPaabByIdInModel(id) {
 }
 
 
-function disablePaabInModel(theReq) {
+function disableCdmtProgrammeInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL paannuelbs_disable(?,?,?)",
+    connection.query("CALL cdmtprogrammes_disable(?,?,?)",
       [
         theReq.id,
         theReq.modifUserId,
@@ -110,20 +102,16 @@ function disablePaabInModel(theReq) {
 }
 
 
-function updatePaabInModel(theReq) {
+function updateCdmtProgrammeInModel(theReq) {
   return new Promise((resolve, reject) => {
-
-    connection.query("CALL paannuelbs_update(?,?,?,?,?,?,?,?)",
+    connection.query("CALL cdmtprogrammes_update(?,?,?,?,?,?)",
       [
         theReq.id,
-        theReq.papbId,
         theReq.libelle,
-        theReq.debut,
-        theReq.fin,
-        theReq.observations,
+		theReq.code,
+		theReq.observations,
         theReq.modifDate,
         theReq.modifUserId
-
       ],
 
       ((err, results, fields) => {
@@ -139,10 +127,10 @@ function updatePaabInModel(theReq) {
   })
 }
 
-function getAllPaabInModel() {
+function getAllCdmtProgrammeInModel() {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL paannuelbs_selectAll(?,?,?)",
+    connection.query("CALL cdmtprogrammes_selectAll(?,?,?)",
       [
         1,
         null,
@@ -154,19 +142,17 @@ function getAllPaabInModel() {
         if (err) {
           reject(err)
         }
-        else{
-          resolve(results[0])
-        }
+        resolve(results[0])
       })
     )
   })
 }
 
 module.exports = {
-  addPaabInModel,
-  disablePaabInModel,
-  updatePaabInModel,
-  getPaabByIdInModel,
-  getAllPaabInModel,
-  paabSelectByInModel
+  addCdmtProgrammeInModel,
+  disableCdmtProgrammeInModel,
+  updateCdmtProgrammeInModel,
+  getCdmtProgrammeByIdInModel,
+  getAllCdmtProgrammeInModel,
+  cdmtprogrammeSelectByInModel
 }

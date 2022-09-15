@@ -12,6 +12,7 @@ function addFinancement(req, res, next) {
     const financementObj = {
         structureId: req.body.structureId,
         projetId: req.body.projetId,
+        activiteId: req.body.activiteId,
         estActif: 1
     }
     console.log(financementObj)
@@ -19,8 +20,7 @@ function addFinancement(req, res, next) {
         .then(financement => {
             if (financement.length == 0) {
                 const financementObj = {
-                    id: req.body.id,
-                    projetId: req.body.projetId,
+                    projetId: req.body.projetId|| null,
                     structureId: req.body.structureId,
                     type: req.body.type,
                     typeAppui: req.body.typeAppui,
@@ -28,12 +28,8 @@ function addFinancement(req, res, next) {
                     activiteId: req.body.activiteId,
                     observations: req.body.observations,
                     estActif: 1,
-                    creationDate: req.body.creationDate,
                     creationUserId: req.body.creationUserId,
-                    modifDate: req.body.modifDate,
-                    modifUserId: req.body.modifUserId,
-                    debut: req.body.debut,
-                    fin: req.body.fin
+                   
                 }
                 Financement.addFinancementInModel(financementObj)
                     .then(() => res.status(200).json({ succes: "Ajout effectué avec succès" }))
@@ -101,6 +97,7 @@ function updateFinancement(req, res, next) {
 }
 
 function financementSelectBy(req, res, next) {
+   
     const financement = {
         id: req.body.id || null,
         projetId: req.body.projetId || null,
@@ -151,7 +148,8 @@ function getAllFinancements(req, res, next) {
   function financementSelectByParams(req,res, next){
         const objfinancements={
             structureId:req.body.structureId,
-            projetId:req.body.projetId,
+            projetId:req.body.projetId || null,
+            activiteId:req.body.activiteId || null,
             typeFinancement:req.body.typeFinancement,
             debut:req.body.debut,
             fin:req.body.fin,

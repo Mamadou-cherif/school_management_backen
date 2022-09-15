@@ -1,30 +1,31 @@
-const Paab = require("../models/paab")
+const Tache = require("../models/tache")
 
  
-function addPaab(req, res,next){
-    const objPaab={
-        papbId: req.body.papbId,
+function addTache(req, res,next){
+    const objTache={
+        activiteId: req.body.activiteId,
         libelle: req.body.libelle,
         estActif:1
     }
-     Paab.paabSelectByInModel(objPaab)
-          .then(paab=> {
-                if(paab.length==0){
-                    const paabObj={
-                        papbId: req.body.papbId,
+     Tache.tacheSelectByInModel(objTache)
+          .then(tache=> {
+                if(tache.length==0){
+                    const tacheObj={
+                        activiteId: req.body.activiteId,
+                        numero: req.body.numero,
                         libelle: req.body.libelle,
-                        debut: req.body.debut,
-                        fin: req.body.fin,
+                        duree: req.body.duree,
+                        responsable: req.body.responsable,
                         observations: req.body.observations,
                         creationUserId: req.body.creationUserId,
                 }
-                      Paab.addPaabInModel(paabObj)
+                      Tache.addTacheInModel(tacheObj)
                           .then(()=> res.status(201).json({succes: "Ajout effectué avec succès"}))
                           .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
                 }
                 else
                    {
-                     res.status(500).json({error: "Cette paab existe déjà pour ce projet"})
+                     res.status(500).json({error: "Cette tache existe déjà pour cette actvitité"})
                    }
           })
           .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
@@ -32,13 +33,14 @@ function addPaab(req, res,next){
 
 
 
-function paabSelectBy(req, res, next){
-    const paabObj={
+function tacheSelectBy(req, res, next){
+    const tacheObj={
         id: req.body.id || null,
-        papbId: req.body.papbId || null,
+        activiteId: req.body.activiteId || null,
+        numero: req.body.numero || null,
         libelle: req.body.libelle || null,
-        debut: req.body.debut || null,
-        fin: req.body.fin || null,
+        duree: req.body.duree || null,
+        responsable: req.body.responsable || null,
         observations: req.body.observations || null,
         estActif: 1,
         creationDate: req.body.creationDate || null,
@@ -48,10 +50,11 @@ function paabSelectBy(req, res, next){
         debut: req.body.debut || null,
         fin: req.body.fin || null
     }
-    Paab.paabSelectByInModel(paabObj)
-        .then(paab=> res.status(200).json(paab))
-        .catch(error=> res.status(400).json(error))
 
+
+    Tache.tacheSelectByInModel(tacheObj)
+        .then(tache=> res.status(200).json(tache))
+        .catch(error=> res.status(400).json(error))
 }
 
 
@@ -61,75 +64,76 @@ function paabSelectBy(req, res, next){
 
 
  
-function updatePaab(req,res, next){
+function updateTache(req,res, next){
         
-    const objPaab={
-        papbId: req.body.papbId,
+    const objTache={
+        activiteId: req.body.activiteId,
         libelle: req.body.libelle,
         estActif:1
     }
    
-     Paab.paabSelectByInModel(objPaab)
-          .then(paab=> {
-                if((paab.length==0) || (paab[0].id == req.body.id)){
+     Tache.tacheSelectByInModel(objTache)
+          .then(tache=> {
+                if((tache.length==0) || (tache[0].id == req.body.id)){
                     
-                    const paabObj={
+                    const tacheObj={
                         id: req.body.id,
-                        papbId: req.body.papbId,
+                        activiteId: req.body.activiteId,
+                        numero: req.body.numero,
                         libelle: req.body.libelle,
-                        debut: req.body.debut,
-                        fin: req.body.fin,
-                        observations: req.body.observations,
+                        duree: req.body.duree,
+                        responsable: req.body.responsable,
+                        observations: req.body.observations, 
                         modifDate: req.body.modifDate,
                         modifUserId: req.body.modifUserId,
                 }
 
-                      Paab.updatePaabInModel(paabObj)
+                      Tache.updateTacheInModel(tacheObj)
                           .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
                           .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
                 }
                 else
                    {
-                     res.status(500).json({error: "Cette paab existe déjà pour ce projet"})
+                     res.status(500).json({error: "Cette tache existe déjà pour cette actvitité"})
                    }
           })
           .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
       
         }
 
-//supression logique d'un paab
-function disablePaab(req, res, next) {
- const paabObj={
+//supression logique d'un tache
+function disableTache(req, res, next) {
+ const tacheObj={
         id: req.body.id,
-       modifDate: req.body.modifDate,
+        modifDate: req.body.modifDate,
         modifUserId: req.body.modifUserId,
 }
-    Paab.disablePaabInModel(paabObj)
+    Tache.disableTacheInModel(tacheObj)
         .then(() => res.status(200).json({ succes: "la suppression a reussi" }))
         .catch(() => res.status(400).json({ error: "erreur de la procédure stocké d'ajout" }));
 }
 
 
 
-function getAsinglePaab(req, res, next) {
+function getAsingleTache(req, res, next) {
     const id = req.params.id
-    Paab.getPaabByIdInModel(id)
-        .then(paab => res.status(200).json(paab))
+    Tache.getTacheByIdInModel(id)
+        .then(tache => res.status(200).json(tache))
         .catch(error => res.status(400).json(error))
 }
 
 
-function getAllPaabs(req, res, next) {
-    Paab.getAllPaabInModel()
-        .then(paab => res.status(200).json(paab))
+function getAllTache(req, res, next) {
+    Tache.getAllTacheInModel()
+        .then(tache => res.status(200).json(tache))
         .catch(error => res.status(400).json(error))
     }
 
 module.exports = {
-    disablePaab,
-    addPaab,
-    updatePaab,
-    getAsinglePaab,
-    getAllPaabs,
-    paabSelectBy
+    disableTache,
+    addTache,
+    updateTache,
+    getAsingleTache,
+    getAllTache,
+    tacheSelectBy
 }

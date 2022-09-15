@@ -181,9 +181,9 @@ function selectAllProjetInModel(theReq) {
 
     connection.query("CALL projets_selectAll(?,?,?)",
       [
-        theReq.estActif,
-        theReq.debut,
-        theReq.fin,
+        1,
+         null,
+        null,
 
       ],
 

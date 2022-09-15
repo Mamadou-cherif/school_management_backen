@@ -50,17 +50,27 @@ const valeurCibleRoute = require("./routes/valeurcible")
 const chapitreRoute = require("./routes/chapitre")
 const sousProgrammeRoute = require("./routes/sousprogramme")
 const papbRoute = require("./routes/papb")
+const paabRoute = require("./routes/paab")
 const programmegrleRoute = require("./routes/programmegrle")
+const defiPgPrioRoute = require("./routes/defisprgpriroritaire")
 const pgprioritaireRoute = require("./routes/programmeprioritaire")
-
+const resultatRoute = require("./routes/resultat")
+const activiteRoute = require("./routes/activite")
+const strategieRoute = require("./routes/strategie")
+const tacheRoute = require("./routes/tache")
+const activitePaabRoute = require("./routes/activitepaab")
+const activiteServiceRoute = require("./routes/activiteservice")
+const cdmtProgrammeRoute = require("./routes/cdmtprogrammes")
+const cdmtNatDepenseRoute = require("./routes/cdmtnatdepenses")
+const activiteprojetRoute = require("./routes/activiteprojet")
+const departementRoute = require("./routes/departement")
 
 app.use(bodyParser.json())
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
+    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept');
     res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-    res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
 
     next();
 });
@@ -114,9 +124,18 @@ app.use("/api", chapitreRoute)
 app.use("/api", programmegrleRoute)
 app.use("/api", pgprioritaireRoute)
 app.use("/api", papbRoute)
+app.use("/api", paabRoute)
+app.use("/api", resultatRoute)
+app.use("/api", defiPgPrioRoute)
 app.use("/api", sousProgrammeRoute)
-
-
-
+app.use("/api", activiteRoute)
+app.use("/api", tacheRoute)
+app.use("/api", strategieRoute)
+app.use("/api", activitePaabRoute)
+app.use("/api", cdmtProgrammeRoute)
+app.use("/api", cdmtNatDepenseRoute)
+app.use("/api", activiteServiceRoute)
+app.use("/api", activiteprojetRoute)
+app.use("/api", departementRoute)
 
 module.exports = app

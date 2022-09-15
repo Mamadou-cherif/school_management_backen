@@ -9,9 +9,10 @@ const bcrypt = require("bcrypt");
 function addServiceInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL services_insert(?,?,?,?,?,?,?)",
+    connection.query("CALL services_insert(?,?,?,?,?,?,?,?)",
       [
         theReq.structureId,
+        theReq.departementId,
         theReq.nom,
         theReq.responsableService,
         theReq.telephone,
@@ -24,6 +25,7 @@ function addServiceInModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+          console.log(err)
           reject(err)
         } else {
           resolve(results[0])
@@ -37,10 +39,11 @@ function addServiceInModel(theReq) {
 function ServiceSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL services_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL services_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.structureId,
+        theReq.departementId,
         theReq.nom,
         theReq.responsableService,
         theReq.telephone,
@@ -58,9 +61,13 @@ function ServiceSelectByInModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+          console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+          resolve(results[0])
+        }
+        
       })
     )
   })
@@ -111,10 +118,12 @@ function disableServiceInModel(theReq) {
 function updateServiceInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL services_update(?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL services_update(?,?,?,?,?,?,?,?,?,?)",
       [
+  
         theReq.id,
         theReq.structureId,
+        theReq.departementId,
         theReq.nom,
         theReq.responsableService,
         theReq.telephone,
@@ -122,7 +131,6 @@ function updateServiceInModel(theReq) {
         theReq.observations,
         theReq.modifDate,
         theReq.modifUserId
-
       ],
 
       ((err, results, fields) => {

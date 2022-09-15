@@ -32,7 +32,6 @@ function addProgrammegles(req, res, next) {
 
 //supression logique d'un programmegle
 function disableProgrammegles(req, res, next) {
-  console.log("bonjour")
   const programmegle = {
     id: req.body.id,
     modifDate: req.body.modifDate,

@@ -14,10 +14,10 @@ function addFinancementInModel(theReq) {
       [
         theReq.projetId,
         theReq.structureId,
+        theReq.activiteId,
         theReq.type,
         theReq.typeAppui,
         theReq.taux,
-        theReq.activiteId,
         theReq.observations,
         theReq.creationUserId
       ],
@@ -43,10 +43,10 @@ function financementSelectByInModel(theReq) {
         theReq.id,
         theReq.projetId,
         theReq.structureId,
+        theReq.activiteId,
         theReq.type,
         theReq.typeAppui,
         theReq.taux,
-        theReq.activiteId,
         theReq.observations,
         theReq.estActif,
         theReq.creationDate,
@@ -122,10 +122,10 @@ function updateFinancementInModel(theReq) {
         theReq.id,
         theReq.projetId,
         theReq.structureId,
+        theReq.activiteId,
         theReq.type,
         theReq.typeAppui,
         theReq.taux,
-        theReq.activiteId,
         theReq.observations,
         theReq.modifDate,
         theReq.modifUserId
@@ -147,17 +147,20 @@ function getAllFinancementInModel(theReq) {
 
     connection.query("CALL financement_selectAll(?,?,?)",
       [
-        theReq.estActif,
-        theReq.debut,
-        theReq.fin,
+        1,
+        null,
+        null,
 
       ],
 
       ((err, results, fields) => {
         if (err) {
+          console.log(err)
           reject(err)
         }
+        else{
         resolve(results[0])
+        }
       })
     )
   })
@@ -185,8 +188,8 @@ function financementSelectByParamsInModel(theReq){
             [ 
               theReq.structureId,
               theReq.projetId,
-              theReq.typeFinancement,
               theReq.activiteId,
+              theReq.typeFinancement,
               theReq.debut,
               theReq.fin,
             ],

@@ -42,31 +42,46 @@ function selectByIdChapitre(req, res, next) {
 
 
 function addChapitre(req, res, next) {
-    const chapitreObj = {
-        prograGleId: req.body.prograGleId,
-        numero: req.body.numero,
-        estActif: 1
-      }
-       Chapitre.chapitreSelectByInModel(chapitreObj)
-      .then(chapitre => {
-         if (chapitre.length == 0) {
-
-            const chapitreObj={
-              prograGleId: req.body.prograGleId,
-              numero: req.body.numero,
-              libelle: req.body.libelle,
-              observations: req.body.observations ,
-              creationUserId: req.body.creationUserId ,
-              }
-        Chapitre.addChapitreInModel(chapitreObj)
-          .then(() => res.status(201).json({ succes: "Ajout effectué avec succès" }))
-          .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée chapitres_insert" }));
-        }
-        else{
-          return res.status(400).json({error: "Ce chapitre existe déjà!"})
-        }
-    })
-    .catch(error => console.log(error))
+  const chapitreObj = {
+    prograGleId: req.body.prograGleId,
+    numero: req.body.numero,
+    estActif: 1
+  }
+   Chapitre.chapitreSelectByInModel(chapitreObj)
+  .then(chapitre => {
+     if (chapitre.length == 0) {
+        // const chapitreObj = {
+        //     prograGleId: req.body.prograGleId,
+        //     numero: req.body.numero,
+        //     libelle: req.body.libelle,
+        //     estActif: 1
+        //   }
+        //    Chapitre.chapitreSelectByInModel(chapitreObj)
+        //   .then(chapitre => {
+        //      if (chapitre.length == 0) {
+                const chapitreObj={
+                    prograGleId: req.body.prograGleId,
+                    numero: req.body.numero,
+                    libelle: req.body.libelle,
+                    observations: req.body.observations ,
+                    creationUserId: req.body.creationUserId ,
+                    }
+              Chapitre.addChapitreInModel(chapitreObj)
+                .then(() => res.status(201).json({ succes: "Ajout effectué avec succès" }))
+                .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée chapitres_insert" }));
+              
+        //      }
+        //     else{
+        //       return res.status(400).json({error: "Ce chapitre existe déjà!"})
+        //     }
+        // })
+        // .catch(error => console.log(error))
+     }
+    else{
+      return res.status(400).json({error: "Ce chapitre existe déjà!"})
+    }
+})
+.catch(error => console.log(error))
 }
 
 
@@ -74,6 +89,7 @@ function updateChapitre(req, res, next) {
   const chapitreObj = {
     prograGleId: req.body.prograGleId,
     libelle: req.body.libelle,
+    numero: req.body.numero,
     estActif: 1
   }
         Chapitre.chapitreSelectByInModel(chapitreObj)

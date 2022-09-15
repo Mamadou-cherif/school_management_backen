@@ -1,30 +1,29 @@
-const Paab = require("../models/paab")
+const Strategie = require("../models/strategie")
 
  
-function addPaab(req, res,next){
-    const objPaab={
-        papbId: req.body.papbId,
+function addStrategie(req, res,next){
+    const objStrategie={
+        resultatId: req.body.resultatId,
         libelle: req.body.libelle,
         estActif:1
     }
-     Paab.paabSelectByInModel(objPaab)
-          .then(paab=> {
-                if(paab.length==0){
-                    const paabObj={
-                        papbId: req.body.papbId,
+     Strategie.strategieSelectByInModel(objStrategie)
+          .then(strategie=> {
+                if(strategie.length==0){
+                    const strategieObj={
+                        resultatId: req.body.resultatId,
+                        numero: req.body.numero,
                         libelle: req.body.libelle,
-                        debut: req.body.debut,
-                        fin: req.body.fin,
                         observations: req.body.observations,
                         creationUserId: req.body.creationUserId,
                 }
-                      Paab.addPaabInModel(paabObj)
+                      Strategie.addStrategieInModel(strategieObj)
                           .then(()=> res.status(201).json({succes: "Ajout effectué avec succès"}))
                           .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
                 }
                 else
                    {
-                     res.status(500).json({error: "Cette paab existe déjà pour ce projet"})
+                     res.status(500).json({error: "Cette strategie existe déjà pour ce projet"})
                    }
           })
           .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
@@ -32,13 +31,12 @@ function addPaab(req, res,next){
 
 
 
-function paabSelectBy(req, res, next){
-    const paabObj={
+function strategieSelectBy(req, res, next){
+    const strategieObj={
         id: req.body.id || null,
-        papbId: req.body.papbId || null,
+        resultatId: req.body.resultatId || null,
+        numero: req.body.numero || null,
         libelle: req.body.libelle || null,
-        debut: req.body.debut || null,
-        fin: req.body.fin || null,
         observations: req.body.observations || null,
         estActif: 1,
         creationDate: req.body.creationDate || null,
@@ -47,9 +45,11 @@ function paabSelectBy(req, res, next){
         modifUserId: req.body.modifUserId || null,
         debut: req.body.debut || null,
         fin: req.body.fin || null
-    }
-    Paab.paabSelectByInModel(paabObj)
-        .then(paab=> res.status(200).json(paab))
+}
+
+
+    Strategie.strategieSelectByInModel(strategieObj)
+        .then(strategie=> res.status(200).json(strategie))
         .catch(error=> res.status(400).json(error))
 
 }
@@ -61,75 +61,81 @@ function paabSelectBy(req, res, next){
 
 
  
-function updatePaab(req,res, next){
+function updateStrategie(req,res, next){
         
-    const objPaab={
-        papbId: req.body.papbId,
+    const objStrategie={
+        resultatId: req.body.resultatId,
         libelle: req.body.libelle,
         estActif:1
     }
    
-     Paab.paabSelectByInModel(objPaab)
-          .then(paab=> {
-                if((paab.length==0) || (paab[0].id == req.body.id)){
+     Strategie.strategieSelectByInModel(objStrategie)
+          .then(strategie=> {
+                if((strategie.length==0) || (strategie[0].id == req.body.id)){
                     
-                    const paabObj={
+                    const strategieObj={
                         id: req.body.id,
-                        papbId: req.body.papbId,
+                        resultatId: req.body.resultatId,
+                        numero: req.body.numero,
                         libelle: req.body.libelle,
-                        debut: req.body.debut,
-                        fin: req.body.fin,
                         observations: req.body.observations,
                         modifDate: req.body.modifDate,
                         modifUserId: req.body.modifUserId,
                 }
 
-                      Paab.updatePaabInModel(paabObj)
+                      Strategie.updateStrategieInModel(strategieObj)
                           .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
                           .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
                 }
                 else
                    {
-                     res.status(500).json({error: "Cette paab existe déjà pour ce projet"})
+                     res.status(500).json({error: "Cette strategie existe déjà pour ce projet"})
                    }
           })
           .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
       
         }
 
-//supression logique d'un paab
-function disablePaab(req, res, next) {
- const paabObj={
+//supression logique d'un strategie
+function disableStrategie(req, res, next) {
+ const strategieObj={
         id: req.body.id,
-       modifDate: req.body.modifDate,
+        modifDate: req.body.modifDate,
         modifUserId: req.body.modifUserId,
 }
-    Paab.disablePaabInModel(paabObj)
+    Strategie.disableStrategieInModel(strategieObj)
         .then(() => res.status(200).json({ succes: "la suppression a reussi" }))
         .catch(() => res.status(400).json({ error: "erreur de la procédure stocké d'ajout" }));
 }
 
 
-
-function getAsinglePaab(req, res, next) {
+function strategies_getByParams(req, res, next) {
     const id = req.params.id
-    Paab.getPaabByIdInModel(id)
-        .then(paab => res.status(200).json(paab))
+    Strategie.strategies_getByParams(id)
+        .then(strategie => res.status(200).json(strategie))
+        .catch(error => res.status(400).json(error))
+}
+
+function getAsingleStrategie(req, res, next) {
+    const id = req.params.id
+    Strategie.getStrategieByIdInModel(id)
+        .then(strategie => res.status(200).json(strategie))
         .catch(error => res.status(400).json(error))
 }
 
 
-function getAllPaabs(req, res, next) {
-    Paab.getAllPaabInModel()
-        .then(paab => res.status(200).json(paab))
+function getAllStrategie(req, res, next) {
+    Strategie.getAllStrategieInModel()
+        .then(strategie => res.status(200).json(strategie))
         .catch(error => res.status(400).json(error))
     }
 
 module.exports = {
-    disablePaab,
-    addPaab,
-    updatePaab,
-    getAsinglePaab,
-    getAllPaabs,
-    paabSelectBy
+    disableStrategie,
+    addStrategie,
+    updateStrategie,
+    getAsingleStrategie,
+    strategies_getByParams,
+    getAllStrategie,
+    strategieSelectBy
 }

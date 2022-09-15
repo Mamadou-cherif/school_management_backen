@@ -42,7 +42,7 @@ const storage = multersd.diskStorage({
   function getImageFile(req, res) {
 
     var image_file = req.params.File;
-    var path_file = './uploads/documents/' + image_file;
+    var path_file = './uploads/programmes_prioritaires/' + image_file;
     fs.exists(path_file, (exists) => {
       if (exists) {
         res.sendFile(path.resolve(path_file));

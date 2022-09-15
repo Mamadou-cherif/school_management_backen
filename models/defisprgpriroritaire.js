@@ -4,19 +4,16 @@ let connection = mysql.createConnection(config)
 
 
 
-function addPaabInModel(theReq) {
+function addDefisprogrammePrioritaireInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL paannuelbs_insert(?,?,?,?,?,?)",
+    connection.query("CALL defiproprioritaires_insert(?,?,?,?,?)",
       [
-        theReq.papbId,
+        theReq.proPrioritaireId,
+        theReq.numero,
         theReq.libelle,
-        theReq.debut,
-        theReq.fin,
         theReq.observations,
         theReq.creationUserId
-
-
       ],
 
       ((err, results, fields) => {
@@ -32,16 +29,15 @@ function addPaabInModel(theReq) {
   })
 }
 
-function paabSelectByInModel(theReq) {
+function defisprogrammePrioritaireSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL paannuelbs_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL defiproprioritaires_selectBy(?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
-        theReq.papbId,
+        theReq.proPrioritaireId,
+        theReq.numero,
         theReq.libelle,
-        theReq.debut,
-        theReq.fin,
         theReq.observations,
         theReq.estActif,
         theReq.creationDate,
@@ -50,10 +46,11 @@ function paabSelectByInModel(theReq) {
         theReq.modifUserId,
         theReq.debutDonnees,
         theReq.finDonnees
-
       ],
-     ((err, results, fields) => {
+
+      ((err, results, fields) => {
         if (err) {
+          console.log(err)
           reject(err)
         }
         else{
@@ -64,10 +61,10 @@ function paabSelectByInModel(theReq) {
   })
 }
 
-function getPaabByIdInModel(id) {
+function getDefisprogrammePrioritaireByIdInModel(id) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL paannuelbs_selectById(?)",
+    connection.query("CALL defiproprioritaires_selectById(?)",
       [
         id
 
@@ -88,10 +85,10 @@ function getPaabByIdInModel(id) {
 }
 
 
-function disablePaabInModel(theReq) {
+function disableDefisprogrammePrioritaireInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL paannuelbs_disable(?,?,?)",
+    connection.query("CALL defiproprioritaires_disable(?,?,?)",
       [
         theReq.id,
         theReq.modifUserId,
@@ -110,20 +107,18 @@ function disablePaabInModel(theReq) {
 }
 
 
-function updatePaabInModel(theReq) {
+function updateDefisprogrammePrioritaireInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL paannuelbs_update(?,?,?,?,?,?,?,?)",
+    connection.query("CALL defiproprioritaires_update(?,?,?,?,?,?,?)",
       [
         theReq.id,
-        theReq.papbId,
+        theReq.proprioritaireId,
+        theReq.numero,
         theReq.libelle,
-        theReq.debut,
-        theReq.fin,
         theReq.observations,
         theReq.modifDate,
         theReq.modifUserId
-
       ],
 
       ((err, results, fields) => {
@@ -139,10 +134,10 @@ function updatePaabInModel(theReq) {
   })
 }
 
-function getAllPaabInModel() {
+function getAllDefisprogrammePrioritaireInModel() {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL paannuelbs_selectAll(?,?,?)",
+    connection.query("CALL defiproprioritaires_selectAll(?,?,?)",
       [
         1,
         null,
@@ -154,19 +149,17 @@ function getAllPaabInModel() {
         if (err) {
           reject(err)
         }
-        else{
-          resolve(results[0])
-        }
+        resolve(results[0])
       })
     )
   })
 }
 
 module.exports = {
-  addPaabInModel,
-  disablePaabInModel,
-  updatePaabInModel,
-  getPaabByIdInModel,
-  getAllPaabInModel,
-  paabSelectByInModel
+  addDefisprogrammePrioritaireInModel,
+  disableDefisprogrammePrioritaireInModel,
+  updateDefisprogrammePrioritaireInModel,
+  getDefisprogrammePrioritaireByIdInModel,
+  getAllDefisprogrammePrioritaireInModel,
+  defisprogrammePrioritaireSelectByInModel
 }

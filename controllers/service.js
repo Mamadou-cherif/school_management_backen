@@ -12,7 +12,8 @@ function addService(req, res, next) {
 
   const service = {
 
-    structureId: req.body.structureId,
+    structureId: req.body.structureId || null,
+    departementId: req.body.departementId  || null,
     nom: req.body.nom,
     responsableService: req.body.responsableService,
     email: req.body.email,
@@ -39,19 +40,19 @@ function disableService(req, res, next) {
 }
 function serviceSelectBy(req, res, next) {
 
-
   const intervention = {
-    id: req.body.id,
-    structureId: req.body.structureId,
-    nom: req.body.nom,
-    responsableService: req.body.responsableService,
-    email: req.body.email,
-    telephone: req.body.telephone,
+    id: req.body.id || null,
+    structureId: req.body.structureId || null,
+    departementId: req.body.departementId || null,
+    nom: req.body.nom || null,
+    responsableService: req.body.responsableService || null,
+    email: req.body.email || null,
+    telephone: req.body.telephone || null,
     estActif: 1,
-    creationDate: req.body.creationDate,
-    creationUserId: req.body.creationUserId,
-    modifDate: req.body.modifDate,
-    modifUserId: req.body.modifUserId,
+    creationDate: req.body.creationDate || null,
+    creationUserId: req.body.creationUserId || null,
+    modifDate: req.body.modifDate || null,
+    modifUserId: req.body.modifUserId || null,
     debut: req.body.debut || null,
     fin: req.body.fin || null
   }
@@ -67,7 +68,8 @@ function updateService(req, res, next) {
 
   const service = {
     id: req.body.id,
-    structureId: req.body.structureId,
+    structureId: req.body.structureId || null,
+    departementId: req.body.departementId || null,
     nom: req.body.nom,
     responsableService: req.body.responsableService,
     email: req.body.email,
