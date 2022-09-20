@@ -48,7 +48,6 @@ function addActiviteProjet(req, res,next){
     const objActiviteProjet={
         projetId: req.body.projetId,
         activiteId: req.body.activiteId,
-        reference: req.body.reference,
         estActif:1
     }
      ActiviteProjet.activiteprojetSelectByInModel(objActiviteProjet)
@@ -57,11 +56,7 @@ function addActiviteProjet(req, res,next){
                     const activiteprojetObj={
                         projetId: req.body.projetId,
                         activiteId: req.body.activiteId,
-                        reference: req.body.reference,
-                        debut: req.body.debut,
-                        fin: req.body.fin,
-                        copie: req.body.copie,
-                        renouvelerId: req.body.renouvelerId || null,
+                       
                         observations: req.body.observations,
                         creationUserId: req.body.creationUserId,
                 }
@@ -84,11 +79,6 @@ function activiteprojetSelectBy(req, res, next){
         id: req.body.id || null,
         projetId: req.body.projetId|| null,
         activiteId: req.body.activiteId|| null,
-        reference: req.body.reference|| null,
-        debut: req.body.debut|| null,
-        fin: req.body.fin|| null,
-        copie: req.body.copie|| null,
-        renouvelerId: req.body.renouvelerId || null,
         observations: req.body.observations,
         estActif: 1,
         creationDate: req.body.creationDate || null,
@@ -98,11 +88,9 @@ function activiteprojetSelectBy(req, res, next){
         debut: req.body.debut || null,
         fin: req.body.fin || null
 }
-
-
-    ActiviteProjet.activiteprojetSelectByInModel(activiteprojetObj)
-        .then(activiteprojet=> res.status(200).json(activiteprojet))
-        .catch(error=> res.status(400).json(error))
+ActiviteProjet.activiteprojetSelectByInModel(activiteprojetObj)
+    .then(activiteprojet=> res.status(200).json(activiteprojet))
+    .catch(error=> res.status(400).json(error))
 
 }
 
@@ -111,10 +99,8 @@ function updateActiviteProjet(req,res, next){
     const objActiviteProjet={
         projetId: req.body.projetId,
         activiteId: req.body.activiteId,
-        reference: req.body.reference,
         estActif:1
     }
-   
      ActiviteProjet.activiteprojetSelectByInModel(objActiviteProjet)
           .then(activiteprojet=> {
                 if((activiteprojet.length==0) || (activiteprojet[0].id == req.body.id)){
@@ -123,11 +109,6 @@ function updateActiviteProjet(req,res, next){
                         id: req.body.id,
                         projetId: req.body.projetId,
                         activiteId: req.body.activiteId,
-                        reference: req.body.reference,
-                        debut: req.body.debut,
-                        fin: req.body.fin,
-                        copie: req.body.copie,
-                        renouvelerId: req.body.renouvelerId || null,
                         observations: req.body.observations,
                         modifDate: req.body.modifDate,
                         modifUserId: req.body.modifUserId,

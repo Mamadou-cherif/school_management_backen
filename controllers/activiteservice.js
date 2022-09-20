@@ -5,6 +5,7 @@ function addActiviteService(req, res,next){
     const objActiviteService={
         activiteId: req.body.activiteId,
         serviceId: req.body.serviceId,
+        type: req.body.type,
         estActif:1
     }
     ActiviteService.activiteServiceSelectByInModel(objActiviteService)
@@ -64,6 +65,7 @@ function updateActiviteService(req,res, next){
     const objActiviteService={
         activiteId: req.body.activiteId,
         serviceId: req.body.serviceId,
+        type: req.body.type,
         estActif:1
     }
     ActiviteService.activiteServiceSelectByInModel(objActiviteService)

@@ -2,32 +2,47 @@ const Paab = require("../models/paab")
 
  
 function addPaab(req, res,next){
-    const objPaab={
-        papbId: req.body.papbId,
-        libelle: req.body.libelle,
-        estActif:1
+        const paabObj={
+            papbId: req.body.papbId,
+            libelle: req.body.libelle,
+            debut: req.body.debut,
+            fin: req.body.fin,
+            observations: req.body.observations,
+            creationUserId: req.body.creationUserId,
     }
-     Paab.paabSelectByInModel(objPaab)
-          .then(paab=> {
-                if(paab.length==0){
-                    const paabObj={
-                        papbId: req.body.papbId,
-                        libelle: req.body.libelle,
-                        debut: req.body.debut,
-                        fin: req.body.fin,
-                        observations: req.body.observations,
-                        creationUserId: req.body.creationUserId,
-                }
-                      Paab.addPaabInModel(paabObj)
-                          .then(()=> res.status(201).json({succes: "Ajout effectué avec succès"}))
-                          .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
-                }
-                else
-                   {
-                     res.status(500).json({error: "Cette paab existe déjà pour ce projet"})
-                   }
-          })
-          .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
+          Paab.addPaabInModel(paabObj)
+              .then(()=> res.status(201).json({succes: "Ajout effectué avec succès"}))
+              .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
+    
+    // const objPaab={
+    //     papbId: req.body.papbId,
+    //     libelle: req.body.libelle,
+    //     estActif:1
+    // }
+
+    //  Paab.paabSelectByInModel(objPaab)
+    //       .then(paab=> {
+    //         console.log(paab)
+
+    //             if(paab.length==0){
+    //                 const paabObj={
+    //                     papbId: req.body.papbId,
+    //                     libelle: req.body.libelle,
+    //                     debut: req.body.debut,
+    //                     fin: req.body.fin,
+    //                     observations: req.body.observations,
+    //                     creationUserId: req.body.creationUserId,
+    //             }
+    //                   Paab.addPaabInModel(paabObj)
+    //                       .then(()=> res.status(201).json({succes: "Ajout effectué avec succès"}))
+    //                       .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
+    //             }
+    //             else
+    //                {
+    //                  res.status(500).json({error: "Cette paab existe déjà pour ce projet"})
+    //                }
+    //       })
+    //       .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
 }
 
 
@@ -62,39 +77,22 @@ function paabSelectBy(req, res, next){
 
  
 function updatePaab(req,res, next){
-        
-    const objPaab={
+                         
+    const paabObj={
+        id: req.body.id,
         papbId: req.body.papbId,
         libelle: req.body.libelle,
-        estActif:1
-    }
-   
-     Paab.paabSelectByInModel(objPaab)
-          .then(paab=> {
-                if((paab.length==0) || (paab[0].id == req.body.id)){
-                    
-                    const paabObj={
-                        id: req.body.id,
-                        papbId: req.body.papbId,
-                        libelle: req.body.libelle,
-                        debut: req.body.debut,
-                        fin: req.body.fin,
-                        observations: req.body.observations,
-                        modifDate: req.body.modifDate,
-                        modifUserId: req.body.modifUserId,
-                }
+        debut: req.body.debut,
+        fin: req.body.fin,
+        observations: req.body.observations,
+        modifDate: req.body.modifDate,
+        modifUserId: req.body.modifUserId,
+}
 
-                      Paab.updatePaabInModel(paabObj)
-                          .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
-                          .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
-                }
-                else
-                   {
-                     res.status(500).json({error: "Cette paab existe déjà pour ce projet"})
-                   }
-          })
-          .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
-      
+      Paab.updatePaabInModel(paabObj)
+          .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
+          .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
+  
         }
 
 //supression logique d'un paab

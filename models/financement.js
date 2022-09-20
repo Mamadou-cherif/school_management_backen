@@ -196,9 +196,13 @@ function financementSelectByParamsInModel(theReq){
   
         ((err,results, fields)=>{
           if(err){
+            console.log(err)
             reject(err)
-          }else{}
+          }
+          else{
           resolve(results[0])
+
+          }
         })
       )
     })

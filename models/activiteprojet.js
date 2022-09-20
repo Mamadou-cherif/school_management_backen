@@ -7,16 +7,11 @@ let connection = mysql.createConnection(config)
 function addActiviteProjetInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL projetactivites_insert(?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL projetactivites_insert(?,?,?,?)",
       [
-		theReq.projetId,
-		theReq.activiteId,
-		theReq.reference,
-		theReq.debut,
-		theReq.fin,
-		theReq.copie,
-		theReq.renouvelerId,
-		theReq.observations,
+        theReq.projetId,
+        theReq.activiteId,
+        theReq.observations,
         theReq.creationUserId
       ],
 
@@ -36,16 +31,11 @@ function addActiviteProjetInModel(theReq) {
 function activiteprojetSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL projetactivites_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL projetactivites_selectBy(?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.projetId,
-		theReq.activiteId,
-		theReq.reference,
-		theReq.debut,
-		theReq.fin,
-		theReq.copie,
-		theReq.renouvelerId,
+		    theReq.activiteId,
         theReq.observations,
         theReq.estActif,
         theReq.creationDate,
@@ -118,16 +108,11 @@ function disableActiviteProjetInModel(theReq) {
 function updateActiviteProjetInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL projetactivites_update(?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL projetactivites_update(?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.projetId,
         theReq.activiteId,
-        theReq.reference,
-        theReq.debut,
-        theReq.fin,
-        theReq.copie,
-        theReq.renouvelerId,
         theReq.observations,
         theReq.modifDate,
         theReq.modifUserId

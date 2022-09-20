@@ -54,6 +54,7 @@ function paabSelectByInModel(theReq) {
       ],
      ((err, results, fields) => {
         if (err) {
+          console.log(err)
           reject(err)
         }
         else{

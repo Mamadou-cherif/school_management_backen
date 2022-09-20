@@ -1,6 +1,34 @@
 const SousProgramme = require("../models/sousprogramme")
 
  
+// function addSousProgramme(req, res,next){
+//     const objSousProgramme={
+//         proPrioritaireId: req.body.proPrioritaireId,
+//         libelle: req.body.libelle,
+//         estActif:1
+//     }
+//      SousProgramme.sousProgrammeSelectByInModel(objSousProgramme)
+//           .then(sousprogramme=> {
+//                 if(sousprogramme.length==0){
+//                     const sousprogrammeObj={
+//                         proPrioritaireId: req.body.proPrioritaireId,
+//                         numero: req.body.numero,
+//                         libelle: req.body.libelle,
+//                         observations: req.body.observations,
+//                         creationUserId: req.body.creationUserId,
+//                 }
+//                       SousProgramme.addSousProgrammeInModel(sousprogrammeObj)
+//                           .then(()=> res.status(201).json({succes: "Ajout effectué avec succès"}))
+//                           .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
+//                 }
+//                 else
+//                    {
+//                      res.status(500).json({error: "Cette sousprogramme existe déjà pour ce projet"})
+//                    }
+//           })
+//           .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
+// }
+
 function addSousProgramme(req, res,next){
     const objSousProgramme={
         proPrioritaireId: req.body.proPrioritaireId,
@@ -10,26 +38,41 @@ function addSousProgramme(req, res,next){
      SousProgramme.sousProgrammeSelectByInModel(objSousProgramme)
           .then(sousprogramme=> {
                 if(sousprogramme.length==0){
-                    const sousprogrammeObj={
+                    const objSousProgramme={
                         proPrioritaireId: req.body.proPrioritaireId,
                         numero: req.body.numero,
-                        libelle: req.body.libelle,
-                        observations: req.body.observations,
-                        creationUserId: req.body.creationUserId,
-                }
-                      SousProgramme.addSousProgrammeInModel(sousprogrammeObj)
-                          .then(()=> res.status(201).json({succes: "Ajout effectué avec succès"}))
-                          .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
-                }
+                        estActif:1
+                    }
+                     SousProgramme.sousProgrammeSelectByInModel(objSousProgramme)
+                          .then(sousprogramme=> {
+                                if(sousprogramme.length==0){
+                                    const sousprogrammeObj={
+                                        proPrioritaireId: req.body.proPrioritaireId,
+                                        numero: req.body.numero,
+                                        libelle: req.body.libelle,
+                                        observations: req.body.observations,
+                                        creationUserId: req.body.creationUserId,
+                                    }
+                                      SousProgramme.addSousProgrammeInModel(sousprogrammeObj)
+                                          .then(()=> res.status(201).json({succes: "Ajout effectué avec succès"}))
+                                          .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
+                                    
+                                 }
+                                else
+                                   {
+                                     res.status(500).json({error: "Ce numero existe déjà pour dans sous programme"})
+                                   }
+                          })
+                          .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
+                
+                 }
                 else
                    {
-                     res.status(500).json({error: "Cette sousprogramme existe déjà pour ce projet"})
+                     res.status(500).json({error: "Cette libellé existe déjà dans ce sous programme"})
                    }
           })
           .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
 }
-
-
 
 function sousprogrammeSelectBy(req, res, next){
     const sousprogrammeObj={
@@ -68,32 +111,48 @@ function updateSousProgramme(req,res, next){
         libelle: req.body.libelle,
         estActif:1
     }
-   
-     SousProgramme.sousProgrammeSelectByInModel(objSousProgramme)
-          .then(sousprogramme=> {
-                if((sousprogramme.length==0) || (sousprogramme[0].id == req.body.id)){
-                    
-                    const sousprogrammeObj={
-                        id: req.body.id,
-                        proPrioritaireId: req.body.proPrioritaireId,
-                        numero: req.body.numero,
-                        libelle: req.body.libelle,
-                        observations: req.body.observations,
-                        modifDate: req.body.modifDate,
-                        modifUserId: req.body.modifUserId,
-                }
+    SousProgramme.sousProgrammeSelectByInModel(objSousProgramme)
+    .then(sousprogramme=> {
+          if((sousprogramme.length==0) || (sousprogramme[0].id == req.body.id)){
+              const objSousProgramme={
+                  proPrioritaireId: req.body.proPrioritaireId,
+                  numero: req.body.numero,
+                  estActif:1
+              }
+               SousProgramme.sousProgrammeSelectByInModel(objSousProgramme)
+                    .then(sousprogramme=> {
+                          if((sousprogramme.length==0) || (sousprogramme[0].id == req.body.id)){
+                            const sousprogrammeObj={
+                                id: req.body.id,
+                                proPrioritaireId: req.body.proPrioritaireId,
+                                numero: req.body.numero,
+                                libelle: req.body.libelle,
+                                observations: req.body.observations,
+                                modifDate: req.body.modifDate,
+                                modifUserId: req.body.modifUserId,
+                        }
+        
+                              SousProgramme.updateSousProgrammeInModel(sousprogrammeObj)
+                                  .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
+                                  .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
+                        
+                        }
+                          else
+                             {
+                               res.status(500).json({error: "Ce numero existe déjà pour dans sous programme"})
+                             }
+                    })
+                    .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
+          
+           }
+          else
+             {
+               res.status(500).json({error: "Cette libellé existe déjà dans ce sous programme"})
+             }
+    })
+    .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
+    
 
-                      SousProgramme.updateSousProgrammeInModel(sousprogrammeObj)
-                          .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
-                          .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
-                }
-                else
-                   {
-                     res.status(500).json({error: "Cette sousprogramme existe déjà pour ce projet"})
-                   }
-          })
-          .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
-      
         }
 
 //supression logique d'un sousprogramme
