@@ -4,13 +4,12 @@ let connection = mysql.createConnection(config)
 
 
 
-function addNatureInModel(theReq) {
+function addTemplateInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL natures_insert(?,?,?)",
+    connection.query("CALL templates_insert(?,?)",
       [
         theReq.libelle,
-		  theReq.code,
         theReq.creationUserId
       ],
 
@@ -27,14 +26,13 @@ function addNatureInModel(theReq) {
   })
 }
 
-function natureSelectByInModel(theReq) {
+function templateSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL natures_selectBy(?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL templates_selectBy(?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.libelle,
-		theReq.code,
         theReq.estActif,
         theReq.creationDate,
         theReq.creationUserId,
@@ -58,10 +56,10 @@ function natureSelectByInModel(theReq) {
 }
 
 
-function deleteNatureInModel(id) {
+function deleteTemplateInModel(id) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL natures_delete(?)",
+    connection.query("CALL templates_delete(?)",
       [
         id
 
@@ -80,10 +78,10 @@ function deleteNatureInModel(id) {
     )
   })
 }
-function getNatureByIdInModel(id) {
+function getTemplateByIdInModel(id) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL natures_selectById(?)",
+    connection.query("CALL templates_selectById(?)",
       [
         id
 
@@ -104,10 +102,10 @@ function getNatureByIdInModel(id) {
 }
 
 
-function disableNatureInModel(theReq) {
+function disableTemplateInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL natures_disable(?,?,?)",
+    connection.query("CALL templates_disable(?,?,?)",
       [
         theReq.id,
         theReq.modifUserId,
@@ -125,14 +123,13 @@ function disableNatureInModel(theReq) {
   })
 }
 
-function updateNatureInModel(theReq) {
+function updateTemplateInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL natures_update(?,?,?,?,?)",
+    connection.query("CALL templates_update(?,?,?,?,?)",
       [
         theReq.id,
         theReq.libelle,
-		    theReq.code,
         theReq.modifDate,
         theReq.modifUserId
       ],
@@ -150,10 +147,10 @@ function updateNatureInModel(theReq) {
   })
 }
 
-function getAllNatureInModel() {
+function getAllTemplateInModel() {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL natures_selectAll(?,?,?)",
+    connection.query("CALL templates_selectAll(?,?,?)",
       [
         1,
         null,
@@ -172,11 +169,11 @@ function getAllNatureInModel() {
 }
 
 module.exports = {
-  addNatureInModel,
-  deleteNatureInModel,
-  disableNatureInModel,
-  updateNatureInModel,
-  getNatureByIdInModel,
-  getAllNatureInModel,
-  natureSelectByInModel
+  addTemplateInModel,
+  deleteTemplateInModel,
+  disableTemplateInModel,
+  updateTemplateInModel,
+  getTemplateByIdInModel,
+  getAllTemplateInModel,
+  templateSelectByInModel
 }
