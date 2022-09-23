@@ -2,18 +2,20 @@ const mysql = require("mysql2");
 const config = require("../configs/dbconfig")
 let connection = mysql.createConnection(config)
 
-function addActiviteInModel(theReq) {
+
+
+function addActiviteTacheInModel(theReq) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL activites_insert(?,?,?,?,?,?,?,?,?)",
+
+    connection.query("CALL activitetaches_insert(?,?,?,?,?,?,?,?)",
       [
-        theReq.strategieId,
-        theReq.numero,
-        theReq.libelle,
-        theReq.natureId,
-        theReq.uniteCompteId,
-        theReq.statut,
-        theReq.cdmtNatDepenseId,
-		    theReq.observations,
+        theReq.activiteId,
+		theReq.tacheId,
+		theReq.responsableId,
+		theReq.niveauExecution,
+		theReq.tauxExecution,
+		theReq.problemesRencontrees,
+		theReq.solutions,
         theReq.creationUserId
       ],
 
@@ -30,20 +32,19 @@ function addActiviteInModel(theReq) {
   })
 }
 
-function activiteSelectByInModel(theReq) {
+function activitetacheSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL activites_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL activitetaches_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
-        theReq.strategieId,
-        theReq.numero,
-        theReq.libelle,
-        theReq.natureId,
-        theReq.uniteCompteId,
-        theReq.statut,
-        theReq.cdmtNatDepenseId,
-        theReq.observations,
+        theReq.activiteId,
+		theReq.tacheId,
+		theReq.responsableId,
+		theReq.niveauExecution,
+		theReq.tauxExecution,
+		theReq.problemesRencontrees,
+		theReq.solutions,
         theReq.estActif,
         theReq.creationDate,
         theReq.creationUserId,
@@ -66,10 +67,10 @@ function activiteSelectByInModel(theReq) {
   })
 }
 
-function getActiviteByIdInModel(id) {
+function getActiviteTacheByIdInModel(id) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL activites_selectById(?)",
+    connection.query("CALL activitetaches_selectById(?)",
       [
         id
 
@@ -90,10 +91,10 @@ function getActiviteByIdInModel(id) {
 }
 
 
-function disableActiviteInModel(theReq) {
+function disableActiviteTacheInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL activites_disable(?,?,?)",
+    connection.query("CALL activitetaches_disable(?,?,?)",
       [
         theReq.id,
         theReq.modifUserId,
@@ -112,18 +113,19 @@ function disableActiviteInModel(theReq) {
 }
 
 
-function updateActiviteInModel(theReq) {
+function updateActiviteTacheInModel(theReq) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL activites_update(?,?,?,?,?,?,?,?,?,?)",
+
+    connection.query("CALL activitetaches_update(?,?,?,?,?,?,?,?,?,?)",
       [
-        theReq.strategieId,
-        theReq.numero,
-        theReq.libelle,
-        theReq.natureId,
-        theReq.uniteCompteId,
-        theReq.statut,
-        theReq.cdmtNatDepenseId,
-		    theReq.observations,
+        theReq.id,
+        theReq.activiteId,
+		theReq.tacheId,
+		theReq.responsableId,
+		theReq.niveauExecution,
+		theReq.tauxExecution,
+		theReq.problemesRencontrees,
+		theReq.solutions,
         theReq.modifDate,
         theReq.modifUserId
       ],
@@ -141,10 +143,10 @@ function updateActiviteInModel(theReq) {
   })
 }
 
-function getAllActiviteInModel() {
+function getAllActiviteTacheInModel() {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL activites_selectAll(?,?,?)",
+    connection.query("CALL activitetaches_selectAll(?,?,?)",
       [
         1,
         null,
@@ -158,7 +160,7 @@ function getAllActiviteInModel() {
           reject(err)
         }
         else{
-          resolve(results[0])
+        resolve(results[0])
         }
       })
     )
@@ -166,10 +168,10 @@ function getAllActiviteInModel() {
 }
 
 module.exports = {
-  addActiviteInModel,
-  disableActiviteInModel,
-  updateActiviteInModel,
-  getActiviteByIdInModel,
-  getAllActiviteInModel,
-  activiteSelectByInModel
+  addActiviteTacheInModel,
+  disableActiviteTacheInModel,
+  updateActiviteTacheInModel,
+  getActiviteTacheByIdInModel,
+  getAllActiviteTacheInModel,
+  activitetacheSelectByInModel
 }

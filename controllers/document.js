@@ -76,8 +76,6 @@ function addDocument(req, res, next) {
           observations: req.body.observations,
           creationUserId: req.body.creationUserId
         }
-        console.log(objDocument)
-
         Document.addDocumentInModel(objDocument)
           .then(() => res.status(201).json({ succes: "Ajout effectué avec succès" }))
           .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée documents_insert" }));

@@ -1,48 +1,64 @@
 const Tache = require("../models/tache")
-
  
 function addTache(req, res,next){
     const objTache={
-        activiteId: req.body.activiteId,
-        libelle: req.body.libelle,
+        code: req.body.code,
         estActif:1
     }
-     Tache.tacheSelectByInModel(objTache)
-          .then(tache=> {
-                if(tache.length==0){
-                    const tacheObj={
-                        activiteId: req.body.activiteId,
-                        numero: req.body.numero,
-                        libelle: req.body.libelle,
-                        duree: req.body.duree,
-                        responsable: req.body.responsable,
-                        observations: req.body.observations,
-                        creationUserId: req.body.creationUserId,
-                }
-                      Tache.addTacheInModel(tacheObj)
-                          .then(()=> res.status(201).json({succes: "Ajout effectué avec succès"}))
-                          .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
-                }
-                else
-                   {
-                     res.status(500).json({error: "Cette tache existe déjà pour cette actvitité"})
-                   }
-          })
-          .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
-}
+    Tache.tacheSelectByInModel(objTache)
+.then(tache=> {
+      if((tache.length==0)){
+          const objTache={
+              libelle: req.body.libelle,
+              estActif:1
+          }
+         
+           Tache.tacheSelectByInModel(objTache)
+                .then(tache=> {
+                      if((tache.length==0)){
+                        const tacheObj={
+                            libelle: req.body.libelle,
+                            code: req.body.code,
+                            serviceResponsableId: req.body.serviceResponsableId,
+                            duree: req.body.duree,
+                            responsable: req.body.responsable,
+                            intervalleRelance: req.body.intervalleRelance,
+                            creationUserId: req.body.creationUserId,
+                        }
+                          Tache.addTacheInModel(tacheObj)
+                              .then(()=> res.status(201).json({succes: "Ajout effectué avec succès"}))
+                              .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
+                        
+                      }
+                      else
+                         {
+                           res.status(500).json({error: "Ce libellé existe déjà pour cette tache"})
+                         }
+                })
+                .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
+            
+      }
+      else
+         {
+           res.status(500).json({error: "Ce code existe déjà pour cette tâche"})
+         }
+})
+.catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
+
+   }
 
 
 
 function tacheSelectBy(req, res, next){
     const tacheObj={
         id: req.body.id || null,
-        activiteId: req.body.activiteId || null,
-        numero: req.body.numero || null,
         libelle: req.body.libelle || null,
+        code: req.body.code || null,
+        serviceResponsableId: req.body.serviceResponsableId || null,
         duree: req.body.duree || null,
         responsable: req.body.responsable || null,
-        observations: req.body.observations || null,
-        estActif: 1,
+        intervalleRelance: req.body.intervalleRelance || null,
+         estActif: 1,
         creationDate: req.body.creationDate || null,
         creationUserId: req.body.creationUserId || null,
         modifDate: req.body.modifDate || null,
@@ -67,7 +83,6 @@ function tacheSelectBy(req, res, next){
 function updateTache(req,res, next){
         
     const objTache={
-        activiteId: req.body.activiteId,
         libelle: req.body.libelle,
         estActif:1
     }
@@ -75,7 +90,15 @@ function updateTache(req,res, next){
      Tache.tacheSelectByInModel(objTache)
           .then(tache=> {
                 if((tache.length==0) || (tache[0].id == req.body.id)){
-                    
+                    const objTache={
+                        code: req.body.activiteId,
+                        estActif:1
+                    }
+                   
+                     Tache.tacheSelectByInModel(objTache)
+                          .then(tache=> {
+                                if((tache.length==0) || (tache[0].id == req.body.id)){
+                                         
                     const tacheObj={
                         id: req.body.id,
                         activiteId: req.body.activiteId,
@@ -91,10 +114,19 @@ function updateTache(req,res, next){
                       Tache.updateTacheInModel(tacheObj)
                           .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
                           .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
+               
+                                }
+                                else
+                                   {
+                                     res.status(500).json({error: "Ce code existe déjà pour cette tache"})
+                                   }
+                          })
+                          .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
+                      
                 }
                 else
                    {
-                     res.status(500).json({error: "Cette tache existe déjà pour cette actvitité"})
+                     res.status(500).json({error: "Ce libellé existe déjà pour cette tâche"})
                    }
           })
           .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))

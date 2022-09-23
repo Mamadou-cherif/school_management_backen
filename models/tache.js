@@ -7,14 +7,13 @@ let connection = mysql.createConnection(config)
 function addTacheInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL taches_insert(?,?,?,?,?,?,?)",
+    connection.query("CALL taches_insert(?,?,?,?,?,?)",
       [
-        theReq.activiteId,
-		theReq.numero,
-		theReq.libelle,
-		theReq.duree,
-		theReq.responsable,
-        theReq.observations,
+        theReq.libelle,
+        theReq.code,
+        theReq.serviceResponsableId,
+        theReq.duree,
+        theReq.intervalleRelance,
         theReq.creationUserId
       ],
 
@@ -34,15 +33,14 @@ function addTacheInModel(theReq) {
 function tacheSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL taches_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL taches_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
-        theReq.activiteId,
-		theReq.numero,
-		theReq.libelle,
-		theReq.duree,
-		theReq.responsable,
-        theReq.observations,
+        theReq.libelle,
+        theReq.code,
+        theReq.serviceResponsableId,
+        theReq.duree,
+        theReq.intervalleRelance,
         theReq.estActif,
         theReq.creationDate,
         theReq.creationUserId,
@@ -114,15 +112,14 @@ function disableTacheInModel(theReq) {
 function updateTacheInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL taches_update(?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL taches_update(?,?,?,?,?,?,?,?)",
       [
         theReq.id,
-        theReq.activiteId,
-		theReq.numero,
-		theReq.libelle,
-		theReq.duree,
-		theReq.responsable,
-        theReq.observations,
+        theReq.libelle,
+        theReq.code,
+        theReq.serviceResponsableId,
+        theReq.duree,
+        theReq.intervalleRelance,
         theReq.modifDate,
         theReq.modifUserId
       ],
@@ -153,9 +150,12 @@ function getAllTacheInModel() {
 
       ((err, results, fields) => {
         if (err) {
+          console.log(err)
           reject(err)
         }
+        else{
         resolve(results[0])
+        }
       })
     )
   })

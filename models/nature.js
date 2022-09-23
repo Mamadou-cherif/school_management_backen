@@ -2,18 +2,15 @@ const mysql = require("mysql2");
 const config = require("../configs/dbconfig")
 let connection = mysql.createConnection(config)
 
-function addActiviteInModel(theReq) {
+
+
+function addNatureInModel(theReq) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL activites_insert(?,?,?,?,?,?,?,?,?)",
+
+    connection.query("CALL natures_insert(?,?,?)",
       [
-        theReq.strategieId,
-        theReq.numero,
         theReq.libelle,
-        theReq.natureId,
-        theReq.uniteCompteId,
-        theReq.statut,
-        theReq.cdmtNatDepenseId,
-		    theReq.observations,
+		  theReq.code,
         theReq.creationUserId
       ],
 
@@ -30,20 +27,14 @@ function addActiviteInModel(theReq) {
   })
 }
 
-function activiteSelectByInModel(theReq) {
+function natureSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL activites_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL natures_selectBy(?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
-        theReq.strategieId,
-        theReq.numero,
         theReq.libelle,
-        theReq.natureId,
-        theReq.uniteCompteId,
-        theReq.statut,
-        theReq.cdmtNatDepenseId,
-        theReq.observations,
+		theReq.code,
         theReq.estActif,
         theReq.creationDate,
         theReq.creationUserId,
@@ -66,10 +57,33 @@ function activiteSelectByInModel(theReq) {
   })
 }
 
-function getActiviteByIdInModel(id) {
+
+function deleteNatureInModel(id) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL activites_selectById(?)",
+    connection.query("CALL natures_delete(?)",
+      [
+        id
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+}
+function getNatureByIdInModel(id) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL natures_selectById(?)",
       [
         id
 
@@ -90,10 +104,10 @@ function getActiviteByIdInModel(id) {
 }
 
 
-function disableActiviteInModel(theReq) {
+function disableNatureInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL activites_disable(?,?,?)",
+    connection.query("CALL natures_disable(?,?,?)",
       [
         theReq.id,
         theReq.modifUserId,
@@ -111,19 +125,14 @@ function disableActiviteInModel(theReq) {
   })
 }
 
-
-function updateActiviteInModel(theReq) {
+function updateNatureInModel(theReq) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL activites_update(?,?,?,?,?,?,?,?,?,?)",
+
+    connection.query("CALL natures_update(?,?,?,?,?)",
       [
-        theReq.strategieId,
-        theReq.numero,
+        theReq.id,
         theReq.libelle,
-        theReq.natureId,
-        theReq.uniteCompteId,
-        theReq.statut,
-        theReq.cdmtNatDepenseId,
-		    theReq.observations,
+		theReq.code,
         theReq.modifDate,
         theReq.modifUserId
       ],
@@ -141,10 +150,10 @@ function updateActiviteInModel(theReq) {
   })
 }
 
-function getAllActiviteInModel() {
+function getAllNatureInModel() {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL activites_selectAll(?,?,?)",
+    connection.query("CALL natures_selectAll(?,?,?)",
       [
         1,
         null,
@@ -154,22 +163,20 @@ function getAllActiviteInModel() {
 
       ((err, results, fields) => {
         if (err) {
-          console.log(err)
           reject(err)
         }
-        else{
-          resolve(results[0])
-        }
+        resolve(results[0])
       })
     )
   })
 }
 
 module.exports = {
-  addActiviteInModel,
-  disableActiviteInModel,
-  updateActiviteInModel,
-  getActiviteByIdInModel,
-  getAllActiviteInModel,
-  activiteSelectByInModel
+  addNatureInModel,
+  deleteNatureInModel,
+  disableNatureInModel,
+  updateNatureInModel,
+  getNatureByIdInModel,
+  getAllNatureInModel,
+  natureSelectByInModel
 }

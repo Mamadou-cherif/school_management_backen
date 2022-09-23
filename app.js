@@ -64,6 +64,9 @@ const cdmtProgrammeRoute = require("./routes/cdmtprogrammes")
 const cdmtNatDepenseRoute = require("./routes/cdmtnatdepenses")
 const activiteprojetRoute = require("./routes/activiteprojet")
 const departementRoute = require("./routes/departement")
+const natureRoute = require("./routes/nature")
+const activitetacheRoute = require("./routes/activitetache")
+const qteprevisionnelleRoute = require("./routes/qteprevisionnelle")
 
 app.use(bodyParser.json())
 
@@ -137,5 +140,8 @@ app.use("/api", cdmtNatDepenseRoute)
 app.use("/api", activiteServiceRoute)
 app.use("/api", activiteprojetRoute)
 app.use("/api", departementRoute)
+app.use("/api", natureRoute)
+app.use("/api", activitetacheRoute)
+app.use("/api", qteprevisionnelleRoute)
 
 module.exports = app

@@ -2,18 +2,20 @@ const mysql = require("mysql2");
 const config = require("../configs/dbconfig")
 let connection = mysql.createConnection(config)
 
-function addActiviteInModel(theReq) {
+
+
+function addQtePrevisionnelleInModel(theReq) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL activites_insert(?,?,?,?,?,?,?,?,?)",
+
+    connection.query("CALL qteprevisionnelles_insert(?,?,?,?,?,?,?,?)",
       [
-        theReq.strategieId,
-        theReq.numero,
-        theReq.libelle,
-        theReq.natureId,
-        theReq.uniteCompteId,
-        theReq.statut,
-        theReq.cdmtNatDepenseId,
-		    theReq.observations,
+        theReq.activiteId,
+		theReq.papbId,
+		theReq.paabId,
+		theReq.qtePrevisionnelle,
+		theReq.montantPrevisionnel,
+		theReq.deviseId,
+		theReq.observations,
         theReq.creationUserId
       ],
 
@@ -30,20 +32,19 @@ function addActiviteInModel(theReq) {
   })
 }
 
-function activiteSelectByInModel(theReq) {
+function qteprevisionnelleSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL activites_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL qteprevisionnelles_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
-        theReq.strategieId,
-        theReq.numero,
-        theReq.libelle,
-        theReq.natureId,
-        theReq.uniteCompteId,
-        theReq.statut,
-        theReq.cdmtNatDepenseId,
-        theReq.observations,
+        theReq.activiteId,
+		theReq.papbId,
+		theReq.paabId,
+		theReq.qtePrevisionnelle,
+		theReq.montantPrevisionnel,
+		theReq.deviseId,
+		theReq.observations,
         theReq.estActif,
         theReq.creationDate,
         theReq.creationUserId,
@@ -66,10 +67,33 @@ function activiteSelectByInModel(theReq) {
   })
 }
 
-function getActiviteByIdInModel(id) {
+
+function deleteQtePrevisionnelleInModel(id) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL activites_selectById(?)",
+    connection.query("CALL qteprevisionnelles_delete(?)",
+      [
+        id
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+}
+function getQtePrevisionnelleByIdInModel(id) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL qteprevisionnelles_selectById(?)",
       [
         id
 
@@ -90,10 +114,10 @@ function getActiviteByIdInModel(id) {
 }
 
 
-function disableActiviteInModel(theReq) {
+function disableQtePrevisionnelleInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL activites_disable(?,?,?)",
+    connection.query("CALL qteprevisionnelles_disable(?,?,?)",
       [
         theReq.id,
         theReq.modifUserId,
@@ -112,18 +136,18 @@ function disableActiviteInModel(theReq) {
 }
 
 
-function updateActiviteInModel(theReq) {
+function updateQtePrevisionnelleInModel(theReq) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL activites_update(?,?,?,?,?,?,?,?,?,?)",
+
+    connection.query("CALL qteprevisionnelles_update(?,?,?,?,?,?,?,?,?)",
       [
-        theReq.strategieId,
-        theReq.numero,
-        theReq.libelle,
-        theReq.natureId,
-        theReq.uniteCompteId,
-        theReq.statut,
-        theReq.cdmtNatDepenseId,
-		    theReq.observations,
+        theReq.id,
+        theReq.papbId,
+		theReq.paabId,
+		theReq.qtePrevisionnelle,
+		theReq.montantPrevisionnel,
+		theReq.deviseId,
+		theReq.observations,
         theReq.modifDate,
         theReq.modifUserId
       ],
@@ -141,10 +165,12 @@ function updateActiviteInModel(theReq) {
   })
 }
 
-function getAllActiviteInModel() {
+
+
+function getAllQtePrevisionnelleInModel() {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL activites_selectAll(?,?,?)",
+    connection.query("CALL qteprevisionnelles_selectAll(?,?,?)",
       [
         1,
         null,
@@ -154,22 +180,20 @@ function getAllActiviteInModel() {
 
       ((err, results, fields) => {
         if (err) {
-          console.log(err)
           reject(err)
         }
-        else{
-          resolve(results[0])
-        }
+        resolve(results[0])
       })
     )
   })
 }
 
 module.exports = {
-  addActiviteInModel,
-  disableActiviteInModel,
-  updateActiviteInModel,
-  getActiviteByIdInModel,
-  getAllActiviteInModel,
-  activiteSelectByInModel
+  addQtePrevisionnelleInModel,
+  deleteQtePrevisionnelleInModel,
+  disableQtePrevisionnelleInModel,
+  updateQtePrevisionnelleInModel,
+  getQtePrevisionnelleByIdInModel,
+  getAllQtePrevisionnelleInModel,
+  qteprevisionnelleSelectByInModel
 }

@@ -3,6 +3,7 @@ const Activite = require("../models/activite")
  
 function addActivite(req, res,next){
     const objActivite={
+        numero: req.body.numero,
         strategieId: req.body.strategieId,
         libelle: req.body.libelle,
         estActif:1
@@ -12,6 +13,9 @@ function addActivite(req, res,next){
                 if(activite.length==0){
                     const activiteObj={
                         strategieId: req.body.strategieId,
+                        natureId: req.body.natureId,
+                        statut: req.body.statut,
+                        uniteCompteId: req.body.uniteCompteId,
                         cdmtNatDepenseId: req.body.cdmtNatDepenseId,
                         numero: req.body.numero,
                         libelle: req.body.libelle,
@@ -36,6 +40,9 @@ function activiteSelectBy(req, res, next){
     const activiteObj={
         id: req.body.id || null,
         strategieId: req.body.strategieId || null,
+        nature: req.body.nature || null,
+        statut: req.body.statut || null,
+        uniteCompteId: req.body.uniteCompteId || null,
         cdmtNatDepenseId: req.body.cdmtNatDepenseId || null,
         numero: req.body.numero || null,
         libelle: req.body.libelle || null,
@@ -55,17 +62,11 @@ function activiteSelectBy(req, res, next){
         .catch(error=> res.status(400).json(error))
 
 }
-
-
-
-
-
-
-
  
 function updateActivite(req,res, next){
         
     const objActivite={
+        numero: req.body.numero,
         strategieId: req.body.strategieId,
         libelle: req.body.libelle,
         estActif:1
@@ -78,6 +79,9 @@ function updateActivite(req,res, next){
                     const activiteObj={
                         id: req.body.id,
                         strategieId: req.body.strategieId,
+                        nature: req.body.nature,
+                        statut: req.body.statut,
+                        uniteCompteId: req.body.uniteCompteId,
                         cdmtNatDepenseId: req.body.cdmtNatDepenseId,
                         numero: req.body.numero,
                         libelle: req.body.libelle,
