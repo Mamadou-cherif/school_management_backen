@@ -8,9 +8,7 @@ const multersd = require('multer')
 const path = require('path');
 const fs = require("fs")
 
-
 let documentUrl = '';
-
 
 const storage = multersd.diskStorage({
   destination: './uploads/documents/',
@@ -33,11 +31,10 @@ function files(req, res, next) {
       if (err) {
         return res.status(422).send({ errors: [{ title: 'File Upload Error', detail: err.message }] });
       }
-      if (!req.file.originalname.match(/\.(docx|pdf)$/)) {
+      if (!req.file.originalname.match(/\.(docx|pdf|ppt)$/)) {
         return res.status(400).json({ error: 'only  autorized' })
       }
       documentUrl = req.file.filename;
-
 
       return res.json({ 'imageUrl': documentUrl });
     });
@@ -54,9 +51,11 @@ function addDocument(req, res, next) {
     reference: req.body.reference,
     estActif: 1
   }
+  
   Document.documentSelectByInModel(objDocument)
     .then(document => {
       if ((document.length == 0)) {
+        
         const objDocument = {
           axeId: req.body.axeId,
           programmeId: req.body.programmeId,
@@ -98,6 +97,8 @@ function updateDocument(req, res, next) {
     reference: req.body.reference,
     estActif: 1
   }
+
+
   Document.documentSelectByInModel(objDocument)
     .then(document => {
       if ((document.length == 0) || (document[0].id == req.body.id)) {

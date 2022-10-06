@@ -68,6 +68,8 @@ const natureRoute = require("./routes/nature")
 const activitetacheRoute = require("./routes/activitetache")
 const qteprevisionnelleRoute = require("./routes/qteprevisionnelle")
 const templateRoute = require("./routes/template")
+const templatetacheRoute = require("./routes/templatetache")
+const coutExecutionRoute = require("./routes/coutexecution")
 
 app.use(bodyParser.json())
 
@@ -144,6 +146,8 @@ app.use("/api", departementRoute)
 app.use("/api", natureRoute)
 app.use("/api", activitetacheRoute)
 app.use("/api", templateRoute)
+app.use("/api", templatetacheRoute)
 app.use("/api", qteprevisionnelleRoute)
+app.use("/api", coutExecutionRoute)
 
 module.exports = app

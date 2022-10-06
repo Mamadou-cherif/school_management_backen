@@ -2,17 +2,14 @@ const mysql = require("mysql2");
 const config = require("../configs/dbconfig")
 let connection = mysql.createConnection(config)
 
-
-
-function addResultatInModel(theReq) {
+function addTemplateTacheInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL resultats_insert(?,?,?,?,?)",
+    connection.query("CALL templatetaches_insert(?,?,?,?)",
       [
-        theReq.sousProgrammeId,
-        theReq.numero,
-        theReq.libelle,
-        theReq.observations,
+        theReq.templateId,
+		theReq.tacheId,
+		theReq.ordre,
         theReq.creationUserId
       ],
 
@@ -29,16 +26,15 @@ function addResultatInModel(theReq) {
   })
 }
 
-function sousProgrammeSelectByInModel(theReq) {
+function templatetacheSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL resultats_selectBy(?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL templatetaches_selectBy(?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
-        theReq.sousProgrammeId,
-        theReq.numero,
-        theReq.libelle,
-        theReq.observations,
+        theReq.templateId,
+        theReq.tacheId,
+        theReq.ordre,
         theReq.estActif,
         theReq.creationDate,
         theReq.creationUserId,
@@ -61,12 +57,10 @@ function sousProgrammeSelectByInModel(theReq) {
   })
 }
 
-
-
-function getResultatByIdInModel(id) {
+function getTemplateTacheByIdInModel(id) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL resultats_selectById(?)",
+    connection.query("CALL templatetaches_selectById(?)",
       [
         id
 
@@ -87,10 +81,10 @@ function getResultatByIdInModel(id) {
 }
 
 
-function disableResultatInModel(theReq) {
+function disableTemplateTacheInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL resultats_disable(?,?,?)",
+    connection.query("CALL templatetaches_disable(?,?,?)",
       [
         theReq.id,
         theReq.modifUserId,
@@ -109,16 +103,15 @@ function disableResultatInModel(theReq) {
 }
 
 
-function updateResultatInModel(theReq) {
+function updateTemplateTacheInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL resultats_update(?,?,?,?,?,?,?)",
+    connection.query("CALL templatetaches_update(?,?,?,?,?,?,?,?)",
       [
         theReq.id,
-        theReq.sousProgrammeId,
-        theReq.numero,
-        theReq.libelle,
-        theReq.observations,
+        theReq.templateId,
+		theReq.tacheId,
+		theReq.ordre,
         theReq.modifDate,
         theReq.modifUserId
       ],
@@ -136,10 +129,10 @@ function updateResultatInModel(theReq) {
   })
 }
 
-function getAllResultatInModel() {
+function getAllTemplateTacheInModel() {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL resultats_selectAll(?,?,?)",
+    connection.query("CALL templatetaches_selectAll(?,?,?)",
       [
         1,
         null,
@@ -149,19 +142,22 @@ function getAllResultatInModel() {
 
       ((err, results, fields) => {
         if (err) {
+          console.log(err)
           reject(err)
         }
+        else{
         resolve(results[0])
+        }
       })
     )
   })
 }
 
 module.exports = {
-  addResultatInModel,
-  disableResultatInModel,
-  updateResultatInModel,
-  getResultatByIdInModel,
-  getAllResultatInModel,
-  sousProgrammeSelectByInModel
+  addTemplateTacheInModel,
+  disableTemplateTacheInModel,
+  updateTemplateTacheInModel,
+  getTemplateTacheByIdInModel,
+  getAllTemplateTacheInModel,
+  templatetacheSelectByInModel
 }

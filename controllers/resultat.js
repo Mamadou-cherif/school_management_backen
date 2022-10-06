@@ -122,7 +122,7 @@ function getAllResultat(req, res, next) {
     Resultat.getAllResultatInModel()
         .then(resultat => res.status(200).json(resultat))
         .catch(error => res.status(400).json(error))
-    }
+}
 
 module.exports = {
     disableResultat,

@@ -2,8 +2,6 @@ const mysql = require("mysql2");
 const config = require("../configs/dbconfig")
 let connection = mysql.createConnection(config)
 
-
-
 function addTacheInModel(theReq) {
   return new Promise((resolve, reject) => {
 

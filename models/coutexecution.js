@@ -4,15 +4,16 @@ let connection = mysql.createConnection(config)
 
 
 
-function addResultatInModel(theReq) {
+function addCoutExecutionInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL resultats_insert(?,?,?,?,?)",
+    connection.query("CALL coutexecutions_insert(?,?,?,?,?,?)",
       [
-        theReq.sousProgrammeId,
-        theReq.numero,
-        theReq.libelle,
-        theReq.observations,
+        theReq.qtePrevisonnelleId,
+		theReq.montantRealise,
+		theReq.deviseId,
+		theReq.bailleurId,
+		theReq.observations,
         theReq.creationUserId
       ],
 
@@ -29,17 +30,17 @@ function addResultatInModel(theReq) {
   })
 }
 
-function sousProgrammeSelectByInModel(theReq) {
+function coutExecutionSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL resultats_selectBy(?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL coutexecutions_selectBy(?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
-        theReq.sousProgrammeId,
-        theReq.numero,
-        theReq.libelle,
+        theReq.qtePrevisonnelleId,
+        theReq.montantRealise,
+        theReq.deviseId,
+        theReq.bailleurId,
         theReq.observations,
-        theReq.estActif,
         theReq.creationDate,
         theReq.creationUserId,
         theReq.modifDate,
@@ -62,11 +63,32 @@ function sousProgrammeSelectByInModel(theReq) {
 }
 
 
-
-function getResultatByIdInModel(id) {
+function deleteCoutExecutionInModel(id) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL resultats_selectById(?)",
+    connection.query("CALL coutexecutions_delete(?)",
+      [
+        id
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+}
+function getCoutExecutionByIdInModel(id) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL coutexecutions_selectById(?)",
       [
         id
 
@@ -87,10 +109,10 @@ function getResultatByIdInModel(id) {
 }
 
 
-function disableResultatInModel(theReq) {
+function disableCoutExecutionInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL resultats_disable(?,?,?)",
+    connection.query("CALL coutexecutions_disable(?,?,?)",
       [
         theReq.id,
         theReq.modifUserId,
@@ -108,17 +130,17 @@ function disableResultatInModel(theReq) {
   })
 }
 
-
-function updateResultatInModel(theReq) {
+function updateCoutExecutionInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL resultats_update(?,?,?,?,?,?,?)",
+    connection.query("CALL coutexecutions_update(?,?,?,?,?,?,?,?)",
       [
         theReq.id,
-        theReq.sousProgrammeId,
-        theReq.numero,
-        theReq.libelle,
-        theReq.observations,
+        theReq.qtePrevisonnelleId,
+		theReq.montantRealise,
+		theReq.deviseId,
+		theReq.bailleurId,
+		theReq.observations,
         theReq.modifDate,
         theReq.modifUserId
       ],
@@ -136,10 +158,10 @@ function updateResultatInModel(theReq) {
   })
 }
 
-function getAllResultatInModel() {
+function getAllCoutExecutionInModel() {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL resultats_selectAll(?,?,?)",
+    connection.query("CALL coutexecutions_selectAll(?,?,?)",
       [
         1,
         null,
@@ -158,10 +180,11 @@ function getAllResultatInModel() {
 }
 
 module.exports = {
-  addResultatInModel,
-  disableResultatInModel,
-  updateResultatInModel,
-  getResultatByIdInModel,
-  getAllResultatInModel,
-  sousProgrammeSelectByInModel
+  addCoutExecutionInModel,
+  deleteCoutExecutionInModel,
+  disableCoutExecutionInModel,
+  updateCoutExecutionInModel,
+  getCoutExecutionByIdInModel,
+  getAllCoutExecutionInModel,
+  coutExecutionSelectByInModel
 }

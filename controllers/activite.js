@@ -79,7 +79,7 @@ function updateActivite(req,res, next){
                     const activiteObj={
                         id: req.body.id,
                         strategieId: req.body.strategieId,
-                        nature: req.body.nature,
+                        natureId: req.body.natureId,
                         statut: req.body.statut,
                         uniteCompteId: req.body.uniteCompteId,
                         cdmtNatDepenseId: req.body.cdmtNatDepenseId,
@@ -88,11 +88,10 @@ function updateActivite(req,res, next){
                         observations: req.body.observations,
                         modifDate: req.body.modifDate,
                         modifUserId: req.body.modifUserId,
-                }
-
-                      Activite.updateActiviteInModel(activiteObj)
-                          .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
-                          .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
+            }
+            Activite.updateActiviteInModel(activiteObj)
+                .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
+                .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
                 }
                 else
                    {
@@ -124,6 +123,12 @@ function getAsingleActivite(req, res, next) {
         .catch(error => res.status(400).json(error))
 }
 
+function getActiviteByResultatId(req, res, next) {
+    const resultatId= req.params.id
+    Activite.activites_getByParams(resultatId)
+        .then(activite => res.status(200).json(activite))
+        .catch(error => res.status(400).json(error))
+    }   
 
 function getAllActivite(req, res, next) {
     Activite.getAllActiviteInModel()
@@ -132,6 +137,7 @@ function getAllActivite(req, res, next) {
     }
 
 module.exports = {
+    getActiviteByResultatId,
     disableActivite,
     addActivite,
     updateActivite,

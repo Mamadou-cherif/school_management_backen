@@ -123,7 +123,9 @@ function updatePgprioritaire(req,res, next){
      Pgprioritaire.programmesprioritairesSelectByInModel(objPgprioritaire)
           .then(programmesprioritaire=> {
                 if((programmesprioritaire.length==0) || (programmesprioritaire[0].id == req.body.id)){
-                    
+                    if(req.body.newfile==false){
+                      documentUrl=req.body.copie
+                    }
                     const programmesprioritairesObj={
                         id: req.body.id,
                         prograGleId: req.body.prograGleId,

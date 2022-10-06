@@ -35,14 +35,23 @@ function getCountPrivilegeForActionOnglet(req,res, next){
        .catch(error=> res.status(400).json(error))
   }
 
+  function getCountPrivilegeForActionMenu(req,res, next){
+    
+    const objPrivilege={
+        userId:req.body.userId,
+        referenceMenu:req.body.referenceMenu,
+        modeAccesId:req.body.modeAccesId,
+    }
+Privilege.getCountPrivilegeForActionMenu(objPrivilege)
+.then(privileges=> res.status(200).json(privileges))
+.catch(error=> res.status(400).json(error))
+}
 //supression logique d'un utilisateur
 function disablePrivilege(req, res, next){
     Privilege.disablePrivilegeInModel(req,res)
 }
 
 function deletePrivilege(req, res,next){
-
-
     const objPrivilege={
         menuId:req.body.menuId,
         ongletId:req.body.ongletId,
@@ -79,5 +88,6 @@ module.exports={
     getAllPrivileges,
     deletePrivilege,
     checkIfPrivilegeExists,
+    getCountPrivilegeForActionMenu,
     getCountPrivilegeForActionOnglet
 }

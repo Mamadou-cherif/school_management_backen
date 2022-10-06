@@ -6,7 +6,7 @@ const qteprevisionnelleController= require("../controllers/qteprevisionnelle")
     router.put("/disableQtePrevisionnelle", qteprevisionnelleController.disableQtePrevisionnelle)
     router.put("/updateQtePrevisionnelle", qteprevisionnelleController.updateQtePrevisionnelle)
     router.get("/getOneQtePrevisionnelle/:id", qteprevisionnelleController.getAsingleQtePrevisionnelle)
-    router.post("/getAllQtePrevisionnelle", qteprevisionnelleController.getAllQtePrevisionnelle)
+    router.get("/getAllQtePrevisionnelle", qteprevisionnelleController.getAllQtePrevisionnelle)
     router.post("/qteprevisionnelleSelectBy", qteprevisionnelleController.qteprevisionnelleSelectBy)
 
 module.exports= router

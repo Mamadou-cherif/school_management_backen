@@ -86,12 +86,11 @@ function updateTache(req,res, next){
         libelle: req.body.libelle,
         estActif:1
     }
-   
      Tache.tacheSelectByInModel(objTache)
           .then(tache=> {
                 if((tache.length==0) || (tache[0].id == req.body.id)){
                     const objTache={
-                        code: req.body.activiteId,
+                        code: req.body.code,
                         estActif:1
                     }
                    
@@ -101,12 +100,12 @@ function updateTache(req,res, next){
                                          
                     const tacheObj={
                         id: req.body.id,
-                        activiteId: req.body.activiteId,
-                        numero: req.body.numero,
                         libelle: req.body.libelle,
+                        code: req.body.code,
+                        serviceResponsableId: req.body.serviceResponsableId,
                         duree: req.body.duree,
                         responsable: req.body.responsable,
-                        observations: req.body.observations, 
+                        intervalleRelance: req.body.intervalleRelance,
                         modifDate: req.body.modifDate,
                         modifUserId: req.body.modifUserId,
                 }

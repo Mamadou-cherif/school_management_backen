@@ -111,11 +111,31 @@ function disableActiviteInModel(theReq) {
   })
 }
 
+function activites_getByParams(resultatId) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL activites_getByResultatId(?)",
+      [
+        resultatId
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          reject(err)
+        }
+        else{
+        resolve(results[0])
+        }
+      })
+    )
+  })
+}
 
 function updateActiviteInModel(theReq) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL activites_update(?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL activites_update(?,?,?,?,?,?,?,?,?,?,?)",
       [
+        theReq.id,
         theReq.strategieId,
         theReq.numero,
         theReq.libelle,
@@ -167,6 +187,7 @@ function getAllActiviteInModel() {
 
 module.exports = {
   addActiviteInModel,
+  activites_getByParams,
   disableActiviteInModel,
   updateActiviteInModel,
   getActiviteByIdInModel,

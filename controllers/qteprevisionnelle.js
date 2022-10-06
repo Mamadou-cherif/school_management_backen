@@ -2,23 +2,41 @@ const QtePrevisionnelle = require("../models/qteprevisionnelle")
 
  
 function addQtePrevisionnelle(req, res,next){
-
-    const qteprevisionnelleObj={
+    const qteprevisonnelleObj={
         activiteId: req.body.activiteId,
-        papbId: req.body.papbId,
-        paabId: req.body.paabId,
-        qtePrevisionnelle: req.body.qtePrevisionnelle,
-        montantPrevisionnel: req.body.montantPrevisionnel,
-        deviseId: req.body.deviseId,
-        observations: req.body.observations,
-        creationUserId: req.body.creationUserId,
-        
+        papbId: req.body.papbId || null,
+        paabId: req.body.paabId || null,
+        estActif:1
     }
+    QtePrevisionnelle.qteprevisionnelleSelectByInModel(qteprevisonnelleObj)
+          .then(qteprevisionnelle=> {
+                if(qteprevisionnelle.length==0){
+                    const qteprevisionnelleObj={
+                        activiteId: req.body.activiteId,
+                        papbId: req.body.papbId,
+                        paabId: req.body.paabId,
+                        qtePrevisionnelle: req.body.qtePrevisionnelle,
+                        montantPrevisionnel: req.body.montantPrevisionnel,
+                        deviseId: req.body.deviseId,
+                        observations: req.body.observations,
+                        creationUserId: req.body.creationUserId,
+                        
+                    }
+                    
+                        QtePrevisionnelle.addQtePrevisionnelleInModel(qteprevisionnelleObj)
+                            .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
+                            .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
+                    
+                }
+                else
+                   {
+                     res.status(500).json({error: "duplicata du papb pour cette activité"})
+                   }
+          })
+          .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
     
-        QtePrevisionnelle.addQtePrevisionnelleInModel(qteprevisionnelleObj)
-            .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
-            .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
-}
+    
+  }
 
 
 
@@ -40,39 +58,50 @@ function qteprevisionnelleSelectBy(req, res, next){
         debut: req.body.debut || null,
         fin: req.body.fin || null
 }
+
 QtePrevisionnelle.qteprevisionnelleSelectByInModel(qteprevisionnelleObj)
     .then(qteprevisionnelle=> res.status(200).json(qteprevisionnelle))
     .catch(error=> res.status(400).json(error))
 
 }
-
-
-
-
-
-
-
  
 function updateQtePrevisionnelle(req,res, next){
-
-const qteprevisionnelleObj={
-        id: req.body.id,
+    const qteprevisonnelleObj={
         activiteId: req.body.activiteId,
-        papbId: req.body.papbId,
-        paabId: req.body.paabId,
-        qtePrevisionnelle: req.body.qtePrevisionnelle,
-        montantPrevisionnel: req.body.montantPrevisionnel,
-        deviseId: req.body.deviseId,
-        observations: req.body.observations,
-        modifDate: req.body.modifDate,
-        modifUserId: req.body.modifUserId,
+        papbId: req.body.papbId || null,
+        paabId: req.body.paabId || null,
+        estActif:1
     }
-    
-        QtePrevisionnelle.updateQtePrevisionnelleInModel(qteprevisionnelleObj)
-            .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
-            .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
-    
-    }
+    QtePrevisionnelle.qteprevisionnelleSelectByInModel(qteprevisonnelleObj)
+          .then(qteprevisionnelle=> {
+                if((qteprevisionnelle.length==0) || (qteprevisionnelle[0].id == req.body.id)){
+                    const qteprevisionnelleObj={
+                        id: req.body.id,
+                        activiteId: req.body.activiteId,
+                        papbId: req.body.papbId,
+                        paabId: req.body.paabId,
+                        qtePrevisionnelle: req.body.qtePrevisionnelle,
+                        montantPrevisionnel: req.body.montantPrevisionnel,
+                        deviseId: req.body.deviseId,
+                        observations: req.body.observations,
+                        modifDate: req.body.modifDate,
+                        modifUserId: req.body.modifUserId,
+                    }
+                    
+                        QtePrevisionnelle.updateQtePrevisionnelleInModel(qteprevisionnelleObj)
+                            .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
+                            .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
+                    
+                }
+                else
+                   {
+                     res.status(500).json({error: "duplicata du papb pour cette activité"})
+                   }
+          })
+          .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
+
+ 
+}
 
 //supression logique d'une qteprevisionnelle
 function disableQtePrevisionnelle(req, res, next) {

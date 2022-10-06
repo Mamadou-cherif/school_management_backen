@@ -4,6 +4,7 @@ const privilegeController= require("../controllers/privileges")
 
     router.post("/addPrivilege", privilegeController.addPrivilege)
     router.post("/getCountPrivilegeForActionOnglet", privilegeController.getCountPrivilegeForActionOnglet)
+    router.post("/getCountPrivilegeForActionMenu", privilegeController.getCountPrivilegeForActionMenu)
     router.put("/disablePrivilege", privilegeController.disablePrivilege)
     router.get("/getAllPrivileges", privilegeController.getAllPrivileges)
     router.post("/deletePrivilege", privilegeController.deletePrivilege)

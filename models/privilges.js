@@ -29,6 +29,27 @@ function getCountPrivilegeForActionOnglet(theReq) {
   })
 }
 
+function getCountPrivilegeForActionMenu(theReq) {
+  return new Promise((resolve, reject) => {
+
+
+    connection.query("CALL privileges_getCountPrivilegeForActionMenu(?,?,?)",
+      [
+        theReq.userId,
+        theReq.referenceMenu,
+        theReq.modeAccesId,
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
+}
+
 function checkIfPrivilegeExists(theReq) {
   return new Promise((resolve, reject) => {
 
@@ -155,6 +176,7 @@ module.exports = {
   addPrivilegeInModel,
   disablePrivilegeInModel,
   deletePrivilegeInModel,
-  getCountPrivilegeForActionOnglet
+  getCountPrivilegeForActionOnglet,
+  getCountPrivilegeForActionMenu
 
 }

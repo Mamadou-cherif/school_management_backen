@@ -10,12 +10,12 @@ function addQtePrevisionnelleInModel(theReq) {
     connection.query("CALL qteprevisionnelles_insert(?,?,?,?,?,?,?,?)",
       [
         theReq.activiteId,
-		theReq.papbId,
-		theReq.paabId,
-		theReq.qtePrevisionnelle,
-		theReq.montantPrevisionnel,
-		theReq.deviseId,
-		theReq.observations,
+        theReq.papbId,
+        theReq.paabId,
+        theReq.qtePrevisionnelle,
+        theReq.montantPrevisionnel,
+        theReq.deviseId,
+        theReq.observations,
         theReq.creationUserId
       ],
 
@@ -39,12 +39,12 @@ function qteprevisionnelleSelectByInModel(theReq) {
       [
         theReq.id,
         theReq.activiteId,
-		theReq.papbId,
-		theReq.paabId,
-		theReq.qtePrevisionnelle,
-		theReq.montantPrevisionnel,
-		theReq.deviseId,
-		theReq.observations,
+        theReq.papbId,
+        theReq.paabId,
+        theReq.qtePrevisionnelle,
+        theReq.montantPrevisionnel,
+        theReq.deviseId,
+        theReq.observations,
         theReq.estActif,
         theReq.creationDate,
         theReq.creationUserId,
@@ -139,15 +139,16 @@ function disableQtePrevisionnelleInModel(theReq) {
 function updateQtePrevisionnelleInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL qteprevisionnelles_update(?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL qteprevisionnelles_update(?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
+        theReq.activiteId,
         theReq.papbId,
-		theReq.paabId,
-		theReq.qtePrevisionnelle,
-		theReq.montantPrevisionnel,
-		theReq.deviseId,
-		theReq.observations,
+        theReq.paabId,
+        theReq.qtePrevisionnelle,
+        theReq.montantPrevisionnel,
+        theReq.deviseId,
+        theReq.observations,
         theReq.modifDate,
         theReq.modifUserId
       ],
