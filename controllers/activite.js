@@ -62,7 +62,20 @@ function activiteSelectBy(req, res, next){
         .catch(error=> res.status(400).json(error))
 
 }
- 
+    
+function selectNotAffectedPaabId(req, res, next){
+    const activiteObj={
+        papbId: req.body.papbId,
+        paabId: req.body.paabId
+    }
+
+
+    Activite.selectNotAffectedPaabIdInModel(activiteObj)
+        .then(activite=> res.status(200).json(activite))
+        .catch(error=> res.status(400).json(error))
+
+}
+
 function updateActivite(req,res, next){
         
     const objActivite={
@@ -138,6 +151,7 @@ function getAllActivite(req, res, next) {
 
 module.exports = {
     getActiviteByResultatId,
+    selectNotAffectedPaabId,
     disableActivite,
     addActivite,
     updateActivite,

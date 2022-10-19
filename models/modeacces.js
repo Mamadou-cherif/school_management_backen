@@ -7,8 +7,6 @@ const bcrypt = require("bcrypt");
 const res = require("express/lib/response");
 const { reject } = require("bcrypt/promises");
 
-
-
 function checkIfModeAccesExists(theReq) {
   return new Promise((resolve, reject) => {
 

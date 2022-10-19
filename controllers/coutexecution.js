@@ -4,6 +4,7 @@ const CoutExecution = require("../models/coutexecution")
 function addCoutExecution(req, res,next){
         const coutexecutionObj={
                 qtePrevisonnelleId: req.body.qtePrevisonnelleId,
+                qteRealisee: req.body.qteRealisee,
                 montantRealise: req.body.montantRealise,
                 deviseId: req.body.deviseId,
                 bailleurId: req.body.bailleurId,
@@ -13,16 +14,13 @@ function addCoutExecution(req, res,next){
             CoutExecution.addCoutExecutionInModel(coutexecutionObj)
                 .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
                 .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
-                    
-                  
 }
-
-
 
 function coutexecutionSelectBy(req, res, next){
     const coutexecutionObj={
         id: req.body.id || null,
         qtePrevisonnelleId: req.body.qtePrevisonnelleId|| null,
+        qteRealisee: req.body.qteRealisee|| null,
         montantRealise: req.body.montantRealise|| null,
         deviseId: req.body.deviseId|| null,
         bailleurId: req.body.bailleurId|| null,
@@ -32,8 +30,8 @@ function coutexecutionSelectBy(req, res, next){
         creationUserId: req.body.creationUserId || null,
         modifDate: req.body.modifDate || null,
         modifUserId: req.body.modifUserId || null,
-        debut: req.body.debut || null,
-        fin: req.body.fin || null
+        debutDonnees: req.body.debutDonnees || null,
+        finDonnees: req.body.finDonnees || null
 }
 
 
@@ -55,6 +53,7 @@ function updateCoutExecution(req,res, next){
             const coutexecutionObj={
                 id: req.body.id,
                 qtePrevisonnelleId: req.body.qtePrevisonnelleId,
+                qteRealisee: req.body.qteRealisee,
                 montantRealise: req.body.montantRealise,
                 deviseId: req.body.deviseId,
                 bailleurId: req.body.bailleurId,
@@ -62,7 +61,6 @@ function updateCoutExecution(req,res, next){
                 modifDate: req.body.modifDate,
                 modifUserId: req.body.modifUserId,
             }
-            
                 CoutExecution.updateCoutExecutionInModel(coutexecutionObj)
                     .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
                     .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));

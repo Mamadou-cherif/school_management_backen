@@ -81,8 +81,8 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use("/", bienvenueRoute)
 app.use("/api", checktokenexpire)
-app.use("/api", bienvenueRoute)
 app.use("/api", userRoute)
 app.use("/api", groupeRoute)
 app.use("/api", userGroupeRoute)

@@ -189,7 +189,71 @@ function getAllQtePrevisionnelleInModel() {
   })
 }
 
+function selectPapbInModel() {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL qteprevisionnelles_selectPapb()",
+      [
+
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          reject(err)
+        }
+        resolve(results[0])
+      })
+    )
+  })
+}
+
+function selectPaabByPapbIdInModel(theReq) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL qteprevisionnelles_selectPaabByPapbId(?)",
+      [
+        theReq.papbId
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+      })
+    )
+  })
+}
+
+function selectActiviteByPaabIdInModel(theReq) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL qteprevisionnelles_selectActiviteByPaabId(?)",
+      [
+        theReq.paabId
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+      })
+    )
+  })
+}
+
 module.exports = {
+  selectPapbInModel,
+  selectPaabByPapbIdInModel,
+  selectActiviteByPaabIdInModel,
   addQtePrevisionnelleInModel,
   deleteQtePrevisionnelleInModel,
   disableQtePrevisionnelleInModel,

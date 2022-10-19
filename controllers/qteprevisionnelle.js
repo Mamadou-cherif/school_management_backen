@@ -4,17 +4,17 @@ const QtePrevisionnelle = require("../models/qteprevisionnelle")
 function addQtePrevisionnelle(req, res,next){
     const qteprevisonnelleObj={
         activiteId: req.body.activiteId,
-        papbId: req.body.papbId || null,
-        paabId: req.body.paabId || null,
+        papbId: req.body.papbId,
+        paabId: req.body.paabId,
         estActif:1
-    }
+    } 
     QtePrevisionnelle.qteprevisionnelleSelectByInModel(qteprevisonnelleObj)
           .then(qteprevisionnelle=> {
                 if(qteprevisionnelle.length==0){
                     const qteprevisionnelleObj={
                         activiteId: req.body.activiteId,
-                        papbId: req.body.papbId,
-                        paabId: req.body.paabId,
+                        papbId: req.body.papbId || null,
+                        paabId: req.body.paabId || null,
                         qtePrevisionnelle: req.body.qtePrevisionnelle,
                         montantPrevisionnel: req.body.montantPrevisionnel,
                         deviseId: req.body.deviseId,
@@ -41,6 +41,7 @@ function addQtePrevisionnelle(req, res,next){
 
 
 function qteprevisionnelleSelectBy(req, res, next){
+    console.log(req.body)
     const qteprevisionnelleObj={
         id: req.body.id || null,
         activiteId: req.body.activiteId || null,
@@ -114,12 +115,43 @@ function disableQtePrevisionnelle(req, res, next) {
         .then(() => res.status(200).json({ succes: "la suppression a reussi" }))
         .catch(() => res.status(400).json({ error: "erreur de la procédure stocké d'ajout" }));
 }
+
+function selectPapb(req, res, next){
+    QtePrevisionnelle.selectPapbInModel()
+    .then(papb => res.status(200).json(papb))
+    .catch(() => res.status(400).json({ error: "erreur de la procédure stocké d'ajout" }));
+
+}
+
+function selectPaabByPapbId(req, res, next){
+    const qteprevisionnelleObj={
+        estActif:1,
+        papbId: req.body.papbId
+}
+    QtePrevisionnelle.selectPaabByPapbIdInModel(qteprevisionnelleObj)
+    .then(papb => res.status(200).json(papb))
+    .catch(() => res.status(400).json({ error: "erreur de la procédure stocké d'ajout" }));
+
+}
+
+function selectActiviteByPaabId(req, res, next){
+    const qteprevisionnelleObj={
+        estActif:1,
+        paabId: req.body.paabId
+}
+    QtePrevisionnelle.selectActiviteByPaabIdInModel(qteprevisionnelleObj)
+    .then(activite => res.status(200).json(activite))
+    .catch(() => res.status(400).json({ error: "erreur de la procédure stocké d'ajout" }));
+
+}
+
 function deleteQtePrevisionnelle(req, res, next) {
     const id = req.params.id
     QtePrevisionnelle.deleteQtePrevisionnelleInModel(id)
         .then(() => res.status(200).json({succes: "suppression bien réussie"}))
         .catch(error => res.status(400).json(error))
 }
+
 
 
 function getAsingleQtePrevisionnelle(req, res, next) {
@@ -138,6 +170,9 @@ function getAllQtePrevisionnelle(req, res, next) {
 
 module.exports = {
     disableQtePrevisionnelle,
+    selectPapb,
+    selectPaabByPapbId,
+    selectActiviteByPaabId,
     addQtePrevisionnelle,
     updateQtePrevisionnelle,
     getAsingleQtePrevisionnelle,

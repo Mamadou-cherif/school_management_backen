@@ -6,7 +6,7 @@ const port = process.env.PORT || 3000
 
 
 app.listen(port, () => {
-    console.log("le server est bien en ecoute au port: " + port)
+    console.log("le server est bien en ecoute  au http://localhost:" + port)
 })
 
 console.log("Starting...");

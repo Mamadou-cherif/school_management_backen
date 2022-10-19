@@ -7,7 +7,7 @@ const coutexecutionController= require("../controllers/coutexecution")
     router.delete("/deleteCoutExecution/:id", coutexecutionController.deleteCoutExecution)
     router.put("/updateCoutExecution", coutexecutionController.updateCoutExecution)
     router.get("/getOneCoutExecution/:id", coutexecutionController.getAsingleCoutExecution)
-    router.post("/getAllCoutExecution", coutexecutionController.getAllCoutExecution)
+    router.get("/getAllCoutExecution", coutexecutionController.getAllCoutExecution)
     router.post("/coutexecutionSelectBy", coutexecutionController.coutexecutionSelectBy)
 
 module.exports= router

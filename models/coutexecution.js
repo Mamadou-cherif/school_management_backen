@@ -7,13 +7,14 @@ let connection = mysql.createConnection(config)
 function addCoutExecutionInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL coutexecutions_insert(?,?,?,?,?,?)",
+    connection.query("CALL coutexecutions_insert(?,?,?,?,?,?,?)",
       [
         theReq.qtePrevisonnelleId,
-		theReq.montantRealise,
-		theReq.deviseId,
-		theReq.bailleurId,
-		theReq.observations,
+        theReq.qteRealisee,
+        theReq.montantRealise,
+        theReq.deviseId,
+        theReq.bailleurId,
+        theReq.observations,
         theReq.creationUserId
       ],
 
@@ -33,14 +34,16 @@ function addCoutExecutionInModel(theReq) {
 function coutExecutionSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL coutexecutions_selectBy(?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL coutexecutions_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.qtePrevisonnelleId,
-        theReq.montantRealise,
-        theReq.deviseId,
-        theReq.bailleurId,
-        theReq.observations,
+        theReq.qteRealisee,
+		    theReq.montantRealise,
+		    theReq.deviseId,
+	    	theReq.bailleurId,
+	    	theReq.observations,
+	    	theReq.estActif,
         theReq.creationDate,
         theReq.creationUserId,
         theReq.modifDate,
@@ -133,14 +136,15 @@ function disableCoutExecutionInModel(theReq) {
 function updateCoutExecutionInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL coutexecutions_update(?,?,?,?,?,?,?,?)",
+    connection.query("CALL coutexecutions_update(?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.qtePrevisonnelleId,
-		theReq.montantRealise,
-		theReq.deviseId,
-		theReq.bailleurId,
-		theReq.observations,
+        theReq.qteRealisee,
+        theReq.montantRealise,
+        theReq.deviseId,
+        theReq.bailleurId,
+        theReq.observations,
         theReq.modifDate,
         theReq.modifUserId
       ],
@@ -171,9 +175,12 @@ function getAllCoutExecutionInModel() {
 
       ((err, results, fields) => {
         if (err) {
+          console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+          resolve(results[0])
+        }
       })
     )
   })

@@ -9,5 +9,6 @@ const activiteController= require("../controllers/activite")
     router.get("/getActiviteByResultatId/:id", activiteController.getActiviteByResultatId)
     router.post("/getAllActivite", activiteController.getAllActivite)
     router.post("/activiteSelectBy", activiteController.activiteSelectBy)
+    router.post("/selectNotAffectedPaabId", activiteController.selectNotAffectedPaabId)
 
 module.exports= router
