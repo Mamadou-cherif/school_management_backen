@@ -67,7 +67,6 @@ function getTacheByIdInModel(id) {
     connection.query("CALL taches_selectById(?)",
       [
         id
-
       ],
 
       ((err, results, fields) => {

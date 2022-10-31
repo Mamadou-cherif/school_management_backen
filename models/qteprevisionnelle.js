@@ -208,14 +208,32 @@ function selectPapbInModel() {
   })
 }
 
-function selectPaabByPapbIdInModel(theReq) {
+function selectPaabByPapbIdAndActiviteId(theReq) {
   return new Promise((resolve, reject) => {
 
+    connection.query("CALL qteprevisionnelles_selectPaabByPapbIdAndActiviteId(?,?)",
+      [
+        theReq.papbId,
+        theReq.activiteId,
+      ],
+      ((err, results, fields) => {
+        if (err) {
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+      })
+    )
+  })
+}
+
+function selectPaabByPapbIdInModel(theReq) {
+  return new Promise((resolve, reject) => {
     connection.query("CALL qteprevisionnelles_selectPaabByPapbId(?)",
       [
         theReq.papbId
       ],
-
       ((err, results, fields) => {
         if (err) {
           console.log(err)
@@ -253,6 +271,7 @@ function selectActiviteByPaabIdInModel(theReq) {
 module.exports = {
   selectPapbInModel,
   selectPaabByPapbIdInModel,
+  selectPaabByPapbIdAndActiviteId,
   selectActiviteByPaabIdInModel,
   addQtePrevisionnelleInModel,
   deleteQtePrevisionnelleInModel,

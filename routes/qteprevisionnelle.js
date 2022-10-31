@@ -3,6 +3,7 @@ const router= express.Router()
 const qteprevisionnelleController= require("../controllers/qteprevisionnelle")
 
     router.post("/addQtePrevisionnelle", qteprevisionnelleController.addQtePrevisionnelle)
+    router.post("/selectPaabByPapbIdAndActiviteId", qteprevisionnelleController.selectPaabByPapbIdAndActiviteId)
     router.put("/disableQtePrevisionnelle", qteprevisionnelleController.disableQtePrevisionnelle)
     router.delete("/deleteQtePrevisionnelle/:id", qteprevisionnelleController.deleteQtePrevisionnelle)
     router.put("/updateQtePrevisionnelle", qteprevisionnelleController.updateQtePrevisionnelle)

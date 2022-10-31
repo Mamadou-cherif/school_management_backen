@@ -35,7 +35,7 @@ function userPasswordSelectByInModel(theReq){
   
   }
 
-  function userPasswordInsertInModel(theReq, theRes){
+  function userPasswordInsertInModel(theReq){
     return new Promise((reject, resolve)=>{
       connection.query("CALL userpasswords_insert(?,?,?)",
        [  
@@ -49,7 +49,6 @@ function userPasswordSelectByInModel(theReq){
             reject(err)
           }
           else{
-            
             resolve(results[0])
           }
         }) 

@@ -126,7 +126,7 @@ function disableTemplateInModel(theReq) {
 function updateTemplateInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL templates_update(?,?,?,?,?)",
+    connection.query("CALL templates_update(?,?,?,?)",
       [
         theReq.id,
         theReq.libelle,

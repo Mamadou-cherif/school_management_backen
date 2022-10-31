@@ -4,18 +4,13 @@ let connection = mysql.createConnection(config)
 
 
 
-function addCoutExecutionInModel(theReq) {
+function addNatureTemplateInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL coutexecutions_insert(?,?,?,?,?,?,?,?)",
+    connection.query("CALL naturetemplates_insert(?,?,?)",
       [
-        theReq.qtePrevisonnelleId,
-        theReq.qteRealisee,
-        theReq.montantRealise,
-        theReq.dateOperation,
-        theReq.deviseId,
-        theReq.bailleurId,
-        theReq.observations,
+        theReq.templateId,
+		theReq.natureId,
         theReq.creationUserId
       ],
 
@@ -32,20 +27,15 @@ function addCoutExecutionInModel(theReq) {
   })
 }
 
-function coutExecutionSelectByInModel(theReq) {
+function naturetemplateSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL coutexecutions_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL naturetemplates_selectBy(?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
-        theReq.qtePrevisonnelleId,
-        theReq.qteRealisee,
-		    theReq.montantRealise,
-        theReq.dateOperation,
-		    theReq.deviseId,
-	    	theReq.bailleurId,
-	    	theReq.observations,
-	    	theReq.estActif,
+        theReq.templateId,
+		theReq.natureId,
+        theReq.estActif,
         theReq.creationDate,
         theReq.creationUserId,
         theReq.modifDate,
@@ -68,10 +58,10 @@ function coutExecutionSelectByInModel(theReq) {
 }
 
 
-function deleteCoutExecutionInModel(id) {
+function deleteNatureTemplateInModel(id) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL coutexecutions_delete(?)",
+    connection.query("CALL naturetemplates_delete(?)",
       [
         id
 
@@ -90,10 +80,10 @@ function deleteCoutExecutionInModel(id) {
     )
   })
 }
-function getCoutExecutionByIdInModel(id) {
+function getNatureTemplateByIdInModel(id) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL coutexecutions_selectById(?)",
+    connection.query("CALL naturetemplates_selectById(?)",
       [
         id
 
@@ -114,10 +104,10 @@ function getCoutExecutionByIdInModel(id) {
 }
 
 
-function disableCoutExecutionInModel(theReq) {
+function disableNatureTemplateInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL coutexecutions_disable(?,?,?)",
+    connection.query("CALL naturetemplates_disable(?,?,?)",
       [
         theReq.id,
         theReq.modifUserId,
@@ -135,19 +125,14 @@ function disableCoutExecutionInModel(theReq) {
   })
 }
 
-function updateCoutExecutionInModel(theReq) {
+function updateNatureTemplateInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL coutexecutions_update(?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL naturetemplates_update(?,?,?,?,?)",
       [
         theReq.id,
-        theReq.qtePrevisonnelleId,
-        theReq.qteRealisee,
-        theReq.montantRealise,
-        theReq.dateOperation,
-        theReq.deviseId,
-        theReq.bailleurId,
-        theReq.observations,
+        theReq.templateId,
+		theReq.natureId,
         theReq.modifDate,
         theReq.modifUserId
       ],
@@ -165,10 +150,10 @@ function updateCoutExecutionInModel(theReq) {
   })
 }
 
-function getAllCoutExecutionInModel() {
+function getAllNatureTemplateInModel() {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL coutexecutions_selectAll(?,?,?)",
+    connection.query("CALL naturetemplates_selectAll(?,?,?)",
       [
         1,
         null,
@@ -178,23 +163,20 @@ function getAllCoutExecutionInModel() {
 
       ((err, results, fields) => {
         if (err) {
-          console.log(err)
           reject(err)
         }
-        else{
-          resolve(results[0])
-        }
+        resolve(results[0])
       })
     )
   })
 }
 
 module.exports = {
-  addCoutExecutionInModel,
-  deleteCoutExecutionInModel,
-  disableCoutExecutionInModel,
-  updateCoutExecutionInModel,
-  getCoutExecutionByIdInModel,
-  getAllCoutExecutionInModel,
-  coutExecutionSelectByInModel
+  addNatureTemplateInModel,
+  deleteNatureTemplateInModel,
+  disableNatureTemplateInModel,
+  updateNatureTemplateInModel,
+  getNatureTemplateByIdInModel,
+  getAllNatureTemplateInModel,
+  naturetemplateSelectByInModel
 }

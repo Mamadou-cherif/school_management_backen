@@ -68,10 +68,10 @@ function updateTemplate(req,res, next){
      Template.templateSelectByInModel(objTemplate)
           .then(template=> {
                 if((template.length==0) || (template[0].id == req.body.id)){
-                    const objTemplate={
-                        code: req.body.code,
-                        estActif:1
-                    }
+                    // const objTemplate={
+                    //     code: req.body.code,
+                    //     estActif:1
+                    // }
                    
                     const templateObj={
                         id: req.body.id,

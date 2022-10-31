@@ -3,15 +3,16 @@ const Tache = require("../models/tache")
 function addTache(req, res,next){
     const objTache={
         code: req.body.code,
+        libelle: req.body.libelle,
         estActif:1
     }
     Tache.tacheSelectByInModel(objTache)
 .then(tache=> {
-      if((tache.length==0)){
-          const objTache={
-              libelle: req.body.libelle,
-              estActif:1
-          }
+    //   if((tache.length==0)){
+        //   const objTache={
+        //       libelle: req.body.libelle,
+        //       estActif:1
+        //   }
          
            Tache.tacheSelectByInModel(objTache)
                 .then(tache=> {
@@ -26,7 +27,7 @@ function addTache(req, res,next){
                             creationUserId: req.body.creationUserId,
                         }
                           Tache.addTacheInModel(tacheObj)
-                              .then(()=> res.status(201).json({succes: "Ajout effectué avec succès"}))
+                              .then(tache=> res.status(201).json(tache))
                               .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
                         
                       }
@@ -37,11 +38,11 @@ function addTache(req, res,next){
                 })
                 .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
             
-      }
-      else
-         {
-           res.status(500).json({error: "Ce code existe déjà pour cette tâche"})
-         }
+    //   }
+    //   else
+    //      {
+    //        res.status(500).json({error: "Ce code existe déjà pour cette tâche"})
+    //      }
 })
 .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
 
@@ -73,17 +74,12 @@ function tacheSelectBy(req, res, next){
         .catch(error=> res.status(400).json(error))
 }
 
-
-
-
-
-
-
  
 function updateTache(req,res, next){
         
     const objTache={
         libelle: req.body.libelle,
+        code: req.body.code,
         estActif:1
     }
      Tache.tacheSelectByInModel(objTache)
@@ -94,9 +90,9 @@ function updateTache(req,res, next){
                         estActif:1
                     }
                    
-                     Tache.tacheSelectByInModel(objTache)
-                          .then(tache=> {
-                                if((tache.length==0) || (tache[0].id == req.body.id)){
+                    //  Tache.tacheSelectByInModel(objTache)
+                    //       .then(tache=> {
+                    //             if((tache.length==0) || (tache[0].id == req.body.id)){
                                          
                     const tacheObj={
                         id: req.body.id,
@@ -114,13 +110,13 @@ function updateTache(req,res, next){
                           .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
                           .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
                
-                                }
-                                else
-                                   {
-                                     res.status(500).json({error: "Ce code existe déjà pour cette tache"})
-                                   }
-                          })
-                          .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
+                        //         // }
+                        //         // else
+                        //         //    {
+                        //         //      res.status(500).json({error: "Ce code existe déjà pour cette tache"})
+                        //         //    }
+                        //   })
+                        //   .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
                       
                 }
                 else

@@ -15,6 +15,7 @@ const crypto = require('crypto');
 const multersd = require('multer')
 const path = require('path');
 const fs = require("fs")
+const { redirect } = require("express/lib/response")
 
 
 
@@ -98,7 +99,7 @@ function addUser(req, res, next) {
                             type: "Auto",
                             creationUserId: req.body.creationUserId
                         }
-                        userPassword.userPasswordInsertInModel(userIstPwt, res)
+                        userPassword.userPasswordInsertInModel(userIstPwt)
                             .then(() => { })
                             .catch(() => { })
                         res.status(201).json({ succes: "La creation a reussi" })
@@ -130,15 +131,11 @@ function login(req, res, next) {
     }
     User.getNbAuthenticateInModel(login)
         .then(data => {
-
+            
             if (data[0].nombre > 0) {
                 User.getAuthenticateInModel(login)
                     .then(user => {
-
-
                         if (user) {
-
-
                             initUserConnexion.userConnexion.debutDonnees = 0
                             initUserConnexion.userConnexion.finDonnees = 1
                             initUserConnexion.userConnexion.estActif = 1
@@ -149,9 +146,6 @@ function login(req, res, next) {
                                         bool = true
                                     } else {
                                         if (data[0].fin == null) {
-
-
-
                                             bool = true
                                         }
                                         else {
@@ -166,11 +160,12 @@ function login(req, res, next) {
 
                                         userPassword.userPasswordSelectByInModel(initUserPassword.userPassword)
                                             .then(userpassword => {
+                                                console.log(userpassword)
                                                 if (userpassword[0].type == "Auto") {
-                                                    return res.status(200).json({ customisePassword: true })
+                                                     return res.status(200).json({ customisePassword: true,user, })
                                                 }
                                                 else {
-                                                    (user)
+                                                    
                                                     const userconnect = {
                                                         userId: user[0].id,
                                                         creationUserId: user[0].creationUserId,
@@ -279,20 +274,20 @@ function updatePassword(req, res, next) {
         newMotDePasse: md5(req.body.newMotDePasse),
         modifUserId: req.body.modifUserId,
     }
+    User.userUpdatePasswordInModel(userUpdPwd)
+        .then(() =>  { 
+            const userIstPwt = {
+                userId: req.body.id,
+                type: "Perso",
+                creationUserId: req.body.id
+            }
+            userPassword.userPasswordInsertInModel(userIstPwt)
+                .then(() => res.status(201).json({succes: "changement du mot de passe reussi"}))
+                .catch(error => res.status(400).json(error))
+        })
+        .catch(error => res.status(400).json(error))
 
-    const userIstPwt = {
-        userId: req.body.id,
-        type: "Perso",
-        creationUserId: req.body.id
-    }
-    User.userUpdatePasswordInModel(userUpdPwd, res)
-        .then(() => { })
-        .catch(error => res.status(400).json({ error }))
 
-
-    userPassword.userPasswordInsertInModel(userIstPwt, res)
-        .then(() => { })
-        .catch(() => { })
 
 }
 

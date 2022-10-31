@@ -142,14 +142,24 @@ function selectActiviteByPaabId(req, res, next){
     QtePrevisionnelle.selectActiviteByPaabIdInModel(qteprevisionnelleObj)
     .then(activite => res.status(200).json(activite))
     .catch(() => res.status(400).json({ error: "erreur de la procédure stocké d'ajout" }));
+}
 
+function selectPaabByPapbIdAndActiviteId(req, res, next){
+     const qteprevisionnelleObj={
+         activiteId: req.body.activiteId,
+         papbId: req.body.papbId,
+         estActif:1,
+     }
+     QtePrevisionnelle.selectPaabByPapbIdAndActiviteId(qteprevisionnelleObj)
+        .then(activite => res.status(200).json(activite))
+        .catch(() => res.status(400).json({ error: "erreur de la procédure stocké d'ajout"}));
 }
 
 function deleteQtePrevisionnelle(req, res, next) {
     const id = req.params.id
     QtePrevisionnelle.deleteQtePrevisionnelleInModel(id)
         .then(() => res.status(200).json({succes: "suppression bien réussie"}))
-        .catch(error => res.status(400).json(error))
+        .catch(() => res.status(400).json({error: "cet élément est lié à d'autres élements"}))
 }
 
 
@@ -170,6 +180,7 @@ function getAllQtePrevisionnelle(req, res, next) {
 
 module.exports = {
     disableQtePrevisionnelle,
+    selectPaabByPapbIdAndActiviteId,
     selectPapb,
     selectPaabByPapbId,
     selectActiviteByPaabId,

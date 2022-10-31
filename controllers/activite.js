@@ -69,8 +69,20 @@ function selectNotAffectedPaabId(req, res, next){
         paabId: req.body.paabId
     }
 
-
     Activite.selectNotAffectedPaabIdInModel(activiteObj)
+        .then(activite=> res.status(200).json(activite))
+        .catch(error=> res.status(400).json(error))
+
+}
+
+function selectNotAffectedByPapbIdAndStrategieId(req, res, next){
+    const activiteObj={
+        strategieId: req.body.strategieId,
+        papbId: req.body.papbId
+    }
+
+
+    Activite.selectNotAffectedByPapbIdAndStrategieIdInModel(activiteObj)
         .then(activite=> res.status(200).json(activite))
         .catch(error=> res.status(400).json(error))
 
@@ -150,6 +162,7 @@ function getAllActivite(req, res, next) {
     }
 
 module.exports = {
+    selectNotAffectedByPapbIdAndStrategieId,
     getActiviteByResultatId,
     selectNotAffectedPaabId,
     disableActivite,

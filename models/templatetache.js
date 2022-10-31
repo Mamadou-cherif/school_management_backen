@@ -106,12 +106,12 @@ function disableTemplateTacheInModel(theReq) {
 function updateTemplateTacheInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL templatetaches_update(?,?,?,?,?,?,?,?)",
+    connection.query("CALL templatetaches_update(?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.templateId,
-		theReq.tacheId,
-		theReq.ordre,
+        theReq.tacheId,
+        theReq.ordre,
         theReq.modifDate,
         theReq.modifUserId
       ],

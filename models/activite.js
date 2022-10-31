@@ -113,6 +113,54 @@ function selectNotAffectedPaabIdInModel(theReq) {
   })
 }
 
+function selectNotAffectedPaabIdInModel(theReq) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL  activites_selectNotAffectedPaabId(?,?)",
+      [
+        theReq.papbId,
+        theReq.paabId
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+}
+
+function selectNotAffectedByPapbIdAndStrategieIdInModel(theReq) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL activites_selectNotAffectedByPapbIdAndStrategieId(?,?)",
+      [
+        theReq.strategieId,
+        theReq.papbId
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+}
+
 function disableActiviteInModel(theReq) {
   return new Promise((resolve, reject) => {
 
@@ -215,6 +263,7 @@ function getAllActiviteInModel() {
 module.exports = {
   addActiviteInModel,
   selectNotAffectedPaabIdInModel,
+  selectNotAffectedByPapbIdAndStrategieIdInModel,
   activites_getByParams,
   disableActiviteInModel,
   updateActiviteInModel,

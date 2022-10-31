@@ -2,20 +2,37 @@ const ActiviteTache = require("../models/activitetache")
 
  
 function addActiviteTache(req, res,next){
-     
     const activitetacheObj={
         activiteId: req.body.activiteId,
         tacheId: req.body.tacheId,
-        niveauExecution: req.body.niveauExecution,
-        tauxExecution: req.body.tauxExecution,
-        problemesRencontrees: req.body.problemesRencontrees,
-        solutions: req.body.solutions, 
-        creationUserId: req.body.creationUserId,
-}
-        ActiviteTache.addActiviteTacheInModel(activitetacheObj)
-            .then(()=> res.status(201).json({succes: "Ajout effectué avec succès"}))
-            .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
-
+        estActif: 1
+    }
+     
+    ActiviteTache.activitetacheSelectByInModel(activitetacheObj)
+        .then(activitetache=>{
+            
+            if(activitetache.length==0){
+                const activitetacheObj={
+                    activiteId: req.body.activiteId,
+                    tacheId: req.body.tacheId,
+                    niveauExecution: req.body.niveauExecution,
+                    tauxExecution: req.body.tauxExecution,
+                    responsableId: req.body.responsableId,
+                    problemesRencontrees: req.body.problemesRencontrees,
+                    solutions: req.body.solutions, 
+                    creationUserId: req.body.creationUserId,
+            }
+                    ActiviteTache.addActiviteTacheInModel(activitetacheObj)
+                        .then(()=> res.status(201).json({succes: "Ajout effectué avec succès"}))
+                        .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
+            
+            }
+            else{
+                return res.status(500).json({error: "Dupplicata de cette tache sur cette activité"})
+            }
+        })
+        .catch(()=> res.status(400).json({error: "erreur de la procedure selectBy"}))
+   
 }
 
 
@@ -27,6 +44,7 @@ function activitetacheSelectBy(req, res, next){
         tacheId: req.body.tacheId || null,
         niveauExecution: req.body.niveauExecution || null,
         tauxExecution: req.body.tauxExecution || null,
+        responsableId: req.body.responsableId || null,
         problemesRencontrees: req.body.problemesRencontrees,
         solutions: req.body.solutions || null, 
         estActif: 1,
@@ -52,20 +70,37 @@ function activitetacheSelectBy(req, res, next){
  
 function updateActiviteTache(req,res, next){
     const activitetacheObj={
-        id: req.body.id,
         activiteId: req.body.activiteId,
         tacheId: req.body.tacheId,
-        niveauExecution: req.body.niveauExecution,
-        tauxExecution: req.body.tauxExecution,
-        problemesRencontrees: req.body.problemesRencontrees,
-        solutions: req.body.solutions, 
-        modifDate: req.body.modifDate,
-        modifUserId: req.body.modifUserId,
-}
-ActiviteTache.updateActiviteTacheInModel(activitetacheObj)
-    .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
-    .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
-
+        estActif: 1
+    }
+     
+    ActiviteTache.activitetacheSelectByInModel(activitetacheObj)
+        .then(activitetache=>{
+            if((activitetache.length==0) || (activitetache[0].id == req.body.id)){
+                const activitetacheObj={
+                    id: req.body.id,
+                    activiteId: req.body.activiteId,
+                    tacheId: req.body.tacheId,
+                    niveauExecution: req.body.niveauExecution,
+                    tauxExecution: req.body.tauxExecution,
+                    responsableId: req.body.responsableId,
+                    problemesRencontrees: req.body.problemesRencontrees,
+                    solutions: req.body.solutions, 
+                    modifDate: req.body.modifDate,
+                    modifUserId: req.body.modifUserId,
+            }
+            ActiviteTache.updateActiviteTacheInModel(activitetacheObj)
+                .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
+                .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
+            
+            }
+            else{
+                return res.status(500).json({error: "Dupplicata de cette tache sur cette activité"})
+            }
+        })
+        .catch(()=> res.status(400).json({error: "erreur de la procedure selectBy"}))
+    
 }
 
 //supression logique d'un activitetache

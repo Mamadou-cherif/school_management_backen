@@ -288,23 +288,22 @@ function UpdateUserConnexionInstance(theReq) {
   })
 }
 
-function userUpdatePasswordInModel(theReq, theRes) {
+function userUpdatePasswordInModel(theReq) {
+  console.log(theReq)
   return new Promise((reject, resolve) => {
     connection.query("CALL users_updatePassword(?,?,?)",
       [
         theReq.id,
         theReq.newMotDePasse,
         theReq.modifUserId
-
       ],
       (err, results, fields) => {
         if (err) {
-
-          theRes.status(400).json({ error: "mise à jour echec" })
+          console.log(err)
+          reject(err)
         }
         else {
-
-          theRes.status(200).json({ succes: "mise à jour faite avec succes" })
+          resolve(results[0])
         }
       })
   })
