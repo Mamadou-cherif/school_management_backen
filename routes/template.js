@@ -3,6 +3,7 @@ const router= express.Router()
 const templateController= require("../controllers/template")
 
     router.post("/addTemplate", templateController.addTemplate)
+    router.post("/selectTemplateNotAffectedTache", templateController.selectTemplateNotAffectedTache)
     router.put("/disableTemplate", templateController.disableTemplate)
     router.delete("/deleteTemplate/:id", templateController.deleteTemplate)
     router.put("/updateTemplate", templateController.updateTemplate)

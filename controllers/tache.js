@@ -2,20 +2,12 @@ const Tache = require("../models/tache")
  
 function addTache(req, res,next){
     const objTache={
-        code: req.body.code,
         libelle: req.body.libelle,
         estActif:1
     }
     Tache.tacheSelectByInModel(objTache)
-.then(tache=> {
-    //   if((tache.length==0)){
-        //   const objTache={
-        //       libelle: req.body.libelle,
-        //       estActif:1
-        //   }
-         
-           Tache.tacheSelectByInModel(objTache)
-                .then(tache=> {
+    .then(tache=> {
+   
                       if((tache.length==0)){
                         const tacheObj={
                             libelle: req.body.libelle,
@@ -33,16 +25,9 @@ function addTache(req, res,next){
                       }
                       else
                          {
-                           res.status(500).json({error: "Ce libellé existe déjà pour cette tache"})
+                           res.status(500).json({error: "Cette tâche existe déjà"})
                          }
-                })
-                .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
-            
-    //   }
-    //   else
-    //      {
-    //        res.status(500).json({error: "Ce code existe déjà pour cette tâche"})
-    //      }
+              
 })
 .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
 
@@ -79,7 +64,6 @@ function updateTache(req,res, next){
         
     const objTache={
         libelle: req.body.libelle,
-        code: req.body.code,
         estActif:1
     }
      Tache.tacheSelectByInModel(objTache)
@@ -89,11 +73,6 @@ function updateTache(req,res, next){
                         code: req.body.code,
                         estActif:1
                     }
-                   
-                    //  Tache.tacheSelectByInModel(objTache)
-                    //       .then(tache=> {
-                    //             if((tache.length==0) || (tache[0].id == req.body.id)){
-                                         
                     const tacheObj={
                         id: req.body.id,
                         libelle: req.body.libelle,
@@ -110,13 +89,6 @@ function updateTache(req,res, next){
                           .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
                           .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
                
-                        //         // }
-                        //         // else
-                        //         //    {
-                        //         //      res.status(500).json({error: "Ce code existe déjà pour cette tache"})
-                        //         //    }
-                        //   })
-                        //   .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
                       
                 }
                 else
@@ -149,6 +121,24 @@ function getAsingleTache(req, res, next) {
         .catch(error => res.status(400).json(error))
 }
 
+function selectTacheNotAffectedTemplate(req, res, next) {
+    const tacheObj={
+        templateId: req.body.templateId
+    }
+    Tache.selectTacheNotAffectedTemplateInModel(tacheObj)
+        .then(tache => res.status(200).json(tache))
+        .catch(error => res.status(400).json(error))
+    }
+
+    function selectTacheNotAffectedActivite(req, res, next) {
+        const tacheObj={
+            activiteId: req.body.activiteId
+        }
+        Tache.selectTacheNotAffectedActiviteInModel(tacheObj)
+            .then(tache => res.status(200).json(tache))
+            .catch(error => res.status(400).json(error))
+        }
+    
 
 function getAllTache(req, res, next) {
     Tache.getAllTacheInModel()
@@ -162,5 +152,7 @@ module.exports = {
     updateTache,
     getAsingleTache,
     getAllTache,
-    tacheSelectBy
+    tacheSelectBy,
+    selectTacheNotAffectedTemplate,
+    selectTacheNotAffectedActivite
 }

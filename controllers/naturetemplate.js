@@ -3,8 +3,8 @@ const NatureTemplate = require("../models/naturetemplate")
  
 function addNatureTemplate(req, res,next){
     const objNatureTemplate={
+        // templateId: req.body.templateId,
         natureId: req.body.natureId,
-        templateId: req.body.templateId,
         estActif:1
     }
     
@@ -24,14 +24,12 @@ function addNatureTemplate(req, res,next){
                 }
                 else
                    {
-                     res.status(500).json({error: "Cette nature existe déjà pour ce template"})
+                     res.status(500).json({error: "Cette nature a déjà été choisi pour un template"})
                    }
           })
           .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
       
 }
-
-
 
 function naturetemplateSelectBy(req, res, next){
     const naturetemplateObj={
@@ -57,11 +55,10 @@ function naturetemplateSelectBy(req, res, next){
 function updateNatureTemplate(req,res, next){
         
     const objNatureTemplate={
-        templateId: req.body.templateId,
+        // templateId: req.body.templateId,
         natureId: req.body.natureId,
         estActif:1
     }
-   
      NatureTemplate.naturetemplateSelectByInModel(objNatureTemplate)
           .then(naturetemplate=> {
                 if((naturetemplate.length==0) || (naturetemplate[0].id == req.body.id)){
@@ -77,12 +74,10 @@ function updateNatureTemplate(req,res, next){
                       NatureTemplate.updateNatureTemplateInModel(naturetemplateObj)
                           .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
                           .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
-                    
-                    
                 }
                 else
                    {
-                     res.status(500).json({error: "Cette nature existe déjà pour ce template"})
+                     res.status(500).json({error: "Cette nature a été déjà choisi pour un template"})
                    }
           })
           .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))

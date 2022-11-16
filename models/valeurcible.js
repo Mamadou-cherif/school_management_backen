@@ -1,12 +1,6 @@
 const mysql = require("mysql2");
 const config = require("../configs/dbconfig")
 let connection = mysql.createConnection(config)
-const express = require("express")
-const app = express();
-const bcrypt = require("bcrypt");
-const res = require("express/lib/response");
-const { reject } = require("bcrypt/promises");
-
 
 function addValeurCibleInModel(data) {
   return new Promise((resolve, reject) => {
@@ -215,14 +209,15 @@ function selectAllValeurInModel(theReq) {
       connection.query("CALL valeurcibles_selectById(?)",
         [
           id
-  
         ],
   
         ((err, results, fields) => {
           if (err) {
             reject(err)
           }
-          resolve(results[0])
+          else{
+            resolve(results[0])
+          }
         })
       )
     })

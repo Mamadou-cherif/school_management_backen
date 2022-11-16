@@ -1,38 +1,49 @@
 const mysql = require("mysql2");
 const config = require("../configs/dbconfig")
 let connection = mysql.createConnection(config)
+const express = require("express")
+const app = express();
+const bcrypt = require("bcrypt");
 
 
-
-function addTemplateInModel(theReq) {
+function addUserServiceInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL templates_insert(?,?)",
+    connection.query("CALL userservices_insert(?,?,?,?,?)",
       [
-        theReq.libelle,
+        theReq.userId,
+        theReq.serviceId,
+        theReq.debut,
+        theReq.fin,
         theReq.creationUserId
+
+
       ],
 
       ((err, results, fields) => {
         if (err) {
           console.log(err)
           reject(err)
+        } else {
+          resolve(results[0])
         }
-        else{
-        resolve(results[0])
-        }
+
       })
     )
   })
 }
 
-function templateSelectByInModel(theReq) {
+function UserServiceSelectByInModel(theReq) {
+  console.log(theReq)
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL templates_selectBy(?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL userservices_selectBy(?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
-        theReq.libelle,
+        theReq.userId,
+        theReq.serviceId,
+        theReq.debut,
+        theReq.fin,
         theReq.estActif,
         theReq.creationDate,
         theReq.creationUserId,
@@ -40,6 +51,7 @@ function templateSelectByInModel(theReq) {
         theReq.modifUserId,
         theReq.debutDonnees,
         theReq.finDonnees
+
       ],
 
       ((err, results, fields) => {
@@ -48,64 +60,60 @@ function templateSelectByInModel(theReq) {
           reject(err)
         }
         else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+}
+
+
+
+function selectNotAffecteUserServiceIdInModel(theReq) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL userservices_selectNotAffecteUserServiceId(?)",
+      [
+        theReq.userId
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+      })
+    )
+  })
+}
+
+function getUserServiceByIdInModel(id) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL userservices_selectById(?)",
+      [
+        id
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          reject(err)
+        }
         resolve(results[0])
-        }
       })
     )
   })
 }
 
 
-function deleteTemplateInModel(id) {
+function disableUserServiceInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL templates_delete(?)",
-      [
-        id
-
-      ],
-
-      ((err, results, fields) => {
-        if (err) {
-          console.log(err)
-          reject(err)
-        }
-        else{
-          resolve(results[0])
-        }
-        
-      })
-    )
-  })
-}
-function getTemplateByIdInModel(id) {
-  return new Promise((resolve, reject) => {
-
-    connection.query("CALL templates_selectById(?)",
-      [
-        id
-
-      ],
-
-      ((err, results, fields) => {
-        if (err) {
-          console.log(err)
-          reject(err)
-        }
-        else{
-          resolve(results[0])
-        }
-        
-      })
-    )
-  })
-}
-
-
-function disableTemplateInModel(theReq) {
-  return new Promise((resolve, reject) => {
-
-    connection.query("CALL templates_disable(?,?,?)",
+    connection.query("CALL userservices_disable(?,?,?)",
       [
         theReq.id,
         theReq.modifUserId,
@@ -123,58 +131,38 @@ function disableTemplateInModel(theReq) {
   })
 }
 
-function selectTemplateNotAffectedTacheInModel(theReq) {
+
+function updateUserServiceInModel(theReq) {
+  console.log(theReq)
+  return new Promise((resolve, reject) => {
+    connection.query("CALL userservices_update(?,?,?,?,?,?,?)",
+      [
   
-  return new Promise((resolve, reject) => {
-
-    connection.query("CALL templates_selectTemplateNotAffectedTache(?)",
-      [
-        theReq.tacheId
-      ],
-
-      ((err, results, fields) => {
-        if (err) {
-          console.log(err)
-          reject(err)
-        }
-        else{
-          resolve(results[0])
-        }
-        
-      })
-    )
-  })
-}
-
-
-function updateTemplateInModel(theReq) {
-  return new Promise((resolve, reject) => {
-
-    connection.query("CALL templates_update(?,?,?,?)",
-      [
         theReq.id,
-        theReq.libelle,
+        theReq.userId,
+        theReq.serviceId,
+        theReq.debut,
+        theReq.fin,
         theReq.modifDate,
         theReq.modifUserId
       ],
 
       ((err, results, fields) => {
         if (err) {
-          console.log(err)
           reject(err)
+        } else {
+          resolve(results[0])
         }
-        else{
-        resolve(results[0])
-        }
+
       })
     )
   })
 }
 
-function getAllTemplateInModel() {
+function getAllUserServiceInModel() {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL templates_selectAll(?,?,?)",
+    connection.query("CALL userservices_selectAll(?,?,?)",
       [
         1,
         null,
@@ -191,14 +179,12 @@ function getAllTemplateInModel() {
     )
   })
 }
-
 module.exports = {
-  selectTemplateNotAffectedTacheInModel,
-  addTemplateInModel,
-  deleteTemplateInModel,
-  disableTemplateInModel,
-  updateTemplateInModel,
-  getTemplateByIdInModel,
-  getAllTemplateInModel,
-  templateSelectByInModel
+  addUserServiceInModel,
+  selectNotAffecteUserServiceIdInModel,
+  disableUserServiceInModel,
+  updateUserServiceInModel,
+  getUserServiceByIdInModel,
+  getAllUserServiceInModel,
+  UserServiceSelectByInModel
 }

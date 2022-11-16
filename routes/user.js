@@ -17,6 +17,6 @@ router.post("/getAffecteByGroup", userController.getAffecteByGroup)
 router.post("/getNonAffecteByGroup", userController.getNonAffecteByGroup)
 router.put("/activateUser", userController.activateUser)
 router.put("/updateUserPwd", userController.updatePassword)
-router.post("/userSelectBy", userController.UserSelectBy)
+router.post("/userSelectBy", userController.userSelectBy)
 module.exports = router
 

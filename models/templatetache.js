@@ -8,8 +8,8 @@ function addTemplateTacheInModel(theReq) {
     connection.query("CALL templatetaches_insert(?,?,?,?)",
       [
         theReq.templateId,
-		theReq.tacheId,
-		theReq.ordre,
+		    theReq.tacheId,
+		    theReq.ordre,
         theReq.creationUserId
       ],
 
@@ -63,6 +63,98 @@ function getTemplateTacheByIdInModel(id) {
     connection.query("CALL templatetaches_selectById(?)",
       [
         id
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+}
+function selectLastAffecteByActiviteIdInModel(theReq){
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL templatetaches_selectLastAffecteByActiviteId(?,?)",
+      [
+        theReq.templateId,
+        theReq.activiteId
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+}
+
+function selectNextTacheInModel(theReq){
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL templatetaches_selectNextTache(?,?)",
+      [
+        theReq.templateId,
+        theReq.ordre
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+}
+
+function selectFirstTacheInModel(theReq){
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL templatetaches_selectFirstTache(?)",
+      [
+        theReq.templateId
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+}
+
+
+function selectTemplateTacheNotAffectedActiviteInModel(theReq) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL templatetaches_selectTacheNotAffectedActiviteId(?,?)",
+      [
+        theReq.activiteId,
+        theReq.templateId
 
       ],
 
@@ -155,6 +247,10 @@ function getAllTemplateTacheInModel() {
 
 module.exports = {
   addTemplateTacheInModel,
+  selectNextTacheInModel,
+  selectFirstTacheInModel,
+  selectLastAffecteByActiviteIdInModel,
+  selectTemplateTacheNotAffectedActiviteInModel,
   disableTemplateTacheInModel,
   updateTemplateTacheInModel,
   getTemplateTacheByIdInModel,

@@ -267,6 +267,36 @@ function updateUser(req, res, next) {
 }
 
 
+function userSelectBy(req, res, next){
+    const userObj= {
+        id: req.body.id || null, 
+        structureId: req.body.structureId || null, 
+        prestataireId: req.body.prestataireId || null, 
+        nom: req.body.nom || null, 
+        prenoms: req.body.prenoms || null, 
+        fonction: req.body.fonction || null, 
+        telephone1: req.body.telephone1 || null, 
+        telephone2: req.body.telephone2 || null, 
+        email: req.body.email || null, 
+        photo: "" || null, 
+        quartierdistrictId: req.body.quartierdistrictId || null, 
+        observations: req.body.observations || null, 
+        estAlerte: req.body.estAlerte || null, 
+        estSuspendu: req.body.estSuspendu || null, 
+        estActif: 1 || null, 
+        creationDate: req.body.creationDate || null, 
+        creationUserId: req.body.creationUserId || null, 
+        modifDate: req.body.modifDate || null, 
+        modifUserId: req.body.modifUserId || null, 
+        debutDonnees: req.body.debutDonnees || null, 
+        finDonnees: req.body.finDonnees || null, 
+    }
+
+    User.checkIfUserExists(userObj)
+    .then(user=>res.status(200).json(user))
+    .catch(error=>res.status(400).json(error))
+}
+
 function updatePassword(req, res, next) {
 
     const userUpdPwd = {
@@ -324,8 +354,7 @@ function getAffecteByGroup(req, res, next) {
 }
 
 
-function UserSelectBy(req, res, next) {
-
+function userSelectBy(req, res, next) {
     const objUser = {
         id: req.body.id || null,
         structureId: req.body.structureId || null,
@@ -356,6 +385,7 @@ function UserSelectBy(req, res, next) {
 }
 
 module.exports = {
+    userSelectBy,
     getAffecteByGroup,
     getNonAffecteByGroup,
     disableUser,
@@ -367,7 +397,7 @@ module.exports = {
     getAllUsers,
     activateUser,
     updatePassword,
-    UserSelectBy,
+    userSelectBy,
     files,
     getImageFile
 }

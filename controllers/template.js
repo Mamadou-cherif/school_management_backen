@@ -16,7 +16,7 @@ function addTemplate(req, res,next){
                         creationUserId: req.body.creationUserId,
                     }
                     Template.addTemplateInModel(templateObj)
-                        .then(()=> res.status(200).json({succes: "Modification effectuée avec succès"}))
+                        .then(template=> res.status(200).json(template))
                         .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
                     
                 }
@@ -52,7 +52,16 @@ function templateSelectBy(req, res, next){
 }
 
 
-
+function selectTemplateNotAffectedTache(req, res, next) {
+    const templateObj={
+        tacheId: req.body.tacheId,
+        estActif: 1
+    }
+    console.log(templateObj)
+    Template.selectTemplateNotAffectedTacheInModel(templateObj)
+        .then(template => res.status(200).json(template))
+        .catch(error => res.status(400).json(error))
+    }
 
 
 
@@ -129,6 +138,7 @@ function getAllTemplate(req, res, next) {
 
 module.exports = {
     disableTemplate,
+    selectTemplateNotAffectedTache,
     addTemplate,
     updateTemplate,
     getAsingleTemplate,

@@ -144,7 +144,6 @@ function selectNotAffectedByPapbIdAndStrategieIdInModel(theReq) {
       [
         theReq.strategieId,
         theReq.papbId
-
       ],
 
       ((err, results, fields) => {

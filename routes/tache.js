@@ -3,6 +3,8 @@ const router= express.Router()
 const tacheController= require("../controllers/tache")
 
     router.post("/addTache", tacheController.addTache)
+    router.post("/selectTacheNotAffectedActivite", tacheController.selectTacheNotAffectedActivite)
+    router.post("/selectTacheNotAffectedTemplate", tacheController.selectTacheNotAffectedTemplate)
     router.put("/disableTache", tacheController.disableTache)
     router.put("/updateTache", tacheController.updateTache)
     router.get("/getOneTache/:id", tacheController.getAsingleTache)

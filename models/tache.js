@@ -61,6 +61,50 @@ function tacheSelectByInModel(theReq) {
   })
 }
 
+function selectTacheNotAffectedTemplateInModel(theReq) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL taches_selectTacheNotAffectedTemplate(?)",
+      [
+        theReq.templateId
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+}
+
+function selectTacheNotAffectedActiviteInModel(theReq) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL taches_selectTacheNotAffectedActivite(?)",
+      [
+        theReq.activiteId
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+}
+
 function getTacheByIdInModel(id) {
   return new Promise((resolve, reject) => {
 
@@ -159,6 +203,8 @@ function getAllTacheInModel() {
 }
 
 module.exports = {
+  selectTacheNotAffectedTemplateInModel,
+  selectTacheNotAffectedActiviteInModel,
   addTacheInModel,
   disableTacheInModel,
   updateTacheInModel,
