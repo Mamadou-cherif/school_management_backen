@@ -7,12 +7,14 @@ let connection = mysql.createConnection(config)
 function addActiviteTacheInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL activitetaches_insert(?,?,?,?,?,?,?,?)",
+    connection.query("CALL activitetaches_insert(?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.activiteId,
         theReq.tacheId,
         theReq.responsableId,
         theReq.niveauExecution,
+        theReq.debut,
+        theReq.fin,
         theReq.tauxExecution,
         theReq.problemesRencontrees,
         theReq.solutions,
@@ -34,14 +36,15 @@ function addActiviteTacheInModel(theReq) {
 
 function activitetacheSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
-
-    connection.query("CALL activitetaches_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL activitetaches_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.activiteId,
         theReq.tacheId,
         theReq.responsableId,
         theReq.niveauExecution,
+        theReq.debut,
+        theReq.fin,
         theReq.tauxExecution,
         theReq.problemesRencontrees,
         theReq.solutions,
@@ -116,13 +119,15 @@ function disableActiviteTacheInModel(theReq) {
 function updateActiviteTacheInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL activitetaches_update(?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL activitetaches_update(?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.activiteId,
         theReq.tacheId,
         theReq.responsableId,
         theReq.niveauExecution,
+        theReq.debut,
+        theReq.fin,
         theReq.tauxExecution,
         theReq.problemesRencontrees,
         theReq.solutions,
@@ -167,7 +172,51 @@ function getAllActiviteTacheInModel() {
   })
 }
 
+function getEcartBetweenActiviteTacheInModel(theReq){
+ return new Promise((resolve, reject) => {
+
+  connection.query("CALL activitetaches_getEcartBetweenActiviteTache(?)",
+    [
+      theReq.activiteId
+    ],
+    ((err, results, fields) => {
+      if (err) {
+         console.log(err)
+        reject(err)
+      }
+      else{
+      resolve(results[0])
+      }
+    })
+  )
+})
+}
+
+function selectTacheNonTotalementExecuteActivite(theReq) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL activitetaches_selectTacheNonTotalementExecuteActivite(?)",
+      [
+        theReq.activite
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+        resolve(results[0])
+        }
+      })
+    )
+  })
+}
+
 module.exports = {
+  getEcartBetweenActiviteTacheInModel,
+  selectTacheNonTotalementExecuteActivite,
   addActiviteTacheInModel,
   disableActiviteTacheInModel,
   updateActiviteTacheInModel,

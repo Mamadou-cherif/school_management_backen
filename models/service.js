@@ -79,14 +79,15 @@ function getServiceByIdInModel(id) {
     connection.query("CALL services_selectById(?)",
       [
         id
-
       ],
-
       ((err, results, fields) => {
         if (err) {
+          console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+          resolve(results[0])
+        }
       })
     )
   })

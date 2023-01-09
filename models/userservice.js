@@ -34,7 +34,6 @@ function addUserServiceInModel(theReq) {
 }
 
 function UserServiceSelectByInModel(theReq) {
-  console.log(theReq)
   return new Promise((resolve, reject) => {
 
     connection.query("CALL userservices_selectBy(?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -73,9 +72,10 @@ function UserServiceSelectByInModel(theReq) {
 function selectNotAffecteUserServiceIdInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL userservices_selectNotAffecteUserServiceId(?)",
+    connection.query("CALL userservices_selectNotAffecteUserServiceId(?,?)",
       [
-        theReq.userId
+        theReq.userId,
+        theReq.structureId
       ],
 
       ((err, results, fields) => {
@@ -133,7 +133,6 @@ function disableUserServiceInModel(theReq) {
 
 
 function updateUserServiceInModel(theReq) {
-  console.log(theReq)
   return new Promise((resolve, reject) => {
     connection.query("CALL userservices_update(?,?,?,?,?,?,?)",
       [

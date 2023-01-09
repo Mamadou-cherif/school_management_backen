@@ -29,7 +29,6 @@ function addActiviteProjetInModel(theReq) {
 }
 
 function activiteprojetSelectByInModel(theReq) {
-  console.log(theReq)
   return new Promise((resolve, reject) => {
 
     connection.query("CALL projetactivites_selectBy(?,?,?,?,?,?,?,?,?,?,?)",

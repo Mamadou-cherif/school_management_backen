@@ -68,12 +68,9 @@ function updateDefisprogrammePrioritaire(req,res, next){
         libelle: req.body.libelle,
         estActif:1
     }
-    console.log(objDefisprogrammePrioritaire)
-   
      DefisprogrammePrioritaire.defisprogrammePrioritaireSelectByInModel(objDefisprogrammePrioritaire)
           .then(defisprogrammeprioritaire=> {
                 if((defisprogrammeprioritaire.length==0) || (defisprogrammeprioritaire[0].id == req.body.id)){
-                    
                     const defisprogrammeprioritaireObj={
                         id: req.body.id,
                         proprioritaireId: req.body.proprioritaireId,

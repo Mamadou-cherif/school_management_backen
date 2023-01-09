@@ -2,9 +2,7 @@ const StatutProjet= require("../models/statutprojet")
 const express= require("express") 
 const bodyParser=require("body-parser")
 const app= express()
-const jwt= require("jsonwebtoken")
 app.use(bodyParser.json()) 
-const bcrypt= require("bcrypt")
 const initStatutProjetClass= require("../classes/statutprojet")
 
 

@@ -10,10 +10,11 @@ const { reject } = require("bcrypt/promises");
 
 function addFinancementInModel(theReq) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL financement_insert(?,?,?,?,?,?,?,?)",
+    connection.query("CALL financement_insert(?,?,?,?,?,?,?,?,?)",
       [
         theReq.projetId,
         theReq.structureId,
+        theReq.imputBudgetaire,
         theReq.activiteId,
         theReq.type,
         theReq.typeAppui,
@@ -38,11 +39,12 @@ function addFinancementInModel(theReq) {
 function financementSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL financement_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL financement_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.projetId,
         theReq.structureId,
+        theReq.imputBudgetaire,
         theReq.activiteId,
         theReq.type,
         theReq.typeAppui,
@@ -117,11 +119,12 @@ function disableFinancementInModel(theReq) {
 function updateFinancementInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL financement_update(?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL financement_update(?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.projetId,
         theReq.structureId,
+        theReq.imputBudgetaire,
         theReq.activiteId,
         theReq.type,
         theReq.typeAppui,
@@ -184,9 +187,10 @@ function countAllFinancementInModel(){
 function financementSelectByParamsInModel(theReq){
   return new Promise((resolve,reject)=> {
 
-      connection.query("CALL financements_selectByParams(?,?,?,?,?,?)",
+      connection.query("CALL financements_selectByParams(?,?,?,?,?,?,?)",
             [ 
               theReq.structureId,
+              theReq.imputBudgetaire,
               theReq.projetId,
               theReq.activiteId,
               theReq.typeFinancement,

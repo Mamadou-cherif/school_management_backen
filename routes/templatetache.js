@@ -2,6 +2,8 @@ const express=require("express")
 const router= express.Router()
 const templatetacheController= require("../controllers/templatetache")
 
+    router.post("/selectLastTache", templatetacheController.selectLastTache)
+    router.post("/selectGrethanCurentOrdre", templatetacheController.selectGrethanCurentOrdre)
     router.post("/addTemplateTache", templatetacheController.addTemplateTache)
     router.post("/selectLastAffecteByActiviteId", templatetacheController.selectLastAffecteByActiviteId)
     router.post("/selectTemplateTacheNotAffectedActivite", templatetacheController.selectTemplateTacheNotAffectedActivite)

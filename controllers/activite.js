@@ -17,18 +17,22 @@ function addActivite(req, res,next){
                         statut: req.body.statut,
                         uniteCompteId: req.body.uniteCompteId,
                         cdmtNatDepenseId: req.body.cdmtNatDepenseId,
+                        codeBasFce: req.body.codeBasFce,
+                        niveau: req.body.niveau,
+                        niveauScolaireId: req.body.niveauScolaireId,
+                        duree: req.body.duree,
                         numero: req.body.numero,
                         libelle: req.body.libelle,
                         observations: req.body.observations,
                         creationUserId: req.body.creationUserId,
                 }
                       Activite.addActiviteInModel(activiteObj)
-                          .then(()=> res.status(201).json({succes: "Ajout effectué avec succès"}))
+                          .then(data=> res.status(201).json(data))
                           .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
                 }
                 else
                    {
-                     res.status(500).json({error: "Cette activite existe déjà pour ce projet"})
+                     res.status(500).json({error: "dupplicata de cette activité"})
                    }
           })
           .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
@@ -44,6 +48,9 @@ function activiteSelectBy(req, res, next){
         statut: req.body.statut || null,
         uniteCompteId: req.body.uniteCompteId || null,
         cdmtNatDepenseId: req.body.cdmtNatDepenseId || null,
+        codeBasFce: req.body.codeBasFce || null,
+        niveau: req.body.niveau || null,
+        niveauScolaireId: req.body.niveauScolaireId || null,
         numero: req.body.numero || null,
         libelle: req.body.libelle || null,
         observations: req.body.observations || null,
@@ -62,7 +69,14 @@ function activiteSelectBy(req, res, next){
         .catch(error=> res.status(400).json(error))
 
 }
+
+function selectStatsPapbActivite(req, res, next) {
     
+    Activite.selectStatsPapbActiviteInModel()
+
+        .then(activite=> res.status(200).json(activite))
+        .catch(error=> res.status(400).json(error))
+}
 function selectNotAffectedPaabId(req, res, next){
     const activiteObj={
         papbId: req.body.papbId,
@@ -89,7 +103,6 @@ function selectNotAffectedByPapbIdAndStrategieId(req, res, next){
 }
 
 function updateActivite(req,res, next){
-        
     const objActivite={
         numero: req.body.numero,
         strategieId: req.body.strategieId,
@@ -108,6 +121,10 @@ function updateActivite(req,res, next){
                         statut: req.body.statut,
                         uniteCompteId: req.body.uniteCompteId,
                         cdmtNatDepenseId: req.body.cdmtNatDepenseId,
+                        codeBasFce: req.body.codeBasFce,
+                        niveau: req.body.niveau,
+                        niveauScolaireId: req.body.niveauScolaireId,
+                        duree: req.body.duree,
                         numero: req.body.numero,
                         libelle: req.body.libelle,
                         observations: req.body.observations,
@@ -170,5 +187,6 @@ module.exports = {
     updateActivite,
     getAsingleActivite,
     getAllActivite,
-    activiteSelectBy
+    activiteSelectBy,
+    selectStatsPapbActivite
 }

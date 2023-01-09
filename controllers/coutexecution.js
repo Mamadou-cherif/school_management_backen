@@ -97,6 +97,25 @@ function getAsingleCoutExecution(req, res, next) {
         .catch(error => res.status(400).json(error))
 }
 
+function getLineInCoutExecutionByStrategieIdAndPapbId(req, res, next) {
+    const obj={
+        strategieId: req.body.strategieId,
+        papbId: req.body.papbId
+    }
+    CoutExecution.getLineInCoutExecutionByStrategieIdAndPapbId(obj)
+        .then(coutexecution => res.status(200).json(coutexecution))
+        .catch(error => res.status(400).json(error))
+}
+
+function getLineInCoutExeCutionByQtePrevisionnelle(req, res, next) {
+    const obj={
+        qtePrevisionnelId: req.body.qtePrevisionnelId
+    }
+    CoutExecution.getLineInCoutExeCutionByQtePrevisionnelleInModel(obj)
+        .then(coutexecution => res.status(200).json(coutexecution))
+        .catch(error => res.status(400).json(error))
+}
+
 
 function getAllCoutExecution(req, res, next) {
     CoutExecution.getAllCoutExecutionInModel()
@@ -106,6 +125,8 @@ function getAllCoutExecution(req, res, next) {
 
 module.exports = {
     disableCoutExecution,
+    getLineInCoutExecutionByStrategieIdAndPapbId,
+    getLineInCoutExeCutionByQtePrevisionnelle,
     addCoutExecution,
     updateCoutExecution,
     getAsingleCoutExecution,

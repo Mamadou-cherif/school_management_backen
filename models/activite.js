@@ -4,7 +4,7 @@ let connection = mysql.createConnection(config)
 
 function addActiviteInModel(theReq) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL activites_insert(?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL activites_insert(?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.strategieId,
         theReq.numero,
@@ -13,6 +13,10 @@ function addActiviteInModel(theReq) {
         theReq.uniteCompteId,
         theReq.statut,
         theReq.cdmtNatDepenseId,
+        theReq.codeBasFce,
+        theReq.niveau,
+        theReq.niveauScolaireId,
+        theReq.duree,
 		    theReq.observations,
         theReq.creationUserId
       ],
@@ -30,10 +34,34 @@ function addActiviteInModel(theReq) {
   })
 }
 
+function selectStatsPapbActiviteInModel(theReq) {
+
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL activites_selectStatsPapbActivites()",
+      [
+        
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+  
+}
 function activiteSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL activites_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL activites_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.strategieId,
@@ -43,6 +71,10 @@ function activiteSelectByInModel(theReq) {
         theReq.uniteCompteId,
         theReq.statut,
         theReq.cdmtNatDepenseId,
+        theReq.codeBasFce,
+        theReq.niveau,
+        theReq.niveauScolaireId,
+        theReq.duree,
         theReq.observations,
         theReq.estActif,
         theReq.creationDate,
@@ -207,7 +239,7 @@ function activites_getByParams(resultatId) {
 
 function updateActiviteInModel(theReq) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL activites_update(?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL activites_update(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.strategieId,
@@ -217,6 +249,10 @@ function updateActiviteInModel(theReq) {
         theReq.uniteCompteId,
         theReq.statut,
         theReq.cdmtNatDepenseId,
+        theReq.codeBasFce,
+        theReq.niveau,
+        theReq.niveauScolaireId,
+        theReq.duree,
 		    theReq.observations,
         theReq.modifDate,
         theReq.modifUserId
@@ -261,6 +297,7 @@ function getAllActiviteInModel() {
 
 module.exports = {
   addActiviteInModel,
+  selectStatsPapbActiviteInModel,
   selectNotAffectedPaabIdInModel,
   selectNotAffectedByPapbIdAndStrategieIdInModel,
   activites_getByParams,

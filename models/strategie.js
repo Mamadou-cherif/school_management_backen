@@ -29,6 +29,31 @@ function addStrategieInModel(theReq) {
   })
 }
 
+function selectStatsPapbStrategieInModel(theReq) {
+
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL strategies_selectStatsPapbStrategie()",
+      [
+        
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+  
+}
+
 function strategieSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
@@ -176,6 +201,7 @@ function getAllStrategieInModel() {
 }
 
 module.exports = {
+  selectStatsPapbStrategieInModel,
   strategies_getByParams,
   addStrategieInModel,
   disableStrategieInModel,

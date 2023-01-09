@@ -4,18 +4,21 @@ let connection = mysql.createConnection(config)
 const express = require("express")
 const app = express();
 const bcrypt = require("bcrypt");
+const res = require("express/lib/response");
+const { reject } = require("bcrypt/promises");
 
 
-function chapitreSelectByInModel(theReq) {
+
+
+
+function niveauscolaireSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL chapitresprogles_selectBy(?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL niveauscolaires_selectBy(?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
-        theReq.prograGleId,
-		    theReq.numero,
-		    theReq.libelle,
-		    theReq.observations,
+		theReq.libelle,    
+		theReq.code,    
         theReq.estActif,
         theReq.creationDate,
         theReq.creationUserId,
@@ -23,7 +26,6 @@ function chapitreSelectByInModel(theReq) {
         theReq.modifUserId,
         theReq.debutDonnees,
         theReq.finDonnees
-
       ],
 
       ((err, results, fields) => {
@@ -41,10 +43,10 @@ function chapitreSelectByInModel(theReq) {
 
 
 
-function disableChapitreInModel(theReq){
+function disableNiveauScolaireInModel(theReq){
   return new Promise((resolve,reject)=> {
   
-      connection.query("CALL chapitresprogles_disable(?,?,?)",
+      connection.query("CALL niveauscolaires_disable(?,?,?)",
             [ 
               theReq.id,
               theReq.modifUserId,
@@ -62,10 +64,10 @@ function disableChapitreInModel(theReq){
     })
 }
 
-function getAllChapitreInModel(theReq) {
+function getAllNiveauScolaireInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL chapitresprogles_selectAll(?,?,?)",
+    connection.query("CALL niveauscolaires_selectAll(?,?,?)",
       [
         1,
         null,
@@ -86,10 +88,10 @@ function getAllChapitreInModel(theReq) {
 
 
 
-function chapitreSelectByIdInModel(id){
+function niveauscolaireSelectByIdInModel(id){
   return new Promise((resolve,reject)=> {
 
-    connection.query("CALL chapitresprogles_selectById(?)",
+    connection.query("CALL niveauscolaires_selectById(?)",
           [ 
             id
           ],
@@ -105,14 +107,12 @@ function chapitreSelectByIdInModel(id){
 }
 
 
-function addChapitreInModel(theReq){
+function addNiveauScolaireInModel(theReq){
   return new Promise((resolve,reject)=> {
-    connection.query("CALL chapitresprogles_insert(?,?,?,?,?)",
+    connection.query("CALL niveauscolaires_insert(?,?,?)",
           [
-            theReq.prograGleId,
-	          theReq.numero,
-		        theReq.libelle,
-            theReq.observations,
+            theReq.libelle,    
+		    theReq.code, 
             theReq.creationUserId,
           ],
 
@@ -133,24 +133,20 @@ function addChapitreInModel(theReq){
 
 
 
-function updateChapitreInModel(theReq){
+function updateNiveauScolaireInModel(theReq){
   return new Promise((resolve,reject)=> {
-    connection.query("CALL chapitresprogles_update(?,?,?,?,?,?,?)",
+    connection.query("CALL niveauscolaires_update(?,?,?,?,?)",
           [
             theReq.id, 
-            theReq.prograGleId,
-	        theReq.numero,
-		    theReq.libelle,
-            theReq.observations,
+            theReq.libelle,    
+		    theReq.code, 
             theReq.modifDate,
             theReq.modifUserId,
           ],
 
       ((err,results, fields)=>{
         if(err){   
-
           reject(err)
-          //connection.end();
         }
         else{
         resolve(results);
@@ -163,10 +159,10 @@ function updateChapitreInModel(theReq){
 
 
 module.exports = {
-  getAllChapitreInModel,
-  updateChapitreInModel,
-  addChapitreInModel,
-  chapitreSelectByIdInModel,
-  disableChapitreInModel,
-  chapitreSelectByInModel
+  getAllNiveauScolaireInModel,
+  updateNiveauScolaireInModel,
+  addNiveauScolaireInModel,
+  niveauscolaireSelectByIdInModel,
+  disableNiveauScolaireInModel,
+  niveauscolaireSelectByInModel
 }

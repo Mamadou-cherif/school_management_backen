@@ -144,7 +144,7 @@ function getAsingleDepartement(req, res, next) {
   const id = req.params.id
   Departement.getDepartementByIdInModel(id)
     .then(departement => res.status(200).json(departement))
-    .catch(error => res.status(400).json(console.log(error)))
+    .catch(error => res.status(400).json(error))
 }
 
 function countAllDepartement(req,res, next){

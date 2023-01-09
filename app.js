@@ -72,6 +72,10 @@ const templatetacheRoute = require("./routes/templatetache")
 const coutExecutionRoute = require("./routes/coutexecution")
 const natureTemplateRoute = require("./routes/naturetemplate")
 const userServiceRoute = require("./routes/userservice")
+const niveauscolaireRoute = require("./routes/niveauscolaire")
+const plannifactiviteRoute = require("./routes/planifactivite")
+const beneficiaireRoute = require("./routes/beneficiaire")
+const beneficiaireActiviteRoute = require("./routes/beneficiaireactivite")
 
 app.use(bodyParser.json())
 
@@ -153,5 +157,9 @@ app.use("/api", qteprevisionnelleRoute)
 app.use("/api", coutExecutionRoute)
 app.use("/api", natureTemplateRoute)
 app.use("/api", userServiceRoute)
+app.use("/api", niveauscolaireRoute)
+app.use("/api", plannifactiviteRoute)
+app.use("/api", beneficiaireRoute)
+app.use("/api", beneficiaireActiviteRoute)
 
 module.exports = app

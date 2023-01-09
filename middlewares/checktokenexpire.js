@@ -4,7 +4,6 @@ const { createPool } = require("mysql2");
 var secret = 'Secret_Key1-2-3.';
 
 function checktokenexpire(req, res, next){
-
     if (!req.params.token) {
         return res.status(403).send({message: 'aucun token trouvé'});
     }
@@ -18,8 +17,6 @@ function checktokenexpire(req, res, next){
             return res.status(200).send({expired:false});
 
         }
-   
-
 }
 
 module.exports= {checktokenexpire}

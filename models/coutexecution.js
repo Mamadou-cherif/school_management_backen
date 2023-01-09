@@ -90,6 +90,53 @@ function deleteCoutExecutionInModel(id) {
     )
   })
 }
+
+
+function getLineInCoutExecutionByStrategieIdAndPapbId(theReq) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL coutexecutions_getLineInCoutExecutionByStrategieIdAndPapbId(?,?)",
+      [
+        theReq.strategieId,
+        theReq.papbId,
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+}
+
+function getLineInCoutExeCutionByQtePrevisionnelleInModel(theReq) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL coutexecutions_getLineInCoutExeCutionByQtePrevisionnelle(?)",
+      [
+        theReq.qtePrevisionnelId,
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+}
+
 function getCoutExecutionByIdInModel(id) {
   return new Promise((resolve, reject) => {
 
@@ -191,6 +238,8 @@ function getAllCoutExecutionInModel() {
 
 module.exports = {
   addCoutExecutionInModel,
+  getLineInCoutExecutionByStrategieIdAndPapbId,
+  getLineInCoutExeCutionByQtePrevisionnelleInModel,
   deleteCoutExecutionInModel,
   disableCoutExecutionInModel,
   updateCoutExecutionInModel,

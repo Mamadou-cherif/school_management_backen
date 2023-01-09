@@ -1,5 +1,7 @@
 const TemplateTache = require("../models/templatetache")
  
+    
+
 function addTemplateTache(req, res,next){
     const objTemplateTache={
         templateId: req.body.templateId ,
@@ -8,6 +10,7 @@ function addTemplateTache(req, res,next){
     }
     TemplateTache.templatetacheSelectByInModel(objTemplateTache)
         .then(templatetache=> {
+            // Si cet ordre n'existe pas, on insère quand même
             if((templatetache.length==0)){
                 const objTemplateTache={
                     templateId: req.body.templateId ,
@@ -37,9 +40,44 @@ function addTemplateTache(req, res,next){
                     
             }
             else
-                {
-                res.status(500).json({error: "Cet ordre existe déjà pour ce template"})
+            {   
+                // Modification des ordres des taches sur le template
+                const templateTacheObj={
+                    templateId: req.body.templateId ,
+                    ordrePrecedent : req.body.ordrePrecedent, 
+                    estActif:1
                 }
+                /* Cette function appelle la procédure qui permet d'incrementer 
+                 Tout ordre du template supérieur à l'ordre de la ligne ajoutée */
+                updateGreaterThanCurentOrdre(templateTacheObj)
+
+                const objTemplateTache={
+                    templateId: req.body.templateId ,
+                    tacheId: req.body.tacheId,
+                    estActif:1
+                  }
+                   TemplateTache.templatetacheSelectByInModel(objTemplateTache)
+                        .then(templatetache=> {
+                        if((templatetache.length==0)){
+                            const templatetacheObj={
+                                templateId: req.body.templateId ,
+                                tacheId: req.body.tacheId ,
+                                ordre: req.body.ordre,
+                                creationUserId: req.body.creationUserId,
+                            }
+                        TemplateTache.addTemplateTacheInModel(templatetacheObj)
+                            .then(()=> res.status(201).json({succes: "Ajout effectué avec succès"}))
+                            .catch(()=> res.status(400).json({error: "Erreur de la procédure stocké d'ajout"}));
+                                                    
+                        }
+                    else
+                        {
+                        res.status(500).json({error: "Dupplicata de cette tâche pour ce template"})
+                        }
+                        })
+                        .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
+                    
+            }
         })
         .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
 
@@ -71,7 +109,11 @@ function templatetacheSelectBy(req, res, next){
 
 
 
-
+function updateGreaterThanCurentOrdre(data){
+    TemplateTache.updateGreaterThanCurentOrdreInModel(data)
+        .then(()=>{})
+        .catch(()=>{})
+}
 
 // 
 function updateTemplateTache(req,res, next){
@@ -156,9 +198,40 @@ function selectNextTache(req, res, next) {
         .catch(error => res.status(400).json(error))
     }
 
-    function selectFirstTache(req, res, next) {
+    function selectGrethanCurentOrdre(req, res, next) {
         const templatetacheObj={
             templateId: req.body.templateId,
+            ordre: req.body.ordre,
+            estActif: 1
+    
+        }
+        TemplateTache.selectGrethanCurentOrdreInModel(templatetacheObj)
+            .then(templatetache => res.status(200).json(templatetache))
+            .catch(error => res.status(400).json(error))
+        }
+
+    function selectLastTache(req, res, next) {
+        const templatetacheObj={
+            idLigne: req.body.idLigne,
+        }
+        TemplateTache.selectLastTacheInModel(templatetacheObj)
+            .then(templatetache => res.status(200).json(templatetache))
+            .catch(error => res.status(400).json(error))
+        }
+
+        function selectLastTache(req, res, next) {
+            const templatetacheObj={
+                ordre: req.body.ordre,
+                templateId: req.body.templateId,
+            }
+            TemplateTache.selectLastTacheInModel(templatetacheObj)
+                .then(templatetache => res.status(200).json(templatetache))
+                .catch(error => res.status(400).json(error))
+            }
+
+    function selectFirstTache(req, res, next) {
+        const templatetacheObj={
+            activiteId: req.body.activiteId,
             estActif: 1
         }
         TemplateTache.selectFirstTacheInModel(templatetacheObj)
@@ -168,7 +241,6 @@ function selectNextTache(req, res, next) {
         
 function selectLastAffecteByActiviteId(req, res, next) {
     const templatetacheObj={
-        templateId: req.body.templateId,
         activiteId: req.body.activiteId,
         estActif: 1
 
@@ -204,7 +276,9 @@ module.exports = {
     selectFirstTache,
     addTemplateTache,
     updateTemplateTache,
+    selectGrethanCurentOrdre,
     getAsingleTemplateTache,
     getAllTemplateTache,
+    selectLastTache,
     templatetacheSelectBy
 }

@@ -29,7 +29,13 @@ function addStrategie(req, res,next){
           .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
 }
 
+function selectStatsPapbStrategie(req, res, next) {
+    
+    Strategie.selectStatsPapbStrategieInModel()
 
+        .then(activite=> res.status(200).json(activite))
+        .catch(error=> res.status(400).json(error))
+}
 
 function strategieSelectBy(req, res, next){
     const strategieObj={
@@ -132,6 +138,7 @@ function getAllStrategie(req, res, next) {
 
 module.exports = {
     disableStrategie,
+    selectStatsPapbStrategie,
     addStrategie,
     updateStrategie,
     getAsingleStrategie,

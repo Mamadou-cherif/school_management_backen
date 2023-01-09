@@ -41,7 +41,6 @@ function addQtePrevisionnelle(req, res,next){
 
 
 function qteprevisionnelleSelectBy(req, res, next){
-    console.log(req.body)
     const qteprevisionnelleObj={
         id: req.body.id || null,
         activiteId: req.body.activiteId || null,
@@ -155,12 +154,39 @@ function selectPaabByPapbIdAndActiviteId(req, res, next){
         .catch(() => res.status(400).json({ error: "erreur de la procédure stocké d'ajout"}));
 }
 
+function slectActiviteInQtePrevByStrategieId(req, res, next){
+    const qteprevisionnelleObj={
+        strategieId: req.body.strategieId,
+        papbId: req.body.papbId,
+        estActif:1,
+    }
+
+    console.log(qteprevisionnelleObj)
+    QtePrevisionnelle.slectActiviteInQtePrevByStrategieId(qteprevisionnelleObj)
+       .then(activite => res.status(200).json(activite))
+       .catch(() => res.status(400).json({ error: "erreur de la procédure stocké d'ajout"}));
+}
+
+function getLineByActiviteIdAndPapbId(req, res, next){
+    const qteprevisionnelleObj={
+        activiteId: req.body.activiteId,
+        paabId: req.body.paabId,
+        estActif:1,
+    }
+    QtePrevisionnelle.getLineByActiviteIdAndPapbIdInModel(qteprevisionnelleObj)
+       .then(activite => res.status(200).json(activite))
+       .catch(() => res.status(400).json({ error: "erreur de la procédure stocké d'ajout"}));
+}
+
 function deleteQtePrevisionnelle(req, res, next) {
     const id = req.params.id
     QtePrevisionnelle.deleteQtePrevisionnelleInModel(id)
         .then(() => res.status(200).json({succes: "suppression bien réussie"}))
         .catch(() => res.status(400).json({error: "cet élément est lié à d'autres élements"}))
 }
+
+
+
 
 
 
@@ -177,9 +203,10 @@ function getAllQtePrevisionnelle(req, res, next) {
         .then(qteprevisionnelle => res.status(200).json(qteprevisionnelle))
         .catch(error => res.status(400).json(error))
     }
-
 module.exports = {
+    slectActiviteInQtePrevByStrategieId,
     disableQtePrevisionnelle,
+    getLineByActiviteIdAndPapbId,
     selectPaabByPapbIdAndActiviteId,
     selectPapb,
     selectPaabByPapbId,

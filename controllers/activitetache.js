@@ -1,21 +1,23 @@
 const ActiviteTache = require("../models/activitetache")
+const PlannifActivite = require("../models/planifactivite")
+let globalActiviteTacheArray= []
 
- 
 function addActiviteTache(req, res,next){
     const activitetacheObj={
         activiteId: req.body.activiteId,
         tacheId: req.body.tacheId,
         estActif: 1
     }
-     
+    console.log(req.body)
     ActiviteTache.activitetacheSelectByInModel(activitetacheObj)
         .then(activitetache=>{
-            
             if(activitetache.length==0){
                 const activitetacheObj={
                     activiteId: req.body.activiteId,
                     tacheId: req.body.tacheId,
                     niveauExecution: req.body.niveauExecution,
+                    debut: req.body.debut,
+                    fin: req.body.fin || null,
                     tauxExecution: req.body.tauxExecution,
                     responsableId: req.body.responsableId,
                     problemesRencontrees: req.body.problemesRencontrees,
@@ -43,17 +45,19 @@ function activitetacheSelectBy(req, res, next){
         activiteId: req.body.activiteId || null,
         tacheId: req.body.tacheId || null,
         niveauExecution: req.body.niveauExecution || null,
-        tauxExecution: req.body.tauxExecution || null,
+        debut: req.body.debut || null,
+        fin: req.body.fin || null,
+        tauxExecution: req.body.tauxExecution,
         responsableId: req.body.responsableId || null,
-        problemesRencontrees: req.body.problemesRencontrees,
+        problemesRencontrees: req.body.problemesRencontrees || null,
         solutions: req.body.solutions || null, 
         estActif: 1,
         creationDate: req.body.creationDate || null,
         creationUserId: req.body.creationUserId || null,
         modifDate: req.body.modifDate || null,
         modifUserId: req.body.modifUserId || null,
-        debut: req.body.debut || null,
-        fin: req.body.fin || null
+        debutDonnees: req.body.debutDonnees || null,
+        finDonnees: req.body.finDonnees || null
     }
 
     ActiviteTache.activitetacheSelectByInModel(activitetacheObj)
@@ -61,28 +65,35 @@ function activitetacheSelectBy(req, res, next){
         .catch(error=> res.status(400).json(error))
 }
 
+function getEcartBetweenActiviteTache(req, res, next){
 
+    const activiteObj={
+        activiteId: req.body.activiteId
+    }
 
-
-
-
-
+    ActiviteTache.getEcartBetweenActiviteTacheInModel(activiteObj)
+        .then(activitetache=>res.status(200).json(activitetache))
+        .catch(error=> res.status(400).json(error))
+}
  
 function updateActiviteTache(req,res, next){
     const activitetacheObj={
         activiteId: req.body.activiteId,
         tacheId: req.body.tacheId,
-        estActif: 1
+        estActif: 1 
     }
      
     ActiviteTache.activitetacheSelectByInModel(activitetacheObj)
         .then(activitetache=>{
+            console.log(activitetache)
             if((activitetache.length==0) || (activitetache[0].id == req.body.id)){
                 const activitetacheObj={
                     id: req.body.id,
                     activiteId: req.body.activiteId,
                     tacheId: req.body.tacheId,
                     niveauExecution: req.body.niveauExecution,
+                    debut: req.body.debut,
+                    fin: req.body.fin || null,
                     tauxExecution: req.body.tauxExecution,
                     responsableId: req.body.responsableId,
                     problemesRencontrees: req.body.problemesRencontrees,
@@ -125,11 +136,21 @@ function getAsingleActiviteTache(req, res, next) {
 }
 
 
+
 function getAllActiviteTache(req, res, next) {
     ActiviteTache.getAllActiviteTacheInModel()
         .then(activitetache => res.status(200).json(activitetache))
         .catch(error => res.status(400).json(error))
     }
+
+    function selectTacheNonTotalementExecuteActivite(req, res, next) {
+        const obj={
+            activite: req.body.activite
+        }
+        ActiviteTache.selectTacheNonTotalementExecuteActivite(obj)
+            .then(activitetache => res.status(200).json(activitetache))
+            .catch(error => res.status(400).json(error))
+        }
 
 module.exports = {
     disableActiviteTache,
@@ -137,5 +158,7 @@ module.exports = {
     updateActiviteTache,
     getAsingleActiviteTache,
     getAllActiviteTache,
-    activitetacheSelectBy
+    selectTacheNonTotalementExecuteActivite,
+    activitetacheSelectBy,
+    getEcartBetweenActiviteTache
 }

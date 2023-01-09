@@ -289,7 +289,6 @@ function UpdateUserConnexionInstance(theReq) {
 }
 
 function userUpdatePasswordInModel(theReq) {
-  console.log(theReq)
   return new Promise((reject, resolve) => {
     connection.query("CALL users_updatePassword(?,?,?)",
       [

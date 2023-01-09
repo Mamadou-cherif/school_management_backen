@@ -8,14 +8,27 @@ const bcrypt = require("bcrypt")
 const initCommunesClass = require("../classes/communes")
 
 function communeSelectBy(req, res, next) {
-  initCommunesClass.prefectureId = req.body.prefectureId
-  Commune.communeSelectByInModel(initCommunesClass)
+  const commune={
+    id: req.body.id || null,
+    prefectureId: req.body.prefectureId || null,
+    libelle: req.body.libelle ||   null,
+    code: req.body.code ||    null,
+    estActif:  1,
+    creationDate: req.body.creationDate || null,
+    creationUserId: req.body.creationUserId || null,
+    modifDate: req.body.modifDate || null,
+    modifUserId: req.body.modifUserId || null,
+      
+    debutDonnees: null,
+    finDonnees: null
+}
+
+  Commune.communeSelectByInModel(commune)
     .then(communes => res.status(200).json(communes))
     .catch(error => res.status(400).json({ error }))
 }
 
 function selectAllCommune(req, res, next) {
-
   Commune.selectAllCommuneInModel(req)
     .then(commnunes => res.status(200).json(commnunes))
     .catch(error => res.status(400).json(error))

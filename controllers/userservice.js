@@ -82,6 +82,7 @@ function updateUserService(req, res, next) {
 function selectNotAffecteUserServiceId(req, res, next) {
   const userserviceObj= {
     userId: req.body.userId,
+    structureId: req.body.structureId,
     estActif: 1
   }
   UserService.selectNotAffecteUserServiceIdInModel(userserviceObj)

@@ -82,9 +82,8 @@ function getTemplateTacheByIdInModel(id) {
 function selectLastAffecteByActiviteIdInModel(theReq){
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL templatetaches_selectLastAffecteByActiviteId(?,?)",
+    connection.query("CALL templatetaches_selectLastAffecteByActiviteId(?)",
       [
-        theReq.templateId,
         theReq.activiteId
       ],
 
@@ -125,11 +124,103 @@ function selectNextTacheInModel(theReq){
   })
 }
 
+function selectGrethanCurentOrdreInModel(theReq){
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL templatetaches_selectGrethanCurentOrdre(?,?)",
+      [
+        theReq.templateId,
+        theReq.ordre
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+}
+
 function selectFirstTacheInModel(theReq){
   return new Promise((resolve, reject) => {
 
     connection.query("CALL templatetaches_selectFirstTache(?)",
       [
+        theReq.activiteId
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+}
+
+function updateGreaterThanCurentOrdreInModel(theReq){
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL templatetaches_updateGreaterThanCurentOrdre(?,?)",
+      [
+        theReq.templateId,
+        theReq.ordrePrecedent
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+}
+
+// function selectLastTacheInModel(theReq) {
+//   return new Promise((resolve, reject) => {
+
+//     connection.query("CALL templatetaches_selectLastTache(?)",
+//       [
+//         theReq.idLigne
+//       ],
+
+//       ((err, results, fields) => {
+//         if (err) {
+//           console.log(err)
+//           reject(err)
+//         }
+//         else{
+//           resolve(results[0])
+//         }
+        
+//       })
+//     )
+//   })
+// }
+
+function selectLastTacheInModel(theReq) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL templatetaches_selectLastTache(?,?)",
+      [
+        theReq.ordre,
         theReq.templateId
       ],
 
@@ -247,6 +338,9 @@ function getAllTemplateTacheInModel() {
 
 module.exports = {
   addTemplateTacheInModel,
+  updateGreaterThanCurentOrdreInModel,
+  selectGrethanCurentOrdreInModel,
+  selectLastTacheInModel,
   selectNextTacheInModel,
   selectFirstTacheInModel,
   selectLastAffecteByActiviteIdInModel,
