@@ -157,6 +157,8 @@ function getAllResultatInModel() {
   })
 }
 
+
+
 module.exports = {
   addResultatInModel,
   disableResultatInModel,

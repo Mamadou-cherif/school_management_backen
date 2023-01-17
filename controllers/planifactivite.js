@@ -1,5 +1,18 @@
 const PlannifActivite= require("../models/planifactivite")
 
+function updatePlanifiedDateDebutAndFin(req, res, next){
+  const plannifactiviteObj={
+    debut: req.body.debut,
+    activiteId: req.body.activiteId,
+    duree: req.body.duree,
+  }
+
+  PlannifActivite.updatePlanifiedDateDebutAndFin(plannifactiviteObj)
+  .then(()=> res.status(200).json({succes: "on a decalé les dates de debut et de fin des tâches suivantes"}))
+  .catch(error=> res.status(400).json({error}))
+  
+}
+
   function plannifactiviteSelectBy(req, res, next){
     const plannifactiviteObj={
       id: req.body.id ||null,
@@ -62,12 +75,13 @@ function addPlannifActivite(req, res, next) {
           }
 
           PlannifActivite.addPlannifActiviteInModel(plannifactiviteObj)
-            .then(() =>  {next()})
+            .then(() =>  {
+
+
+            })
             .catch(() =>  res.send(400).json(error) );
+
       } 
-      
-
-
 } 
 
 function addSinglePlannifActivite(req, res, next) {
@@ -180,7 +194,8 @@ module.exports={
   disablePlannifActivite,
   updatePlannifActivite,
   deleteAndUpdate,
-  plannifactiviteSelectBy
+  plannifactiviteSelectBy,
+  updatePlanifiedDateDebutAndFin
 }
 
 

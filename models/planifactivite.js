@@ -2,6 +2,30 @@ const mysql = require("mysql2");
 const config = require("../configs/dbconfig")
 let connection = mysql.createConnection(config)
 
+
+function updatePlanifiedDateDebutAndFin(theReq){
+  return new Promise((resolve, reject) => {
+
+   connection.query("CALL plannifactivites_updatePlanifiedDateDebutAndFin(?,?,?)",
+     [
+       theReq.debut,
+       theReq.activiteId,
+       theReq.duree,
+     ],
+
+     ((err, results, fields) => {
+       if (err) {
+         console.log(err)
+         reject(err)
+       }
+       else{
+            resolve(results[0])
+       }
+     })
+   )
+ })
+}
+
 function selectTacheNotAffectedPlannifActivite(theReq){
    return new Promise((resolve, reject) => {
 
@@ -153,6 +177,11 @@ function addPlannifActiviteInModel(theReq){
   })
 }
 
+
+function closeConnection() {
+  // connection.end()
+}
+
 function addSinglePlannifActiviteInModel(theReq){
   return new Promise((resolve,reject)=> {
     connection.query("CALL plannifactivites_insert(?,?,?,?,?,?,?,?,?)",
@@ -265,7 +294,9 @@ function deletePlannifActiviteInModel(id){
 }
 
 module.exports = {
+  closeConnection,
   deleteAndUpdateInModel,
+  updatePlanifiedDateDebutAndFin,
   addSinglePlannifActiviteInModel,
   selectTacheNotAffectedPlannifActivite,
   getAllPlannifActiviteInModel,

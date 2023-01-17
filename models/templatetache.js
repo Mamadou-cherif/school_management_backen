@@ -154,7 +154,6 @@ function selectFirstTacheInModel(theReq){
       [
         theReq.activiteId
       ],
-
       ((err, results, fields) => {
         if (err) {
           console.log(err)
@@ -193,27 +192,6 @@ function updateGreaterThanCurentOrdreInModel(theReq){
   })
 }
 
-// function selectLastTacheInModel(theReq) {
-//   return new Promise((resolve, reject) => {
-
-//     connection.query("CALL templatetaches_selectLastTache(?)",
-//       [
-//         theReq.idLigne
-//       ],
-
-//       ((err, results, fields) => {
-//         if (err) {
-//           console.log(err)
-//           reject(err)
-//         }
-//         else{
-//           resolve(results[0])
-//         }
-        
-//       })
-//     )
-//   })
-// }
 
 function selectLastTacheInModel(theReq) {
   return new Promise((resolve, reject) => {

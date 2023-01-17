@@ -5,6 +5,7 @@ const qteprevisionnelleController= require("../controllers/qteprevisionnelle")
 
 
     router.post("/addQtePrevisionnelle", qteprevisionnelleController.addQtePrevisionnelle)
+    router.post("/selectStatsResultatActivitePapb", qteprevisionnelleController.selectStatsResultatActivitePapb)
     router.post("/slectActiviteInQtePrevByStrategieId", qteprevisionnelleController.slectActiviteInQtePrevByStrategieId)
     router.post("/getLineByActiviteIdAndPapbId", qteprevisionnelleController.getLineByActiviteIdAndPapbId)
     router.post("/selectPaabByPapbIdAndActiviteId", qteprevisionnelleController.selectPaabByPapbIdAndActiviteId)

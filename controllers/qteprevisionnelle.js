@@ -154,6 +154,13 @@ function selectPaabByPapbIdAndActiviteId(req, res, next){
         .catch(() => res.status(400).json({ error: "erreur de la procédure stocké d'ajout"}));
 }
 
+
+function selectStatsResultatActivitePapb(req, res, next){
+    
+    QtePrevisionnelle.selectStatsResultatActivitePapb()
+       .then(activite => res.status(200).json(activite))
+       .catch(() => res.status(400).json({ error: "erreur de la procédure stocké d'ajout"}));
+}
 function slectActiviteInQtePrevByStrategieId(req, res, next){
     const qteprevisionnelleObj={
         strategieId: req.body.strategieId,
@@ -205,6 +212,7 @@ function getAllQtePrevisionnelle(req, res, next) {
     }
 module.exports = {
     slectActiviteInQtePrevByStrategieId,
+    selectStatsResultatActivitePapb,
     disableQtePrevisionnelle,
     getLineByActiviteIdAndPapbId,
     selectPaabByPapbIdAndActiviteId,

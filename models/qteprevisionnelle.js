@@ -208,6 +208,30 @@ function selectPapbInModel() {
   })
 }
 
+function selectStatsResultatActivitePapb(theReq) {
+
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL qteprevisionnelles_selectStatsResultatActivitePapb()",
+      [
+        
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+  
+}
 
 function slectActiviteInQtePrevByStrategieId(theReq) {
   return new Promise((resolve, reject) => {
@@ -312,6 +336,7 @@ function selectActiviteByPaabIdInModel(theReq) {
 
 module.exports = {
   selectPapbInModel,
+  selectStatsResultatActivitePapb,
   getLineByActiviteIdAndPapbIdInModel,
   slectActiviteInQtePrevByStrategieId,
   selectPaabByPapbIdInModel,
