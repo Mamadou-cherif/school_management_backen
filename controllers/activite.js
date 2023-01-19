@@ -171,7 +171,14 @@ function getActiviteByResultatId(req, res, next) {
         .then(activite => res.status(200).json(activite))
         .catch(error => res.status(400).json(error))
     }   
+    
 
+    function getListOfActiviteToPrintInTable(req, res, next) {
+
+        Activite.getListOfActiviteToPrintInTable()
+            .then(activite => res.status(200).json(activite))
+            .catch(error => res.status(400).json(error))
+        }
 function getAllActivite(req, res, next) {
     Activite.getAllActiviteInModel()
         .then(activite => res.status(200).json(activite))
@@ -185,6 +192,7 @@ module.exports = {
     disableActivite,
     addActivite,
     updateActivite,
+    getListOfActiviteToPrintInTable,
     getAsingleActivite,
     getAllActivite,
     activiteSelectBy,

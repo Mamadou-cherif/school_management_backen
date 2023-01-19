@@ -309,13 +309,13 @@ function updatePassword(req, res, next) {
             const userIstPwt = {
                 userId: req.body.id,
                 type: "Perso",
-                creationUserId: req.body.id
+                creationUserId: req.body.creationUserId
             }
             userPassword.userPasswordInsertInModel(userIstPwt)
-                .then(() => res.status(201).json({succes: "changement du mot de passe reussi"}))
+                .then(() => { return res.status(201).json({succes: "changement du mot de passe reussi"})} )
                 .catch(error => res.status(400).json(error))
         })
-        .catch(error => res.status(400).json(error))
+        .catch(error => res.status(400).json(err))
 
 
 

@@ -295,8 +295,33 @@ function getAllActiviteInModel() {
   })
 }
 
+function getListOfActiviteToPrintInTable() {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL activites_getListOfActiviteToPrintInTable(?,?,?)",
+      [
+        1,
+        null,
+        null,
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+      })
+    )
+  })
+}
+
 module.exports = {
   addActiviteInModel,
+  getListOfActiviteToPrintInTable,
   selectStatsPapbActiviteInModel,
   selectNotAffectedPaabIdInModel,
   selectNotAffectedByPapbIdAndStrategieIdInModel,

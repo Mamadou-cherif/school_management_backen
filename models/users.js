@@ -289,24 +289,25 @@ function UpdateUserConnexionInstance(theReq) {
 }
 
 function userUpdatePasswordInModel(theReq) {
-  return new Promise((reject, resolve) => {
+  return new Promise((resolve, reject) => {
     connection.query("CALL users_updatePassword(?,?,?)",
       [
         theReq.id,
         theReq.newMotDePasse,
         theReq.modifUserId
       ],
-      (err, results, fields) => {
+      ((err, results, fields) => {
         if (err) {
-          console.log(err)
           reject(err)
         }
-        else {
+        else{
           resolve(results[0])
         }
       })
+    )
   })
 }
+
 
 
 function getAffecteByGroupInModel(theReq) {

@@ -8,7 +8,6 @@ function addActiviteTache(req, res,next){
         tacheId: req.body.tacheId,
         estActif: 1
     }
-    console.log(req.body)
     ActiviteTache.activitetacheSelectByInModel(activitetacheObj)
         .then(activitetache=>{
             if(activitetache.length==0){
