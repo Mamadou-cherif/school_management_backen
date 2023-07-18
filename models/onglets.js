@@ -11,8 +11,7 @@ const { reject } = require("bcrypt/promises");
 
 function checkIfOngletExists(theReq) {
   return new Promise((resolve, reject) => {
-
-    connection.query("CALL onglets_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL onglets_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.menuId,
@@ -27,16 +26,17 @@ function checkIfOngletExists(theReq) {
         theReq.creationDate,
         theReq.creationUserId,
         theReq.modifDate,
-        theReq.modifUserId,
-        theReq.debutDonnees,
-        theReq.finDonnees
+        theReq.modifUserId
       ],
 
       ((err, results, fields) => {
         if (err) {
+          console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+          resolve(results[0])
+        }
       })
     )
   })
@@ -89,9 +89,12 @@ function getOngletByIdInModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })
@@ -113,9 +116,12 @@ function disableOngletInModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })
@@ -132,9 +138,12 @@ function getOngletByGroupeModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })
@@ -151,9 +160,12 @@ function getOngletByUserReferenceMenuInModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })
@@ -171,9 +183,12 @@ function getAffectesByGroupeAndMenuInModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })
@@ -194,9 +209,12 @@ function getOngletsAffecteAUnGroupeInModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })
@@ -222,9 +240,12 @@ function updateOngletInModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })

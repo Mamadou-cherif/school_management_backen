@@ -21,9 +21,12 @@ function getCountPrivilegeForActionOnglet(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })
@@ -42,9 +45,12 @@ function getCountPrivilegeForActionMenu(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })
@@ -53,7 +59,7 @@ function getCountPrivilegeForActionMenu(theReq) {
 function checkIfPrivilegeExists(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL privileges_selectBy(?,? ,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL privileges_selectBy(?,? ,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.menuId,
@@ -64,16 +70,17 @@ function checkIfPrivilegeExists(theReq) {
         theReq.creationDate,
         theReq.creationUserId,
         theReq.modifDate,
-        theReq.modifUserId,
-        theReq.debutDonnees,
-        theReq.finDonnees
+        theReq.modifUserId
       ],
 
       ((err, results, fields) => {
         if (err) {
+          console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+          resolve(results[0])
+        }
       })
     )
   })
@@ -91,9 +98,12 @@ function getAllPrivilegesInModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })
@@ -138,9 +148,12 @@ function deletePrivilegeInModel(id) {
 
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })

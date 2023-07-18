@@ -16,9 +16,12 @@ function getAllCouleurInModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })
@@ -36,9 +39,12 @@ function getCouleurByIdInModel(id) {
 
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })
@@ -125,18 +131,18 @@ function couleurSelectByInModel(data) {
 
 function disableCouleurInModel(id) {
   return new Promise((resolve, reject) => {
-
     connection.query("CALL couleurs_disable(?)",
       [
         id,
-
       ],
-
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })

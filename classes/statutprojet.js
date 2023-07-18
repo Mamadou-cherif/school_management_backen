@@ -1,7 +1,7 @@
 const statutprojet={
     id: null,
     libelle: null,
-    code: null,
+    observations: null,
     estActif: 1,
     creationDate: null,
     creationUserId: null,

@@ -41,10 +41,9 @@ function userConnexionSelectByInModel(theReq){
   function userConnexionInsertInModel(theReq){
     
     return new Promise((reject, resolve)=>{
-      connection.query("CALL userconnexions_insert(?,?,?,?)",
+      connection.query("CALL userconnexions_insert(?,?,?)",
        [  
            theReq.userId,
-           theReq.adressIp,
            theReq.fin,
            theReq.creationUserId
            

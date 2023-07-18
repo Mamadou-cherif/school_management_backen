@@ -20,9 +20,12 @@ function selectByIdCommuneInModel(id) {
 
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })
@@ -122,7 +125,8 @@ function deleteCommuneInModel(id) {
 }
 function communeSelectByInModel(data) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL communes_selectBy(?,?,?,?,?,?,?,?,?,?,?)",
+
+    connection.query("CALL communes_selectBy(?,?,?,?,?,?,?,?,?)",
       [
         data.id,
         data.prefectureId,
@@ -132,16 +136,17 @@ function communeSelectByInModel(data) {
         data.creationDate,
         data.creationUserId,
         data.modifDate,
-        data.modifUserId,
-        data.debutDonnees,
-        data.finDonnees
+        data.modifUserId
       ],
 
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })

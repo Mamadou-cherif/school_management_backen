@@ -10,7 +10,7 @@ const { reject } = require("bcrypt/promises");
 
 function checkIfUserGroupeExists(theReq) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL usergroupes_selectBy(?,? ,?,?,?,?,?,?,?,?)",
+    connection.query("CALL usergroupes_selectBy(?,? ,?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.userId,
@@ -19,16 +19,17 @@ function checkIfUserGroupeExists(theReq) {
         theReq.creationDate,
         theReq.creationUserId,
         theReq.modifDate,
-        theReq.modifUserId,
-        theReq.debutDonnees,
-        theReq.finDonnees
+        theReq.modifUserId
       ],
 
       ((err, results, fields) => {
         if (err) {
+          console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+          resolve(results[0])
+        }
       })
     )
   })
@@ -49,7 +50,7 @@ function addUserGroupeInModel(theReq) {
       ,
       (err, results, fields) => {
         if (err) {
-
+          console.log(err)
           reject(err)
           //connection.end();
         }
@@ -145,9 +146,12 @@ function getAsingleUserGroupeInModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })
@@ -165,9 +169,12 @@ function getAllUserGroupesInModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })

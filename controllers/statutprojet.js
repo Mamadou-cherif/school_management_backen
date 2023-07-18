@@ -15,33 +15,19 @@ function addStatutProjet(req, res,next){
      StatutProjet.checkIfStatutProjetExists(statutprojet)
           .then(statutprojet=> {
                 if(statutprojet.length==0){
-                    const statutprojet={
-                        code: req.body.code,
-                        estActif: 1,
-                    }
-                    
-                    StatutProjet.checkIfStatutProjetExists(statutprojet)
-                        .then(statutprojet=>{
-                            if(statutprojet.length==0){
-                                initStatutProjetClass.libelle= req.body.libelle
-                                initStatutProjetClass.libelle= req.body.libelle
-                                initStatutProjetClass.code= req.body.code                   
-                                initStatutProjetClass.creationUserId= req.body.creationUserId
+                    initStatutProjetClass.libelle= req.body.libelle
+                    initStatutProjetClass.observations= req.body.observations                  
+                    initStatutProjetClass.creationUserId= req.body.creationUserId
 
-                                StatutProjet.addStatutProjetInModel(initStatutProjetClass)
-                                    .then(()=> res.status(201).json({succes: "la création a reussi"}))
-                                    .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
-                            }
-                            else{
-                                return res.status(400).json({error: "Ce code de statut projet existe déjà."})
-                            }
-                        })
-                        .catch(()=>res.status(400).json({error: "Erreur de la procédure stockée selectBy de statutprojets."}))
-                    
+                    StatutProjet.addStatutProjetInModel(initStatutProjetClass)
+                        .then(()=> res.status(201).json({succes: "la création a reussi"}))
+                        .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
+                
+                  
                 }
                 else
                    {
-                     res.status(500).json({error: "Le libellé saisi est déjà rattaché à un autre statut de projet"})
+                     res.status(500).json({error: "Le libellé saisi est déjà rattaché à un autre statut"})
                    }
           })
           .catch(()=> res.status(400).json({error: "Erreur retournée par la procédure stockée de selectBy"}))
@@ -68,35 +54,20 @@ function updateStatutProjet(req,res, next){
     StatutProjet.checkIfStatutProjetExists(statutprojetObj)
          .then(statutprojet=> {
                if((statutprojet.length==0) || (statutprojet[0].id== req.body.id)){
-                const statutprojetObj={
-                    code: req.body.code,
-                    estActif: 1,
-                }
-                StatutProjet.checkIfStatutProjetExists(statutprojetObj)
-                .then(statutprojet=>{
-                    if((statutprojet.length==0) || (statutprojet[0].id== req.body.id)){
-                        initStatutProjetClass.libelle= req.body.libelle
-                        initStatutProjetClass.id= req.body.id
-                        initStatutProjetClass.libelle= req.body.libelle
-                        initStatutProjetClass.code= req.body.code                   
-                        initStatutProjetClass.modifDate= req.body.modifDate
-                        initStatutProjetClass.modifUserId= req.body.modifUserId
-                  
-                           StatutProjet.updateStatutProjetInModel(initStatutProjetClass)
-                                 .then(()=> res.status(200).json({succes: "la modification a reussi"}))
-                                 .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
-                       
-                    }
-                    else{
-                        return res.status(400).json({error: "Ce code existe déjà"})
-                    }
-                })
-                .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
-      
+                initStatutProjetClass.id= req.body.id
+                initStatutProjetClass.libelle= req.body.libelle
+                initStatutProjetClass.libelle= req.body.libelle
+                initStatutProjetClass.observations= req.body.observations                  
+                initStatutProjetClass.modifDate= req.body.modifDate
+                initStatutProjetClass.modifUserId= req.body.modifUserId
+          
+                   StatutProjet.updateStatutProjetInModel(initStatutProjetClass)
+                         .then(()=> res.status(200).json({succes: "la modification a reussi"}))
+                         .catch(()=> res.status(400).json({error: "erreur de la procédure stocké d'ajout"}));
                 }
                else
                   {
-                    res.status(500).json({error: "cet statut de projet existe déjà"})
+                    res.status(500).json({error: "cet statut existe déjà"})
                   }
          })
          .catch(()=> res.status(400).json({error: "erreur retournée par la procédure stockée de selectBy"}))
@@ -115,13 +86,18 @@ function getAsingleStatutProjet(req, res, next){
         .catch(error=> res.status(400).json(error))
 }
 
+//supression logique d'un axe
+function deleteStatutProjet(req, res, next) {
+    StatutProjet.deleteStatutProjetInModel(req.params.id)
+      .then(() => res.status(201).json({ succes: "Suppression effectuée avec succès" }))
+      .catch(() => res.status(400).json({ error: "Impossible de supprimer cet élément car il est lié à une autre table" }));
+  }
+  
 
 function getAllStatutProjets(req,res, next){
-    initStatutProjetClass.estActif= req.body.estActif
-    initStatutProjetClass.debut= req.body.debut
-    initStatutProjetClass.fin= req.body.fin
+    
 
-     StatutProjet.getAllStatutProjetInModel(initStatutProjetClass)
+     StatutProjet.getAllStatutProjetInModel()
         .then(statutprojets=> res.status(200).json(statutprojets))
         .catch(error=> res.status(400).json(error))
 }
@@ -132,6 +108,7 @@ function getAllStatutProjets(req,res, next){
 
  
 module.exports={
+    deleteStatutProjet,
     disableStatutProjet,
     addStatutProjet,
     updateStatutProjet,

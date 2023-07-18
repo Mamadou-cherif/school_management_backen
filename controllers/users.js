@@ -123,93 +123,130 @@ function getImageFile(req, res) {
         }
     });
 }
+// function login(req, res, next) {
+//     bool = false
+//     const login = {
+//         // telephone: req.body.indicatifTel + req.body.telephone1,
+//         telephone:  req.body.telephone1,
+//         motDePasse: md5(req.body.password)
+//     }
+//     User.getNbAuthenticateInModel(login)
+//         .then(data => {
+            
+//             if (data[0].nombre >= 0) {
+//                 User.getAuthenticateInModel(login)
+//                     .then(user => {
+//                         if (user) {
+//                             initUserConnexion.userConnexion.debutDonnees = 0
+//                             initUserConnexion.userConnexion.finDonnees = 1
+//                             initUserConnexion.userConnexion.estActif = 1
+//                             initUserConnexion.userConnexion.userId = user[0].id
+//                             userConnexion.userConnexionSelectByInModel(initUserConnexion.userConnexion)
+//                                 .then(data => {
+//                                     if (data.length == 0) {
+//                                         bool = true
+//                                     } else {
+//                                         if (data[0].fin == null) {
+//                                             bool = true
+//                                         }
+//                                         else {
+//                                             bool = true
+//                                         }
+//                                     }
+//                                     if (bool) {
+//                                         initUserPassword.userPassword.userId = user[0].id
+//                                         initUserPassword.userPassword.estActif = 1
+//                                         initUserPassword.userPassword.debutDonnees = 0
+//                                         initUserPassword.userPassword.finDonnees = 1
+
+//                                         userPassword.userPasswordSelectByInModel(initUserPassword.userPassword)
+//                                             .then(userpassword => {
+//                                                 console.log(userpassword)
+//                                                 if (userpassword[0].type == "Auto") {
+//                                                      return res.status(200).json({ customisePassword: true,user, })
+//                                                 }
+//                                                 else {
+                                                    
+//                                                     const userconnect = {
+//                                                         userId: user[0].id,
+//                                                         creationUserId: user[0].creationUserId,
+//                                                         adressIp: null,
+//                                                         fin: null,
+//                                                     }
+
+//                                                     userConnexion.userConnexionInsertInModel(userconnect)
+//                                                         .then(() => { })
+//                                                         .catch(() => { })
+//                                                     user.telephone2 = undefined
+//                                                     res.status(200).json({
+//                                                         customisePassword: false,
+//                                                         user,
+//                                                         token: jwt.createtoken(user)
+//                                                     })
+//                                                 }
+//                                             })
+//                                     }
+//                                     else {
+
+//                                     }
+//                                 })
+//                                 .catch(error => res.status(400).json(error))
+//                             // }
+//                             // else{
+//                             //     return res.status(500).json({error: "le mot de pass saisi est invalid"})
+//                             // }
+
+//                         }
+//                         else {
+//                             return res.status(500).json({ error: "vos identifiants sont incorrects." })
+//                         }
+
+
+
+//                     })
+//                     .catch(error => res.status(400).json(error))
+//             }
+//             else {
+//                 return res.status(500).json({ message: "identifiants invalides" })
+//             }
+//         })
+//         .catch(error => res.status(400).json(error))
+
+// }
+
 function login(req, res, next) {
     bool = false
     const login = {
-        telephone1: req.body.indicatifTel + req.body.telephone1,
-        motDePasse: md5(req.body.password)
+        // telephone: req.body.indicatifTel + req.body.telephone1,
+        telephone:  req.body.telephone1,
+        // motDePasse: md5(req.body.password)
     }
-    User.getNbAuthenticateInModel(login)
-        .then(data => {
-            
-            if (data[0].nombre > 0) {
-                User.getAuthenticateInModel(login)
-                    .then(user => {
-                        if (user) {
-                            initUserConnexion.userConnexion.debutDonnees = 0
-                            initUserConnexion.userConnexion.finDonnees = 1
-                            initUserConnexion.userConnexion.estActif = 1
-                            initUserConnexion.userConnexion.userId = user[0].id
-                            userConnexion.userConnexionSelectByInModel(initUserConnexion.userConnexion)
-                                .then(data => {
-                                    if (data.length == 0) {
-                                        bool = true
-                                    } else {
-                                        if (data[0].fin == null) {
-                                            bool = true
-                                        }
-                                        else {
-                                            bool = true
-                                        }
-                                    }
-                                    if (bool) {
-                                        initUserPassword.userPassword.userId = user[0].id
-                                        initUserPassword.userPassword.estActif = 1
-                                        initUserPassword.userPassword.debutDonnees = 0
-                                        initUserPassword.userPassword.finDonnees = 1
-
-                                        userPassword.userPasswordSelectByInModel(initUserPassword.userPassword)
-                                            .then(userpassword => {
-                                                console.log(userpassword)
-                                                if (userpassword[0].type == "Auto") {
-                                                     return res.status(200).json({ customisePassword: true,user, })
-                                                }
-                                                else {
-                                                    
-                                                    const userconnect = {
-                                                        userId: user[0].id,
-                                                        creationUserId: user[0].creationUserId,
-                                                        adressIp: null,
-                                                        fin: null,
-                                                    }
-
-                                                    userConnexion.userConnexionInsertInModel(userconnect)
-                                                        .then(() => { })
-                                                        .catch(() => { })
-                                                    user.telephone2 = undefined
-                                                    res.status(200).json({
-                                                        customisePassword: false,
-                                                        user,
-                                                        token: jwt.createtoken(user)
-                                                    })
-                                                }
-                                            })
-                                    }
-                                    else {
-
-                                    }
-                                })
-                                .catch(error => res.status(400).json(error))
-                            // }
-                            // else{
-                            //     return res.status(500).json({error: "le mot de pass saisi est invalid"})
-                            // }
-
-                        }
-                        else {
-                            return res.status(500).json({ error: "vos identifiants sont incorrects." })
-                        }
-
-
-
-                    })
-                    .catch(error => res.status(400).json(error))
+    User.checkIfUserExists(login)
+        .then(data=>{
+            if(data.length == 0){
+                return res.status(500).json({eror: "cet utilisateur n'existe pas dans notre base de données!"})
             }
-            else {
-                return res.status(500).json({ message: "identifiants invalides" })
+            else{
+                if(data[0].password == md5(req.body.password)){
+                    const userconnect = {
+                        userId: data[0].id,
+                        creationdataId: data[0].creationUserId,
+                        adressIp: null,
+                        fin: null,
+                    }
+
+                    userConnexion.userConnexionInsertInModel(userconnect)
+                        .then(() => { })
+                        .catch(() => { })
+                    // data[0].telephone2 = 
+                    res.status(200).json({
+                        // customisePassword: false,
+                        data,
+                        token: jwt.createtoken(data)
+                    })
+                }
             }
         })
-        .catch(error => res.status(400).json(error))
 
 }
 

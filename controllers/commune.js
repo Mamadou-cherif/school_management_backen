@@ -1,10 +1,4 @@
 const Commune = require("../models/communes")
-const express = require("express")
-const bodyParser = require("body-parser")
-const app = express()
-const jwt = require("jsonwebtoken")
-app.use(bodyParser.json())
-const bcrypt = require("bcrypt")
 const initCommunesClass = require("../classes/communes")
 
 function communeSelectBy(req, res, next) {
@@ -50,7 +44,7 @@ function addCommune(req, res, next) {
     prefectureId: req.body.prefectureId
   }
 
-  //verifie si l'utilisateur existe en base
+  //verifie si la commune existe en base
   Commune.communeSelectByInModel(objCommune)
     .then(communes => {
       if (communes.length == 0) {
@@ -109,14 +103,11 @@ function deleteCommune(req, res, next) {
     .catch(() => res.status(400).json({ error: "Suppression impossible car cette commune appartient dans une autre table" }));
 }
 
-
 module.exports = {
-
   communeSelectBy,
   selectAllCommune,
   selectByIdCommune,
   addCommune,
   updateCommune,
   deleteCommune
-
 }

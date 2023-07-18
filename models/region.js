@@ -10,7 +10,7 @@ const { reject } = require("bcrypt/promises");
 function regionSelectByInModel(data) {
 
   return new Promise((resolve, reject) => {
-    connection.query("CALL regions_selectBy(?,? ,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL regions_selectBy(?,? ,?,?,?,?,?,?,?)",
       [
         data.id,
         data.paysId,
@@ -20,16 +20,17 @@ function regionSelectByInModel(data) {
         data.creationDate,
         data.creationUserId,
         data.modifDate,
-        data.modifUserId,
-        data.debutDonnees,
-        data.finDonnees
+        data.modifUserId
       ],
 
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })
@@ -44,9 +45,12 @@ function selectByIdRegionInModel(id) {
 
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })
@@ -64,9 +68,12 @@ function selectAllRegionInModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })

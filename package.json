@@ -1,12 +1,12 @@
 {
   "name": "suiviprojetpublic",
   "version": "1.0.0",
-  "description": "un projet de suivi de projets pour le MEPUA",
+  "description": "un projet de pointage",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Global Itech",
+  "author": "Cherif Barry",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.1",

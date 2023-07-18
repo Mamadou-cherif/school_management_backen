@@ -11,13 +11,11 @@ const { reject } = require("bcrypt/promises");
 function addStatutProjetInModel(theReq){
     return new Promise((resolve,reject)=> {
     
-        connection.query("CALL statutprojets_insert(?,?,?)",
+        connection.query("CALL statuts_insert(?,?,?)",
               [ 
                 theReq.libelle,              
-                theReq.code, 
+                theReq.observations, 
                 theReq.creationUserId
-
-                
               ],
     
           ((err,results, fields)=>{
@@ -33,19 +31,16 @@ function addStatutProjetInModel(theReq){
 function checkIfStatutProjetExists(theReq){
     return new Promise((resolve,reject)=> {
     
-        connection.query("CALL statutprojets_selectBy(?,?,?,?,?,?,?,?,?,?)",
+        connection.query("CALL statuts_selectBy(?,?,?,?,?,?,?,?)",
               [ 
                 theReq.id,              
                 theReq.libelle,              
-                theReq.code,              
+                theReq.observations,              
                 theReq.estActif,
                 theReq.creationDate,
                 theReq.creationUserId,
                 theReq.modifDate,
-                theReq.modifUserId,
-                theReq.debutDonnees,
-                theReq.finDonnees
-                
+                theReq.modifUserId
               ],
     
           ((err,results, fields)=>{
@@ -61,7 +56,7 @@ function checkIfStatutProjetExists(theReq){
 function getStatutProjetByIdInModel(id){
     return new Promise((resolve,reject)=> {
     
-        connection.query("CALL statutprojets_selectById(?)",
+        connection.query("CALL statuts_selectById(?)",
               [ 
                 id
                 
@@ -81,7 +76,7 @@ function getStatutProjetByIdInModel(id){
 function disableStatutProjetInModel(theReq){
     return new Promise((resolve,reject)=> {
     
-        connection.query("CALL statutprojets_disable(?,?,?)",
+        connection.query("CALL statuts_disable(?,?,?)",
               [ 
                 theReq.id,
                 theReq.modifUserId,
@@ -99,15 +94,37 @@ function disableStatutProjetInModel(theReq){
       })
 }
  
+function deleteStatutProjetInModel(id) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL statuts_delete(?)",
+      [
+        id,
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else {
+          resolve(results[0]);
+        }
+
+      })
+    )
+  })
+}
 
 function updateStatutProjetInModel(theReq){
     return new Promise((resolve,reject)=> {
     
-        connection.query("CALL statutprojets_update(?,?,?,?,?)",
+        connection.query("CALL statuts_update(?,?,?,?,?)",
               [ 
                 theReq.id,
                 theReq.libelle,
-                theReq.code,
+                theReq.observations,
                 theReq.modifDate,
                 theReq.modifUserId
                 
@@ -126,19 +143,22 @@ function updateStatutProjetInModel(theReq){
 function getAllStatutProjetInModel(theReq){
     return new Promise((resolve,reject)=> {
     
-        connection.query("CALL statutprojets_selectAll(?,?,?)",
+        connection.query("CALL statuts_selectAll(?,?,?)",
               [ 
-                theReq.estActif,
-                theReq.debut,
-                theReq.fin,
+                1,
+               null,
+                null,
                 
               ],
     
           ((err,results, fields)=>{
             if(err){
+              console.log(err)
               reject(err)
             }
-            resolve(results[0])
+            else{
+              resolve(results[0])
+            }
           })
         )
       })
@@ -150,5 +170,6 @@ module.exports={
     updateStatutProjetInModel,
     getStatutProjetByIdInModel,
     getAllStatutProjetInModel,
-    checkIfStatutProjetExists
+    checkIfStatutProjetExists,
+    deleteStatutProjetInModel
 }

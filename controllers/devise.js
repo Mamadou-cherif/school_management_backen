@@ -1,9 +1,4 @@
 const Devise = require("../models/devise")
-const express = require("express")
-const bodyParser = require("body-parser")
-const app = express()
-const jwt = require("jsonwebtoken")
-app.use(bodyParser.json())
 const initDeviseClass = require("../classes/devise")
 
 function deviseSelectBy(req, res, next) {

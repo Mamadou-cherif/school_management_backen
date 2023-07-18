@@ -47,7 +47,7 @@ function addAMenu(theObject) {
 function checkIfMenuExists(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL menus_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL menus_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.reference,
@@ -62,16 +62,16 @@ function checkIfMenuExists(theReq) {
         theReq.creationDate,
         theReq.creationUserId,
         theReq.modifDate,
-        theReq.modifUserId,
-        theReq.debutDonnees,
-        theReq.finDonnees
+        theReq.modifUserId
       ],
 
       ((err, results, fields) => {
         if (err) {
           reject(err)
         }
-        resolve(results[0])
+        else{
+          resolve(results[0])
+        }
       })
     )
   })
@@ -167,9 +167,12 @@ function getWithOngletsInModels(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })
@@ -207,9 +210,12 @@ function getAllMenusInModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })
@@ -316,9 +322,12 @@ function getAsingleMenuInModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })
@@ -333,9 +342,12 @@ function getFilsByPereInModel(theReq) {
       ],
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })

@@ -11,39 +11,32 @@ const { reject } = require("bcrypt/promises");
 
 
 function checkIfUserExists(theReq) {
+  console.log(theReq)
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL users_selectBy(?,? ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL users_selectBy(?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
-        theReq.structureId,
-        theReq.prestataireId,
-        theReq.nom,
+        theReq.name,
         theReq.prenoms,
-        theReq.fonction,
-        theReq.telephone1,
-        theReq.telephone2,
-        theReq.email,
-        theReq.photo,
-        theReq.password,
-        theReq.quartierdistrictId,
-        theReq.observations,
-        theReq.estAlerte,
-        theReq.estSuspendu,
+        theReq.telephone,
+        theReq.passwords,
+        theReq.adresse,
         theReq.estActif,
         theReq.creationDate,
         theReq.creationUserId,
         theReq.modifDate,
-        theReq.modifUserId,
-        theReq.debutDonnees,
-        theReq.finDonnees
+        theReq.modifUserId
       ],
 
       ((err, results, fields) => {
         if (err) {
+          console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+          resolve(results[0])
+        }
       })
     )
   })
@@ -60,9 +53,12 @@ function getNbAuthenticateInModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+          console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+          resolve(results[0])
+        }
       })
     )
   })
@@ -79,9 +75,12 @@ function getAuthenticateInModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+          console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+          resolve(results[0])
+        }
       })
     )
   })
@@ -215,9 +214,12 @@ function getAsingleUserInModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })
@@ -235,9 +237,12 @@ function getAllUsersInModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })
@@ -321,9 +326,12 @@ function getAffecteByGroupInModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+            console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+            resolve(results[0])
+        }
       })
     )
   })
@@ -340,9 +348,12 @@ function getNonAffecteByGroupInModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+          console.log(err)
           reject(err)
         }
-        resolve(results[0])
+        else{
+          resolve(results[0])
+        }
       })
     )
   })
