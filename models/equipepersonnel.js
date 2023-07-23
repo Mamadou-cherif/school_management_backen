@@ -46,6 +46,29 @@ function selectAllEquipesPersonnelInModel(theReq) {
 }
 
 
+function getPersonnelAffectedToEquipe(theReq) {
+  return new Promise((resolve, reject) => {
+    connection.query("CALL equipespersonnels_getPersonnelAffectedToEquipe(?,?)",
+      [
+        theReq.siteId,
+        theReq.equipeId,
+			
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+            console.log(err)
+          reject(err)
+          //connection.end();
+        }
+        else {
+          resolve(results[0]);
+        }
+
+      })
+    )
+  })
+}
 function addEquipesPersonnelInModel(theReq) {
   return new Promise((resolve, reject) => {
     connection.query("CALL equipespersonnels_insert(?,?,?,?,?)",
@@ -155,6 +178,7 @@ function equipespersonnelSelectByInModel(theReq) {
 
 module.exports = {
   equipespersonnelSelectByInModel,
+  getPersonnelAffectedToEquipe,
   addEquipesPersonnelInModel,
   updateEquipesPersonnelInModel,
   selectByIdEquipesPersonnelInModel,

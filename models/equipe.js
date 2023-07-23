@@ -22,6 +22,28 @@ function getSupperviseurNotAffectedToEquipe(id) {
   })
 
 }
+
+function getPersonnelNotAffectedToEquipe(id) {
+  return new Promise((resolve, reject) => {
+    connection.query("CALL personnels_getPersonnelNotAffectedToEquipe(?)",
+      [
+        id
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+            console.log(err)
+          reject(err)
+        }
+        else{
+            resolve(results[0])
+        }
+      })
+    )
+  })
+
+}
+
 function selectByIdEquipeInModel(id) {
   return new Promise((resolve, reject) => {
     connection.query("CALL equipes_selectById(?)",
@@ -110,6 +132,7 @@ function updateEquipeInModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+          console.log(err)
           reject(err)
           //connection.end();
         }
@@ -180,6 +203,7 @@ function equipeSelectByInModel(theReq) {
 module.exports = {
   equipeSelectByInModel,
   getSupperviseurNotAffectedToEquipe,
+  getPersonnelNotAffectedToEquipe,
   addEquipeInModel,
   updateEquipeInModel,
   selectByIdEquipeInModel,

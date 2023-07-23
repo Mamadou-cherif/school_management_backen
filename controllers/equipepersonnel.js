@@ -36,15 +36,19 @@ function selectByIdEquipesPersonnel(req, res, next) {
 }
 
 
+function getPersonnelAffectedToEquipe(req, res, next) {
+  const equipespersonnelObj = {
+    siteId: req.body.siteId,
+    equipeId: req.body.equipeId
+  }
+
+  EquipesPersonnel.getPersonnelAffectedToEquipe(equipespersonnelObj)
+  .then(personnel => res.status(201).json(personnel))
+  .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée equipespersonnel_insert" }));
+
+
+}
 function addEquipesPersonnel(req, res, next) {
-    const obj={
-      equipeId: req.body.equipeId,
-      personnelId: req.body.personnelId,
-        estActif:1,
-    }
-  EquipesPersonnel.equipespersonnelSelectByInModel(obj)
-    .then(equipespersonnel => {
-      if (equipespersonnel.length == 0) {
         const equipespersonnelObj = {
           equipeId: req.body.equipeId,
           personnelId: req.body.personnelId,
@@ -57,47 +61,25 @@ function addEquipesPersonnel(req, res, next) {
         .then(() => res.status(201).json({succes: "ajout reussi avec succès"}))
         .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée equipespersonnel_insert" }));
       
-      }
-      else {
-        res.status(500).json({ error: "ce personnel existe déjà dans cette équipe" })
-      }
-    })
-    .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée equipespersonnel_selectBy" }))
-
+    
   }
 
 
 function updateEquipesPersonnel(req, res, next) {
-  const obj={
+ 
+  const equipespersonnelObj = {
+    id: req.body.id,
     equipeId: req.body.equipeId,
     personnelId: req.body.personnelId,
-    estActif:1,
-}
-EquipesPersonnel.equipespersonnelSelectByInModel(obj)
-.then(equipespersonnel => {
-  if (equipespersonnel.length == 0) {
-
-    const equipespersonnelObj = {
-      id: req.body.id,
-      equipeId: req.body.equipeId,
-      personnelId: req.body.personnelId,
-      debut: req.body.debut,
-      fin: req.body.fin,
-      modifUserId: req.body.modifUserId,
-      modifDate: req.body.modifDate,
-    }
-  
-    EquipesPersonnel.updateEquipesPersonnelInModel(equipespersonnelObj)
-    .then(() => res.status(201).json({succes: "ajout reussi avec succès"}))
-    .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée equipespersonnel_insert" }));
-  
+    debut: req.body.debut,
+    fin: req.body.fin,
+    modifUserId: req.body.modifUserId,
+    modifDate: req.body.modifDate,
   }
-  else {
-    res.status(500).json({ error: "ce personnel existe déjà dans cette équipe" })
-  }
-})
-.catch(() => res.status(400).json({ error: "Erreur de la procedure stockée equipespersonnel_selectBy" }))
 
+  EquipesPersonnel.updateEquipesPersonnelInModel(equipespersonnelObj)
+  .then(() => res.status(201).json({succes: "la modification a reussi avec succès"}))
+  .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée equipespersonnel_insert" }));
 
   }
 
@@ -111,6 +93,7 @@ function deleteEquipesPersonnel(req, res, next) {
 
 module.exports = {
   equipespersonnelSelectBy,
+  getPersonnelAffectedToEquipe,
   selectAllEquipesPersonnel,
   selectByIdEquipesPersonnel,
   addEquipesPersonnel,

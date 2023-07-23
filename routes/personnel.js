@@ -3,6 +3,7 @@ const router= express.Router()
 const personnelController= require("../controllers/personnel")
 
     router.post("/getChauffeurNotAffectedToCamionToASite", personnelController.getChauffeurNotAffectedToCamionToASite)
+    router.post("/getChauffeurNotAffectedToEquipe", personnelController.getChauffeurNotAffectedToEquipe)
     router.post("/getChauffeurNotAffectedToCamionToAFlotte", personnelController.getChauffeurNotAffectedToCamionToAFlotte)
     router.post("/getChauffeurByFlotteId", personnelController.getChauffeurByFlotteId)
     router.post("/personnelSelectBy", personnelController.personnelSelectBy)

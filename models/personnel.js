@@ -68,6 +68,25 @@ function getChauffeurByFlotteId(theReq) {
 }
 
 
+function getChauffeurNotAffectedToEquipe(theReq) {
+  return new Promise((resolve, reject) => {
+    connection.query("CALL personnels_getChauffeurNotAffectedToEquipe(?)",
+      [
+       theReq.contratId
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+            console.log(err)
+          reject(err)
+        }
+        else{
+            resolve(results[0])
+        }
+      })
+    )
+  })
+}
 
 function getChauffeurNotAffectedToCamionToAFlotte(theReq) {
   return new Promise((resolve, reject) => {
@@ -236,6 +255,7 @@ function personnelSelectByInModel(theReq) {
 module.exports = {
   personnelSelectByInModel,
   getChauffeurNotAffectedToCamionToASite,
+  getChauffeurNotAffectedToEquipe,
   getChauffeurNotAffectedToCamionToAFlotte,
   getChauffeurByFlotteId,
   addPersonnelInModel,

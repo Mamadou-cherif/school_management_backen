@@ -65,28 +65,29 @@ function getChauffeurBySiteId(theReq) {
 }
 function addBonLivraisonInModel(theReq) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL bonlivraisons_insert(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL bonlivraisons_insert(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.contratId,
         theReq.flotteId,
         theReq.camionId,
         theReq.chauffeurId,
         theReq.trajetId,
+        theReq.equipeId,
         theReq.numeroBl,
         theReq.dateChargement,
         theReq.heure,
         theReq.poidsChargee,
         theReq.poidsVide,
         theReq.tonnageSurBon,
-        theReq.distanceMine,
         theReq.statutBon,
-        theReq.Observations,
+        theReq.distanceMine,
+        theReq.observations,
         theReq.creationUserId,
       ],
 
       ((err, results, fields) => {
         if (err) {
-            console.log(err)
+            console.log()
           reject(err)
           //connection.end();
         }
@@ -100,8 +101,9 @@ function addBonLivraisonInModel(theReq) {
 }
 
 function updateBonLivraisonInModel(theReq) {
+  console.log(theReq)
   return new Promise((resolve, reject) => {
-    connection.query("CALL bonlivraisons_update(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL bonlivraisons_update(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.contratId,
@@ -109,15 +111,16 @@ function updateBonLivraisonInModel(theReq) {
         theReq.camionId,
         theReq.chauffeurId,
         theReq.trajetId,
+        theReq.equipeId,
         theReq.numeroBl,
         theReq.dateChargement,
         theReq.heure,
         theReq.poidsChargee,
         theReq.poidsVide,
         theReq.tonnageSurBon,
-        theReq.distanceMine,
         theReq.statutBon,
-        theReq.Observations,
+        theReq.distanceMine,
+        theReq.observations,
         theReq.modifDate,
         theReq.modifUserId,
       ],
@@ -198,7 +201,7 @@ function getPointageToExportByDay(theReq) {
 }
 function bonlivraisonSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL bonlivraisons_selectBy(?,? ,?,?,?,?,?,?,?,?,? ,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL bonlivraisons_selectBy(?,?,?,? ,?,?,?,?,?,?,?,?,? ,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.contratId,
@@ -206,6 +209,7 @@ function bonlivraisonSelectByInModel(theReq) {
         theReq.camionId,
         theReq.chauffeurId,
         theReq.trajetId,
+        theReq.equipeId,
         theReq.numeroBl,
         theReq.dateChargement,
         theReq.heure,
@@ -214,7 +218,7 @@ function bonlivraisonSelectByInModel(theReq) {
         theReq.tonnageSurBon,
         theReq.statutBon,
         theReq.distanceMine,
-        theReq.Observations,
+        theReq.observations,
         theReq.estActif,
         theReq.creationDate,
         theReq.creationUserId,

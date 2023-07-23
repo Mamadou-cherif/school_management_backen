@@ -88,9 +88,6 @@ function addCamion(req, res, next) {
           
         })
         .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée camion_selectBy" }))
-    
-
-
 }
 
 
@@ -140,14 +137,20 @@ function updateCamion(req, res, next) {
           else {
             res.status(500).json({ error: "numero matricule existant" })
           }
-    
-      
     })
     .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée camion_selectBy" }))
-
 }
 
 
+function getCamionInSiteByFlotteId(req, res, next) {
+  const obj={
+    flotteId: req.body.flotteId,
+    siteId: req.body.siteId,
+  }
+  Camion.getCamionInSiteByFlotteId(obj)
+    .then(camion => res.status(201).json(camion))
+    .catch(() => res.status(400).json({ error: "Impossible de supprimer cet élément car il est lié à une autre table" }));
+}
 //supression logique d'un axe
 function deleteCamion(req, res, next) {
   Camion.deleteCamionInModel(req.params.id)
@@ -158,6 +161,7 @@ function deleteCamion(req, res, next) {
 
 module.exports = {
   camionSelectBy,
+  getCamionInSiteByFlotteId,
   selectAllCamion,
   selectByIdCamion,
   addCamion,

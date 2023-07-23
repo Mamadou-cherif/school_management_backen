@@ -3,6 +3,7 @@ const router= express.Router()
 const camionController= require("../controllers/camion")
 
     router.post("/camionSelectBy", camionController.camionSelectBy)
+    router.post("/getCamionInSiteByFlotteId", camionController.getCamionInSiteByFlotteId)
     router.get("/selectAllCamion", camionController.selectAllCamion)
     router.get("/selectByIdCamion/:id", camionController.selectByIdCamion)
     router.post("/addCamion", camionController.addCamion)

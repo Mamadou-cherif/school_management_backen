@@ -17,11 +17,7 @@ CamionSite.camionsiteSelectByInModel(obj)
     .catch(error => res.status(400).json({ error }))
 }
 
-
-
-
 function selectAllCamionSite(req, res, next) {
-
     CamionSite.selectAllCamionSiteInModel(req)
     .then(camionsite => res.status(200).json(camionsite))
     .catch(error => res.status(400).json(error))
@@ -54,10 +50,9 @@ function addCamionSite(req, res, next) {
         CamionSite.addCamionSiteInModel(camionsiteObj)
         .then(() => res.status(201).json({succes: "ajout reussi avec succès"}))
         .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée camionsite_insert" }));
-      
       }
       else {
-        res.status(500).json({ error: "ce camionest déjà rattaché à un autre" })
+        res.status(500).json({ error: "ce camion est déjà rattaché à un autre" })
       }
     })
     .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée camionsite_selectBy" }))

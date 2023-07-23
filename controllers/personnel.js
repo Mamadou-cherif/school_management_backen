@@ -23,7 +23,14 @@ Personnel.personnelSelectByInModel(obj)
     .catch(error => res.status(400).json({ error }))
 }
 
-
+function getChauffeurNotAffectedToEquipe(req, res, next) {
+  const obj={
+    contratId: req.body.contratId
+  }
+    Personnel.getChauffeurNotAffectedToEquipe(obj)
+    .then(personnel => res.status(200).json(personnel))
+    .catch(error => res.status(400).json(error))
+  }
 
 function getChauffeurNotAffectedToCamionToASite(req, res, next) {
   const obj={
@@ -181,6 +188,7 @@ function deletePersonnel(req, res, next) {
 module.exports = {
   personnelSelectBy,
   getChauffeurNotAffectedToCamionToASite,
+  getChauffeurNotAffectedToEquipe,
   getChauffeurNotAffectedToCamionToAFlotte,
   getChauffeurByFlotteId,
   selectAllPersonnel,

@@ -3,6 +3,27 @@ const config = require("../configs/dbconfig")
 let connection = mysql.createConnection(config)
 
 
+function getCamionInSiteByFlotteId(theReq) {
+  return new Promise((resolve, reject) => {
+    connection.query("CALL camions_getCamionInSiteByFlotteId(?,?)",
+      [
+        theReq.flotteId,
+        theReq.siteId
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+            console.log(err)
+          reject(err)
+        }
+        else{
+            resolve(results[0])
+        }
+      })
+    )
+  })
+
+}
 
 function selectByIdCamionInModel(id) {
   return new Promise((resolve, reject) => {
@@ -160,6 +181,7 @@ function camionSelectByInModel(theReq) {
 
 module.exports = {
   camionSelectByInModel,
+  getCamionInSiteByFlotteId,
   addCamionInModel,
   updateCamionInModel,
   selectByIdCamionInModel,

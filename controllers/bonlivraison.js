@@ -8,6 +8,7 @@ function bonlivraisonSelectBy(req, res, next) {
         camionId: req.body.camionId || null,
         chauffeurId: req.body.chauffeurId || null,
         trajetId: req.body.trajetId || null,
+        equipeId: req.body.equipeId || null,
         numeroBl: req.body.numeroBl || null,
         dateChargement: req.body.dateChargement || null,
         heure: req.body.heure || null,
@@ -69,6 +70,7 @@ function addBonLivraison(req, res, next) {
     }
   BonLivraison.bonlivraisonSelectByInModel(obj)
     .then(bonlivraison => {
+      console.log(req.body.distanceMine)
       if (bonlivraison.length == 0) {
         const bonlivraisonObj = {
           contratId: req.body.contratId,
@@ -76,23 +78,21 @@ function addBonLivraison(req, res, next) {
           camionId: req.body.camionId,
           chauffeurId: req.body.chauffeurId,
           trajetId: req.body.trajetId,
+          equipeId: req.body.equipeId,
           numeroBl: req.body.numeroBl,
           dateChargement: req.body.dateChargement,
           heure: req.body.heure,
           poidsChargee: req.body.poidsChargee,
           poidsVide: req.body.poidsVide,
           tonnageSurBon: req.body.tonnageSurBon,
-          distanceMine: req.body.distanceMine,
           statutBon: req.body.statutBon,
+          distanceMine: req.body.distanceMine,
           observations: req.body.observations,
           creationUserId: req.body.creationUserId,
         }
-      
+       
         BonLivraison.addBonLivraisonInModel(bonlivraisonObj)
-        .then(data => {
-          console.log()
-          res.status(201).json(data[0][0])
-        })
+        .then(() => res.status(201).json({succes: "ajout réussi"}))
         .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée bonlivraison_insert" }));
       
       }
@@ -120,6 +120,7 @@ BonLivraison.bonlivraisonSelectByInModel(obj)
       camionId: req.body.camionId,
       chauffeurId: req.body.chauffeurId,
       trajetId: req.body.trajetId,
+      equipeId: req.body.equipeId,
       numeroBl: req.body.numeroBl,
       dateChargement: req.body.dateChargement,
       heure: req.body.heure,

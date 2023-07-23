@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mar. 18 juil. 2023 à 20:58
+-- Généré le : lun. 24 juil. 2023 à 00:45
 -- Version du serveur : 10.4.22-MariaDB
 -- Version de PHP : 8.0.15
 
@@ -20,11 +20,14 @@ SET time_zone = "+00:00";
 --
 -- Base de données : `logistiquebanki`
 --
+CREATE DATABASE IF NOT EXISTS `logistiquebanki` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `logistiquebanki`;
 
 DELIMITER $$
 --
 -- Procédures
 --
+DROP PROCEDURE IF EXISTS `bonlivraisons_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE bonlivraisons 
 	 SET 
@@ -35,11 +38,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_activate` (`id` INT, 
 	 AND bonlivraisons.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `bonlivraisons_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_delete` (`id` INT)  BEGIN
 	 DELETE FROM bonlivraisons 
 	 WHERE bonlivraisons.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `bonlivraisons_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE bonlivraisons 
 	 SET 
@@ -50,18 +55,21 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_disable` (`id` INT, `
 	 AND bonlivraisons.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `bonlivraisons_getPointageToEexportToExcel`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_getPointageToEexportToExcel` ()  BEGIN
 	SELECT 
+			equipes.libelle as equipe,
 			bonlivraisons.dateChargement,
             bonlivraisons.heure,
 			bonlivraisons.numeroBl,
-            bonlivraisons.contratId,
+            contrats.libelle as contrat,
             bonlivraisons.poidsChargee,
             bonlivraisons.poidsVide,
             (bonlivraisons.poidsChargee -  bonlivraisons.poidsVide) as tonnage,
             bonlivraisons.tonnageSurBon,
 			`quartierdistricts`.`libelle` as chargement,
-            concat(personnels.prenoms,' ', personnels.nom) as nomComplet,
+            concat(personnels.prenoms,' ', personnels.nom) as chauffeur,
+            concat(P.prenoms,' ', P.nom) as superviseur,
 			`camions`.`immatriculation`,
             `camions`.`radar`,
             flottes.libelle as flotte,			
@@ -70,22 +78,28 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_getPointageToEexportT
 		 FROM bonlivraisons
          INNER JOIN `contrats`  ON bonlivraisons.contratId= `contrats`.`id`
          INNER JOIN `personnels`  ON bonlivraisons.chauffeurId= `personnels`.`id`
+		 INNER JOIN `equipes`  ON bonlivraisons.equipeId= `equipes`.`id`
+		 LEFT JOIN  `personnels` P on `equipes`.`superviseurId`= P.id
          INNER JOIN `flottes`  ON bonlivraisons.flotteId= `flottes`.`id`
          INNER JOIN `camions`  ON bonlivraisons.camionId= `camions`.`id`
          INNER JOIN `quartierdistricts`  ON bonlivraisons.trajetId= `quartierdistricts`.`id`;
 END$$
 
+DROP PROCEDURE IF EXISTS `bonlivraisons_getPointageToExportByDay`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_getPointageToExportByDay` (`dateChargement` DATETIME)  BEGIN
  SELECT 
+			equipes.libelle as equipe,
 			bonlivraisons.dateChargement,
             bonlivraisons.heure,
 			bonlivraisons.numeroBl,
+            contrats.libelle as contrat,
             bonlivraisons.poidsChargee,
             bonlivraisons.poidsVide,
             (bonlivraisons.poidsChargee -  bonlivraisons.poidsVide) as tonnage,
             bonlivraisons.tonnageSurBon,
 			`quartierdistricts`.`libelle` as chargement,
-            concat(personnels.prenoms,' ', personnels.nom) as nomComplet,
+            concat(personnels.prenoms,' ', personnels.nom) as chauffeur,
+            concat(P.prenoms,' ', P.nom) as superviseur,
 			`camions`.`immatriculation`,
             `camions`.`radar`,
             flottes.libelle as flotte,			
@@ -94,14 +108,16 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_getPointageToExportBy
 		 FROM bonlivraisons
          INNER JOIN `contrats`  ON bonlivraisons.contratId= `contrats`.`id`
          INNER JOIN `personnels`  ON bonlivraisons.chauffeurId= `personnels`.`id`
+		 INNER JOIN `equipes`  ON bonlivraisons.equipeId= `equipes`.`id`
+		 LEFT JOIN  `personnels` P on `equipes`.`superviseurId`= P.id
          INNER JOIN `flottes`  ON bonlivraisons.flotteId= `flottes`.`id`
          INNER JOIN `camions`  ON bonlivraisons.camionId= `camions`.`id`
          INNER JOIN `quartierdistricts`  ON bonlivraisons.trajetId= `quartierdistricts`.`id`
-         
          where bonlivraisons.dateChargement= dateChargement;
  END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_insert` (`contratId` INT(11), `flotteId` INT(11), `camionId` INT(11), `chauffeurId` INT(11), `trajetId` INT(11), `numeroBl` INT(11), `dateChargement` DATETIME, `heure` TIME, `poidsChargee` DOUBLE, `poidsVide` DOUBLE, `tonnageSurBon` INT(11), `distanceMine` INT(11), `statutBon` VARCHAR(100), `Observations` LONGTEXT, `creationUserId` INT)  BEGIN
+DROP PROCEDURE IF EXISTS `bonlivraisons_insert`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_insert` (`contratId` INT(11), `flotteId` INT(11), `camionId` INT(11), `chauffeurId` INT(11), `trajetId` INT(11), `equipeId` INT(11), `numeroBl` INT(11), `dateChargement` DATETIME, `heure` TIME, `poidsChargee` DOUBLE, `poidsVide` INT(11), `tonnageSurBon` INT(11), `statutBon` VARCHAR(100), `distanceMine` INT(11), `Observations` LONGTEXT, `creationUserId` INT)  BEGIN
 	 INSERT INTO bonlivraisons( 
 		 id, 
 		 contratId,
@@ -109,14 +125,15 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_insert` (`contratId` 
 		 camionId,
 		 chauffeurId,
 		 trajetId,
+		 equipeId,
 		 numeroBl,
 		 dateChargement,
 		 heure,
 		 poidsChargee,
 		 poidsVide,
 		 tonnageSurBon,
-         distanceMine,
 		 statutBon,
+		 distanceMine,
 		 Observations,
 		 creationDate, 
 		 creationUserId, 
@@ -130,53 +147,64 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_insert` (`contratId` 
 			 camionId,
 			 chauffeurId,
 			 trajetId,
+			 equipeId,
 			 numeroBl,
 			 dateChargement,
 			 heure,
 			 poidsChargee,
 			 poidsVide,
 			 tonnageSurBon,
-             distanceMine,
 			 statutBon,
+			 distanceMine,
 			 Observations,
 			 CURRENT_TIMESTAMP, 
 			 creationUserId, 
 			 CURRENT_TIMESTAMP, 
 			 creationUserId 
 			 ); 
-             
-             call bonlivraisons_selectById(last_insert_id());
-             #select last_insert_id() as lastInstedId;
  END$$
 
+DROP PROCEDURE IF EXISTS `bonlivraisons_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
 			bonlivraisons.id,
-            personnels.nom as personnelNom,
-            personnels.prenoms as personnelPrenoms,
-            `contrats`.`libelle` as contrat,
-            camions.libelle as camion,
-            camions.immatriculation as camionImmatriculation,
-            flottes.libelle as flotte,
-            `quartierdistricts`.`libelle` as chargement,
+			bonlivraisons.contratId,
+			bonlivraisons.flotteId,
+			bonlivraisons.camionId,
+			bonlivraisons.chauffeurId,
+			bonlivraisons.trajetId,
+			bonlivraisons.equipeId,
 			bonlivraisons.numeroBl,
-            bonlivraisons.contratId,
-            bonlivraisons.trajetId,
-			bonlivraisons.heure,
-            bonlivraisons.poidsChargee,
 			bonlivraisons.dateChargement,
+			bonlivraisons.heure,
+			bonlivraisons.poidsChargee,
 			bonlivraisons.poidsVide,
 			bonlivraisons.tonnageSurBon,
-            bonlivraisons.distanceMine,
-			bonlivraisons.statutBon
+            `quartierdistricts`.`libelle` as chargement,
+			`camions`.`libelle` as camion,
+            personnels.prenoms,
+            P.prenoms as prenomSuperviseur,
+            P.nom as nomSuperviseur,
+            personnels.nom,
+            `camions`.`radar`,
+           `camions`.`immatriculation`,
+            flottes.libelle as flotte,
+			bonlivraisons.statutBon,
+			bonlivraisons.distanceMine,
+			bonlivraisons.Observations,
+			bonlivraisons.estActif,
+			bonlivraisons.creationDate,
+			bonlivraisons.creationUserId,
+			bonlivraisons.modifDate,
+			bonlivraisons.modifUserId
 		 FROM bonlivraisons
-         INNER JOIN `contrats`  ON bonlivraisons.contratId= `contrats`.`id`
-         INNER JOIN `personnels`  ON bonlivraisons.chauffeurId= `personnels`.`id`
+		 INNER JOIN `personnels`  ON bonlivraisons.chauffeurId= `personnels`.`id`
+         INNER JOIN `equipes`  ON bonlivraisons.equipeId= `equipes`.`id`
+         INNER JOIN `personnels` P  ON equipes.superviseurId= `P`.`id`
          INNER JOIN `flottes`  ON bonlivraisons.flotteId= `flottes`.`id`
          INNER JOIN `camions`  ON bonlivraisons.camionId= `camions`.`id`
-         INNER JOIN `quartierdistricts`  ON bonlivraisons.trajetId= `quartierdistricts`.`id`
-         ';
+		 INNER JOIN `quartierdistricts`  ON bonlivraisons.trajetId= `quartierdistricts`.`id`';
  	 SET @requeteSql := CONCAT(@requeteSql,' WHERE bonlivraisons.estActif = ', estActif); 
 	 IF debut IS NOT NULL THEN 
 	 SET @requeteSql := CONCAT(@requeteSql, ' LIMIT ',debut, ', ',fin); 
@@ -186,7 +214,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_selectAll` (`estActif
 	 DEALLOCATE PREPARE statement;
  END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_selectBy` (`id` INT(11), `contratId` INT(11), `flotteId` INT(11), `camionId` INT(11), `chauffeurId` INT(11), `trajetId` INT(11), `numeroBl` INT(11), `dateChargement` DATETIME, `heure` TIME, `poidsChargee` DOUBLE, `poidsVide` DOUBLE, `tonnageSurBon` INT(11), `distanceMine` INT(11), `statutBon` VARCHAR(100), `Observations` LONGTEXT, `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
+DROP PROCEDURE IF EXISTS `bonlivraisons_selectBy`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_selectBy` (`id` INT(11), `contratId` INT(11), `flotteId` INT(11), `camionId` INT(11), `chauffeurId` INT(11), `trajetId` INT(11), `equipeId` INT(11), `numeroBl` INT(11), `dateChargement` DATETIME, `heure` TIME, `poidsChargee` DOUBLE, `poidsVide` INT(11), `tonnageSurBon` INT(11), `statutBon` VARCHAR(100), `distanceMine` INT(11), `Observations` LONGTEXT, `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
 		 'SELECT
@@ -196,19 +225,15 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_selectBy` (`id` INT(1
 			bonlivraisons.camionId,
 			bonlivraisons.chauffeurId,
 			bonlivraisons.trajetId,
+			bonlivraisons.equipeId,
 			bonlivraisons.numeroBl,
 			bonlivraisons.dateChargement,
 			bonlivraisons.heure,
 			bonlivraisons.poidsChargee,
 			bonlivraisons.poidsVide,
 			bonlivraisons.tonnageSurBon,
-            bonlivraisons.distanceMine,
-            `quartierdistricts`.`id` as quartierId,
-            `communes`.`id` as communeId,
-            `prefectures`.`id` as prefectureId,
-            `regions`.`id` as regionId,
-            `payss`.`id` as paysId,
 			bonlivraisons.statutBon,
+			bonlivraisons.distanceMine,
 			bonlivraisons.Observations,
 			bonlivraisons.estActif,
 			bonlivraisons.creationDate,
@@ -216,11 +241,6 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_selectBy` (`id` INT(1
 			bonlivraisons.modifDate,
 			bonlivraisons.modifUserId
 		 FROM bonlivraisons
-         INNER JOIN `quartierdistricts`  ON bonlivraisons.trajetId= `quartierdistricts`.`id`
-         INNER JOIN `communes`  ON quartierdistricts.communeId= `communes`.`id`
-         INNER JOIN `prefectures`  ON communes.prefectureId= `prefectures`.`id`
-         INNER JOIN `regions`  ON prefectures.regionId= `regions`.`id`
-         INNER JOIN `payss`  ON regions.paysId= `payss`.`id`
 		WHERE 1';
 	 IF id IS NOT NULL THEN 
 		 SET @requeteSql := CONCAT(@requeteSql, ' AND bonlivraisons.id = ' ,id); 
@@ -240,6 +260,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_selectBy` (`id` INT(1
 	 IF trajetId IS NOT NULL THEN 
 		 SET @requeteSql := CONCAT(@requeteSql, ' AND bonlivraisons.trajetId = ' ,trajetId); 
 	 END IF; 
+	 IF equipeId IS NOT NULL THEN 
+		 SET @requeteSql := CONCAT(@requeteSql, ' AND bonlivraisons.equipeId = ' ,equipeId); 
+	 END IF; 
 	 IF numeroBl IS NOT NULL THEN 
 		 SET @requeteSql := CONCAT(@requeteSql, ' AND bonlivraisons.numeroBl = ' ,numeroBl); 
 	 END IF; 
@@ -253,16 +276,16 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_selectBy` (`id` INT(1
 		 SET @requeteSql := CONCAT(@requeteSql, ' AND bonlivraisons.poidsChargee = "',poidsChargee,'"');
 	 END IF; 
 	 IF poidsVide IS NOT NULL THEN 
-		 SET @requeteSql := CONCAT(@requeteSql, ' AND bonlivraisons.poidsVide = "',poidsVide,'"');
+		 SET @requeteSql := CONCAT(@requeteSql, ' AND bonlivraisons.poidsVide = ' ,poidsVide); 
 	 END IF; 
 	 IF tonnageSurBon IS NOT NULL THEN 
 		 SET @requeteSql := CONCAT(@requeteSql, ' AND bonlivraisons.tonnageSurBon = ' ,tonnageSurBon); 
 	 END IF; 
-      IF distanceMine IS NOT NULL THEN 
-		 SET @requeteSql := CONCAT(@requeteSql, ' AND bonlivraisons.distanceMine = ' ,distanceMine); 
-	 END IF; 
 	 IF statutBon IS NOT NULL THEN 
 		 SET @requeteSql := CONCAT(@requeteSql, ' AND bonlivraisons.statutBon = "',statutBon,'"');
+	 END IF; 
+	 IF distanceMine IS NOT NULL THEN 
+		 SET @requeteSql := CONCAT(@requeteSql, ' AND bonlivraisons.distanceMine = ' ,distanceMine); 
 	 END IF; 
 	 IF Observations IS NOT NULL THEN 
 		 SET @requeteSql := CONCAT(@requeteSql, ' AND bonlivraisons.Observations = "',Observations,'"');
@@ -287,6 +310,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_selectBy` (`id` INT(1
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `bonlivraisons_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			bonlivraisons.id,
@@ -295,14 +319,15 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_selectById` (`id` INT
 			bonlivraisons.camionId,
 			bonlivraisons.chauffeurId,
 			bonlivraisons.trajetId,
+			bonlivraisons.equipeId,
 			bonlivraisons.numeroBl,
 			bonlivraisons.dateChargement,
 			bonlivraisons.heure,
 			bonlivraisons.poidsChargee,
 			bonlivraisons.poidsVide,
 			bonlivraisons.tonnageSurBon,
-            bonlivraisons.distanceMine,
 			bonlivraisons.statutBon,
+			bonlivraisons.distanceMine,
 			bonlivraisons.Observations,
 			bonlivraisons.estActif,
 			bonlivraisons.creationDate,
@@ -313,7 +338,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_selectById` (`id` INT
 		 WHERE bonlivraisons.id= id ;
  END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_update` (`id` INT, `contratId` INT(11), `flotteId` INT(11), `camionId` INT(11), `chauffeurId` INT(11), `trajetId` INT(11), `numeroBl` INT(11), `dateChargement` DATETIME, `heure` TIME, `poidsChargee` DOUBLE, `poidsVide` DOUBLE, `tonnageSurBon` INT(11), `distanceMine` INT(11), `statutBon` VARCHAR(100), `Observations` LONGTEXT, `modifDate` DATETIME, `modifUserId` INT)  BEGIN
+DROP PROCEDURE IF EXISTS `bonlivraisons_update`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_update` (`id` INT, `contratId` INT(11), `flotteId` INT(11), `camionId` INT(11), `chauffeurId` INT(11), `trajetId` INT(11), `equipeId` INT(11), `numeroBl` INT(11), `dateChargement` DATETIME, `heure` TIME, `poidsChargee` DOUBLE, `poidsVide` INT(11), `tonnageSurBon` INT(11), `statutBon` VARCHAR(100), `distanceMine` INT(11), `Observations` LONGTEXT, `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE bonlivraisons
 		 SET 
 			contratId = contratId, 
@@ -321,14 +347,15 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_update` (`id` INT, `c
 			camionId = camionId, 
 			chauffeurId = chauffeurId, 
 			trajetId = trajetId, 
+			equipeId = equipeId, 
 			numeroBl = numeroBl, 
 			dateChargement = dateChargement, 
 			heure = heure, 
 			poidsChargee = poidsChargee, 
 			poidsVide = poidsVide, 
 			tonnageSurBon = tonnageSurBon, 
-            distanceMine = distanceMine,
 			statutBon = statutBon, 
+			distanceMine = distanceMine, 
 			Observations = Observations, 
 			 modifDate= CURRENT_TIMESTAMP, 
 			 modifUserId= modifUserId 
@@ -336,6 +363,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `bonlivraisons_update` (`id` INT, `c
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `camionschauffeurs_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `camionschauffeurs_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE camionschauffeurs 
 	 SET 
@@ -346,11 +374,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `camionschauffeurs_activate` (`id` I
 	 AND camionschauffeurs.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `camionschauffeurs_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `camionschauffeurs_delete` (`id` INT)  BEGIN
 	 DELETE FROM camionschauffeurs 
 	 WHERE camionschauffeurs.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `camionschauffeurs_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `camionschauffeurs_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE camionschauffeurs 
 	 SET 
@@ -361,6 +391,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `camionschauffeurs_disable` (`id` IN
 	 AND camionschauffeurs.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `camionschauffeurs_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `camionschauffeurs_insert` (`chauffeurId` INT(11), `camionId` INT(11), `estTitulaire` INT(11), `creationUserId` INT)  BEGIN
 	 INSERT INTO camionschauffeurs( 
 		 id, 
@@ -384,6 +415,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `camionschauffeurs_insert` (`chauffe
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `camionschauffeurs_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `camionschauffeurs_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -406,6 +438,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `camionschauffeurs_selectAll` (`estA
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `camionschauffeurs_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `camionschauffeurs_selectBy` (`id` INT(11), `chauffeurId` INT(11), `camionId` INT(11), `estTitulaire` INT(11), `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -458,6 +491,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `camionschauffeurs_selectBy` (`id` I
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `camionschauffeurs_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `camionschauffeurs_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			camionschauffeurs.id,
@@ -473,6 +507,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `camionschauffeurs_selectById` (`id`
 		 WHERE camionschauffeurs.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `camionschauffeurs_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `camionschauffeurs_update` (`id` INT, `chauffeurId` INT(11), `camionId` INT(11), `estTitulaire` INT(11), `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE camionschauffeurs
 		 SET 
@@ -485,6 +520,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `camionschauffeurs_update` (`id` INT
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `camionsites_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `camionsites_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE camionsites 
 	 SET 
@@ -495,11 +531,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `camionsites_activate` (`id` INT, `m
 	 AND camionsites.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `camionsites_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `camionsites_delete` (`id` INT)  BEGIN
 	 DELETE FROM camionsites 
 	 WHERE camionsites.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `camionsites_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `camionsites_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE camionsites 
 	 SET 
@@ -510,6 +548,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `camionsites_disable` (`id` INT, `mo
 	 AND camionsites.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `camionsites_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `camionsites_insert` (`camionId` INT(11), `siteId` INT(11), `observations` LONGTEXT, `creationUserId` INT)  BEGIN
 	 INSERT INTO camionsites( 
 		 id, 
@@ -533,6 +572,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `camionsites_insert` (`camionId` INT
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `camionsites_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `camionsites_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -555,6 +595,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `camionsites_selectAll` (`estActif` 
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `camionsites_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `camionsites_selectBy` (`id` INT(11), `camionId` INT(11), `siteId` INT(11), `observations` LONGTEXT, `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -562,9 +603,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `camionsites_selectBy` (`id` INT(11)
 			camionsites.id,
              camions.libelle,
              camions.capaciteThBenne,
-			camions.immatriculation,
-			camions.radar, 
+			 camions.immatriculation,
+			 camions.radar, 
+             camions.flotteId, 
             `personnels`.`prenoms`,
+            `flottes`.`libelle` as flotte,
             `personnels`.`nom`,
             `personnels`.`telephone`,
             `personnels`.`email`,
@@ -579,6 +622,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `camionsites_selectBy` (`id` INT(11)
 		 FROM camionsites
 			  INNER JOIN `camions`  ON camionsites.camionId = `camions`.`id`
                LEFT JOIN `personnels`  ON `camions`.`titulaire`= `personnels`.`id`
+               INNER JOIN `flottes`  ON camions.flotteId = `flottes`.`id`
 		WHERE 1';
 	 IF id IS NOT NULL THEN 
 		 SET @requeteSql := CONCAT(@requeteSql, ' AND camionsites.id = ' ,id); 
@@ -612,6 +656,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `camionsites_selectBy` (`id` INT(11)
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `camionsites_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `camionsites_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			camionsites.id,
@@ -627,6 +672,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `camionsites_selectById` (`id` INT) 
 		 WHERE camionsites.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `camionsites_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `camionsites_update` (`id` INT, `camionId` INT(11), `siteId` INT(11), `observations` LONGTEXT, `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE camionsites
 		 SET 
@@ -639,6 +685,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `camionsites_update` (`id` INT, `cam
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `camions_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `camions_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE camions 
 	 SET 
@@ -649,11 +696,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `camions_activate` (`id` INT, `modif
 	 AND camions.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `camions_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `camions_delete` (`id` INT)  BEGIN
 	 DELETE FROM camions 
 	 WHERE camions.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `camions_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `camions_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE camions 
 	 SET 
@@ -664,6 +713,23 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `camions_disable` (`id` INT, `modifU
 	 AND camions.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `camions_getCamionInSiteByFlotteId`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `camions_getCamionInSiteByFlotteId` (`flotteId` INT, `siteId` INT)  BEGIN
+	SELECT 
+			camionsites.id,
+            camions.libelle,
+			camions.capaciteThBenne,
+			camions.immatriculation,
+			camionsites.camionId,
+			camionsites.siteId
+		
+		 FROM camionsites
+         INNER JOIN `camions`  ON camionsites.camionId = `camions`.`id`
+         INNER JOIN `flottes`  ON `camions`.`flotteId` = `flottes`.`id`
+		 WHERE camionsites.siteId= siteId AND `camions`.`flotteId`= flotteId;
+END$$
+
+DROP PROCEDURE IF EXISTS `camions_getCamionNoteAffectedToSite`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `camions_getCamionNoteAffectedToSite` ()  BEGIN
 	 SELECT 
 			camions.id,
@@ -683,6 +749,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `camions_getCamionNoteAffectedToSite
          );
 END$$
 
+DROP PROCEDURE IF EXISTS `camions_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `camions_insert` (`libelle` VARCHAR(30), `flotteId` INT(11), `titulaire` INT(11), `capaciteThBenne` INT(11), `immatriculation` VARCHAR(30), `radar` VARCHAR(45), `creationUserId` INT)  BEGIN
 	 INSERT INTO camions( 
 		 id, 
@@ -713,6 +780,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `camions_insert` (`libelle` VARCHAR(
              select last_insert_id() as lastInstedId;
  END$$
 
+DROP PROCEDURE IF EXISTS `camions_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `camions_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -738,6 +806,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `camions_selectAll` (`estActif` TINY
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `camions_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `camions_selectBy` (`id` INT(11), `libelle` VARCHAR(45), `flotteId` INT(11), `titulaire` INT(11), `capaciteThBenne` INT(11), `immatriculation` VARCHAR(30), `radar` VARCHAR(30), `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -802,6 +871,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `camions_selectBy` (`id` INT(11), `l
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `camions_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `camions_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			camions.id,
@@ -820,6 +890,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `camions_selectById` (`id` INT)  BEG
 		 WHERE camions.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `camions_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `camions_update` (`id` INT, `libelle` VARCHAR(45), `flotteId` INT(11), `titulaire` INT(11), `capaciteThBenne` INT(11), `immatriculation` VARCHAR(30), `radar` VARCHAR(45), `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE camions
 		 SET   
@@ -835,6 +906,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `camions_update` (`id` INT, `libelle
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `communes_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `communes_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE communes 
 	 SET 
@@ -845,11 +917,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `communes_activate` (`id` INT, `modi
 	 AND communes.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `communes_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `communes_delete` (`id` INT)  BEGIN
 	 DELETE FROM communes 
 	 WHERE communes.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `communes_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `communes_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE communes 
 	 SET 
@@ -860,6 +934,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `communes_disable` (`id` INT, `modif
 	 AND communes.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `communes_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `communes_insert` (`prefectureId` INT(11), `libelle` VARCHAR(50), `code` VARCHAR(5), `creationUserId` INT)  BEGIN
 	 INSERT INTO communes( 
 		 id, 
@@ -883,6 +958,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `communes_insert` (`prefectureId` IN
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `communes_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `communes_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -905,6 +981,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `communes_selectAll` (`estActif` TIN
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `communes_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `communes_selectBy` (`id` INT(11), `prefectureId` INT(11), `libelle` VARCHAR(50), `code` VARCHAR(5), `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -952,6 +1029,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `communes_selectBy` (`id` INT(11), `
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `communes_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `communes_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			communes.id,
@@ -967,6 +1045,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `communes_selectById` (`id` INT)  BE
 		 WHERE communes.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `communes_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `communes_update` (`id` INT, `prefectureId` INT(11), `libelle` VARCHAR(50), `code` VARCHAR(5), `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE communes
 		 SET 
@@ -979,6 +1058,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `communes_update` (`id` INT, `prefec
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `contratflottes_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `contratflottes_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE contratflottes 
 	 SET 
@@ -989,11 +1069,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `contratflottes_activate` (`id` INT,
 	 AND contratflottes.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `contratflottes_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `contratflottes_delete` (`id` INT)  BEGIN
 	 DELETE FROM contratflottes 
 	 WHERE contratflottes.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `contratflottes_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `contratflottes_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE contratflottes 
 	 SET 
@@ -1004,6 +1086,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `contratflottes_disable` (`id` INT, 
 	 AND contratflottes.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `contratflottes_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `contratflottes_insert` (`contratId` INT(11), `flotteId` INT(11), `observations` LONGTEXT, `creationUserId` INT)  BEGIN
 	 INSERT INTO contratflottes( 
 		 id, 
@@ -1027,6 +1110,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `contratflottes_insert` (`contratId`
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `contratflottes_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `contratflottes_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -1049,6 +1133,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `contratflottes_selectAll` (`estActi
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `contratflottes_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `contratflottes_selectBy` (`id` INT(11), `contratId` INT(11), `flotteId` INT(11), `observations` LONGTEXT, `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -1107,6 +1192,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `contratflottes_selectBy` (`id` INT(
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `contratflottes_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `contratflottes_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			contratflottes.id,
@@ -1122,6 +1208,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `contratflottes_selectById` (`id` IN
 		 WHERE contratflottes.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `contratflottes_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `contratflottes_update` (`id` INT, `contratId` INT(11), `flotteId` INT(11), `observations` LONGTEXT, `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE contratflottes
 		 SET 
@@ -1134,6 +1221,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `contratflottes_update` (`id` INT, `
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `contrats_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `contrats_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE contrats 
 	 SET 
@@ -1144,11 +1232,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `contrats_activate` (`id` INT, `modi
 	 AND contrats.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `contrats_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `contrats_delete` (`id` INT)  BEGIN
 	 DELETE FROM contrats 
 	 WHERE contrats.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `contrats_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `contrats_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE contrats 
 	 SET 
@@ -1159,6 +1249,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `contrats_disable` (`id` INT, `modif
 	 AND contrats.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `contrats_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `contrats_insert` (`localisationId` INT(11), `debut` DATETIME, `libelle` VARCHAR(45), `documentLink` VARCHAR(45), `objectifs` VARCHAR(85), `creationUserId` INT)  BEGIN
 	 INSERT INTO contrats( 
 		 id, 
@@ -1186,6 +1277,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `contrats_insert` (`localisationId` 
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `contrats_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `contrats_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -1213,6 +1305,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `contrats_selectAll` (`estActif` TIN
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `contrats_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `contrats_selectBy` (`id` INT(11), `localisationId` INT(11), `debut` DATETIME, `libelle` VARCHAR(45), `documentLink` VARCHAR(45), `objectifs` VARCHAR(85), `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -1271,6 +1364,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `contrats_selectBy` (`id` INT(11), `
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `contrats_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `contrats_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			contrats.id,
@@ -1299,6 +1393,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `contrats_selectById` (`id` INT)  BE
 		 WHERE contrats.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `contrats_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `contrats_update` (`id` INT, `localisationId` INT(11), `debut` DATETIME, `libelle` VARCHAR(45), `documentLink` VARCHAR(45), `objectifs` VARCHAR(85), `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE contrats
 		 SET 
@@ -1313,6 +1408,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `contrats_update` (`id` INT, `locali
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `couleurs_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `couleurs_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE couleurs 
 	 SET 
@@ -1323,11 +1419,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `couleurs_activate` (`id` INT, `modi
 	 AND couleurs.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `couleurs_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `couleurs_delete` (`id` INT)  BEGIN
 	 DELETE FROM couleurs 
 	 WHERE couleurs.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `couleurs_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `couleurs_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE couleurs 
 	 SET 
@@ -1338,6 +1436,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `couleurs_disable` (`id` INT, `modif
 	 AND couleurs.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `couleurs_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `couleurs_insert` (`libelle` VARCHAR(45), `codeHtml` VARCHAR(10), `creationUserId` INT)  BEGIN
 	 INSERT INTO couleurs( 
 		 id, 
@@ -1359,6 +1458,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `couleurs_insert` (`libelle` VARCHAR
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `couleurs_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `couleurs_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -1380,6 +1480,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `couleurs_selectAll` (`estActif` TIN
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `couleurs_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `couleurs_selectBy` (`id` INT(11), `libelle` VARCHAR(45), `codeHtml` VARCHAR(10), `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -1423,6 +1524,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `couleurs_selectBy` (`id` INT(11), `
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `couleurs_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `couleurs_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			couleurs.id,
@@ -1437,6 +1539,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `couleurs_selectById` (`id` INT)  BE
 		 WHERE couleurs.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `couleurs_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `couleurs_update` (`id` INT, `libelle` VARCHAR(45), `codeHtml` VARCHAR(10), `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE couleurs
 		 SET 
@@ -1448,6 +1551,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `couleurs_update` (`id` INT, `libell
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `devises_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `devises_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE devises 
 	 SET 
@@ -1458,11 +1562,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devises_activate` (`id` INT, `modif
 	 AND devises.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `devises_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `devises_delete` (`id` INT)  BEGIN
 	 DELETE FROM devises 
 	 WHERE devises.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `devises_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `devises_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE devises 
 	 SET 
@@ -1473,6 +1579,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devises_disable` (`id` INT, `modifU
 	 AND devises.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `devises_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `devises_insert` (`libelle` VARCHAR(45), `symbole` VARCHAR(10), `creationUserId` INT)  BEGIN
 	 INSERT INTO devises( 
 		 id, 
@@ -1494,6 +1601,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devises_insert` (`libelle` VARCHAR(
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `devises_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `devises_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -1515,6 +1623,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devises_selectAll` (`estActif` TINY
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `devises_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `devises_selectBy` (`id` INT(11), `libelle` VARCHAR(45), `symbole` VARCHAR(10), `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -1558,6 +1667,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devises_selectBy` (`id` INT(11), `l
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `devises_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `devises_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			devises.id,
@@ -1572,6 +1682,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devises_selectById` (`id` INT)  BEG
 		 WHERE devises.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `devises_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `devises_update` (`id` INT, `libelle` VARCHAR(45), `symbole` VARCHAR(10), `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE devises
 		 SET 
@@ -1583,6 +1694,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `devises_update` (`id` INT, `libelle
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `equipespersonnels_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `equipespersonnels_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE equipespersonnels 
 	 SET 
@@ -1593,11 +1705,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `equipespersonnels_activate` (`id` I
 	 AND equipespersonnels.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `equipespersonnels_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `equipespersonnels_delete` (`id` INT)  BEGIN
 	 DELETE FROM equipespersonnels 
 	 WHERE equipespersonnels.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `equipespersonnels_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `equipespersonnels_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE equipespersonnels 
 	 SET 
@@ -1608,12 +1722,31 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `equipespersonnels_disable` (`id` IN
 	 AND equipespersonnels.modifDate = modifDate; 
  END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `equipespersonnels_insert` (`equipeId` INT(11), `personnelId` INT(11), `debut` DATE, `creationUserId` INT)  BEGIN
+DROP PROCEDURE IF EXISTS `equipespersonnels_getPersonnelAffectedToEquipe`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `equipespersonnels_getPersonnelAffectedToEquipe` (`siteId` INT, `equipeId` INT)  BEGIN
+		 SELECT 
+			equipespersonnels.id,
+			equipespersonnels.equipeId,
+			equipespersonnels.personnelId,
+			equipespersonnels.debut,
+            personnels.nom,
+            personnels.prenoms,
+			equipespersonnels.fin
+           
+		 FROM equipespersonnels
+         INNER JOIN `equipes`  ON equipespersonnels.equipeId = `equipes`.`id`
+         INNER JOIN `personnels`  ON equipespersonnels.personnelId = `personnels`.`id`
+		 WHERE equipespersonnels.equipeId= equipeId  AND equipespersonnels.fin IS NULL;
+END$$
+
+DROP PROCEDURE IF EXISTS `equipespersonnels_insert`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `equipespersonnels_insert` (`equipeId` INT(11), `personnelId` INT(11), `debut` DATE, `fin` DATE, `creationUserId` INT)  BEGIN
 	 INSERT INTO equipespersonnels( 
 		 id, 
 		 equipeId,
 		 personnelId,
 		 debut,
+         fin,
 		 creationDate, 
 		 creationUserId, 
 		 modifDate, 
@@ -1624,6 +1757,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `equipespersonnels_insert` (`equipeI
 			 equipeId,
 			 personnelId,
 			 debut,
+             fin,
 			 CURRENT_TIMESTAMP, 
 			 creationUserId, 
 			 CURRENT_TIMESTAMP, 
@@ -1631,6 +1765,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `equipespersonnels_insert` (`equipeI
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `equipespersonnels_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `equipespersonnels_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -1639,6 +1774,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `equipespersonnels_selectAll` (`estA
 			equipespersonnels.personnelId,
 			equipespersonnels.debut,
 			equipespersonnels.fin,
+            equipespersonnels.estActif,
 			equipespersonnels.creationDate,
 			equipespersonnels.creationUserId,
 			equipespersonnels.modifDate,
@@ -1653,7 +1789,8 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `equipespersonnels_selectAll` (`estA
 	 DEALLOCATE PREPARE statement;
  END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `equipespersonnels_selectBy` (`id` INT(11), `equipeId` INT(11), `personnelId` INT(11), `debut` DATE, `fin` DATE, `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
+DROP PROCEDURE IF EXISTS `equipespersonnels_selectBy`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `equipespersonnels_selectBy` (`id` INT(11), `equipeId` INT(11), `personnelId` INT(11), `debut` DATE, `fin` DATE, `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
 		 'SELECT
@@ -1662,11 +1799,19 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `equipespersonnels_selectBy` (`id` I
 			equipespersonnels.personnelId,
 			equipespersonnels.debut,
 			equipespersonnels.fin,
+            personnels.nom as nom,
+            `type_fonctions`.`libelle` as typefonction,
+            personnels.prenoms as prenoms,
+            personnels.telephone as telephone,
+            equipespersonnels.estActif,
 			equipespersonnels.creationDate,
 			equipespersonnels.creationUserId,
 			equipespersonnels.modifDate,
 			equipespersonnels.modifUserId
 		 FROM equipespersonnels
+         LEFT JOIN `personnels`  ON equipespersonnels.personnelId = `personnels`.`id`
+		 INNER JOIN `type_fonctions`  ON `personnels`.`typeFonctionId` = `type_fonctions`.`id`
+
 		WHERE 1';
 	 IF id IS NOT NULL THEN 
 		 SET @requeteSql := CONCAT(@requeteSql, ' AND equipespersonnels.id = ' ,id); 
@@ -1682,6 +1827,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `equipespersonnels_selectBy` (`id` I
 	 END IF; 
 	 IF fin IS NOT NULL THEN 
 		 SET @requeteSql := CONCAT(@requeteSql, ' AND equipespersonnels.fin = "',fin,'"');
+	 END IF; 
+     IF estActif IS NOT NULL THEN 
+		 SET @requeteSql := CONCAT(@requeteSql, ' AND equipespersonnels.estActif = "',estActif,'"');
 	 END IF; 
 	 IF creationDate IS NOT NULL THEN 
 		 SET @requeteSql := CONCAT(@requeteSql, ' AND equipespersonnels.creationDate = "',creationDate,'"');
@@ -1700,6 +1848,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `equipespersonnels_selectBy` (`id` I
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `equipespersonnels_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `equipespersonnels_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			equipespersonnels.id,
@@ -1707,6 +1856,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `equipespersonnels_selectById` (`id`
 			equipespersonnels.personnelId,
 			equipespersonnels.debut,
 			equipespersonnels.fin,
+            equipespersonnels.estActif,
 			equipespersonnels.creationDate,
 			equipespersonnels.creationUserId,
 			equipespersonnels.modifDate,
@@ -1715,18 +1865,21 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `equipespersonnels_selectById` (`id`
 		 WHERE equipespersonnels.id= id ;
  END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `equipespersonnels_update` (`id` INT, `equipeId` INT(11), `personnelId` INT(11), `debut` DATE, `modifDate` DATETIME, `modifUserId` INT)  BEGIN
+DROP PROCEDURE IF EXISTS `equipespersonnels_update`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `equipespersonnels_update` (`id` INT, `equipeId` INT(11), `personnelId` INT(11), `debut` DATE, `fin` DATE, `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE equipespersonnels
 		 SET 
-			equipeId = equipeId, 
-			personnelId = personnelId, 
-			debut = debut, 
+			 equipeId = equipeId, 
+			 personnelId = personnelId, 
+			 debut = debut, 
+			 fin = fin, 
 			 modifDate= CURRENT_TIMESTAMP, 
 			 modifUserId= modifUserId 
 		 WHERE equipespersonnels.id = id
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `equipes_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `equipes_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE equipes 
 	 SET 
@@ -1737,11 +1890,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `equipes_activate` (`id` INT, `modif
 	 AND equipes.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `equipes_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `equipes_delete` (`id` INT)  BEGIN
 	 DELETE FROM equipes 
 	 WHERE equipes.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `equipes_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `equipes_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE equipes 
 	 SET 
@@ -1752,6 +1907,25 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `equipes_disable` (`id` INT, `modifU
 	 AND equipes.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `equipes_getPersonnelInQ`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `equipes_getPersonnelInQ` (`siteId` INT, `equipeId` INT)  BEGIN
+		 SELECT 
+			equipespersonnels.id,
+			equipespersonnels.equipeId,
+			equipespersonnels.personnelId,
+			equipespersonnels.debut,
+            personnels.nom,
+            personnels.prenoms,
+			equipespersonnels.fin
+           
+		 FROM equipespersonnels
+         INNER JOIN `equipes`  ON equipespersonnels.equipeId = `equipes`.`id`
+         INNER JOIN `personnels`  ON equipespersonnels.personnelId = `personnels`.`id`
+
+		 WHERE equipespersonnels.equipeId= equipeId AND  `equipes`.`contratId`= contratId AND equipespersonnels.fin IS NULL;
+END$$
+
+DROP PROCEDURE IF EXISTS `equipes_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `equipes_insert` (`contratId` INT(11), `superviseurId` INT(11), `libelle` VARCHAR(30), `observations` VARCHAR(45), `heureFin` VARCHAR(45), `heureDebut` TIME, `creationUserId` INT)  BEGIN
 	 INSERT INTO equipes( 
 		 id, 
@@ -1781,6 +1955,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `equipes_insert` (`contratId` INT(11
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `equipes_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `equipes_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -1806,6 +1981,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `equipes_selectAll` (`estActif` TINY
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `equipes_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `equipes_selectBy` (`id` INT(11), `contratId` INT(11), `superviseurId` INT(11), `libelle` VARCHAR(30), `observations` VARCHAR(45), `heureFin` VARCHAR(45), `heureDebut` TIME, `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -1826,7 +2002,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `equipes_selectBy` (`id` INT(11), `c
 			equipes.modifDate,
 			equipes.modifUserId
 		 FROM equipes
-          INNER JOIN `personnels`  ON equipes.superviseurId = `personnels`.`id`
+          LEFT JOIN `personnels`  ON equipes.superviseurId = `personnels`.`id`
 		WHERE 1';
 	 IF id IS NOT NULL THEN 
 		 SET @requeteSql := CONCAT(@requeteSql, ' AND equipes.id = ' ,id); 
@@ -1869,6 +2045,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `equipes_selectBy` (`id` INT(11), `c
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `equipes_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `equipes_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			equipes.id,
@@ -1887,6 +2064,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `equipes_selectById` (`id` INT)  BEG
 		 WHERE equipes.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `equipes_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `equipes_update` (`id` INT, `contratId` INT(11), `superviseurId` INT(11), `libelle` VARCHAR(30), `observations` VARCHAR(45), `heureFin` VARCHAR(45), `heureDebut` TIME, `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE equipes
 		 SET 
@@ -1902,6 +2080,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `equipes_update` (`id` INT, `contrat
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `flottes_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `flottes_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE flottes 
 	 SET 
@@ -1912,11 +2091,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `flottes_activate` (`id` INT, `modif
 	 AND flottes.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `flottes_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `flottes_delete` (`id` INT)  BEGIN
 	 DELETE FROM flottes 
 	 WHERE flottes.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `flottes_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `flottes_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE flottes 
 	 SET 
@@ -1927,6 +2108,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `flottes_disable` (`id` INT, `modifU
 	 AND flottes.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `flottes_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `flottes_insert` (`libelle` VARCHAR(30), `Responsable` VARCHAR(45), `telephone` INT(11), `email` VARCHAR(30), `creationUserId` INT)  BEGIN
 	 INSERT INTO flottes( 
 		 id, 
@@ -1952,6 +2134,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `flottes_insert` (`libelle` VARCHAR(
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `flottes_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `flottes_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -1975,6 +2158,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `flottes_selectAll` (`estActif` TINY
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `flottes_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `flottes_selectBy` (`id` INT(11), `libelle` VARCHAR(30), `Responsable` VARCHAR(45), `telephone` INT(11), `email` VARCHAR(45), `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -2026,6 +2210,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `flottes_selectBy` (`id` INT(11), `l
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `flottes_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `flottes_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			flottes.id,
@@ -2042,6 +2227,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `flottes_selectById` (`id` INT)  BEG
 		 WHERE flottes.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `flottes_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `flottes_update` (`id` INT, `libelle` VARCHAR(30), `Responsable` VARCHAR(45), `telephone` INT(11), `email` VARCHAR(30), `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE flottes
 		 SET 
@@ -2055,6 +2241,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `flottes_update` (`id` INT, `libelle
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `getTableField`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getTableField` (`tableName` VARCHAR(155), `dbName` VARCHAR(45))  SELECT 
 		
 		column_name as libelle,
@@ -2064,10 +2251,12 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `getTableField` (`tableName` VARCHAR
         FROM information_schema.columns
 	where table_name= tableName and table_schema= dbName$$
 
+DROP PROCEDURE IF EXISTS `getTablesByDbName`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `getTablesByDbName` ()  BEGIN
 	SELECT table_name FROM information_schema.tables WHERE table_schema='logistiquebanki';
 END$$
 
+DROP PROCEDURE IF EXISTS `groupes_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `groupes_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE groupes 
 	 SET 
@@ -2078,11 +2267,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `groupes_activate` (`id` INT, `modif
 	 AND groupes.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `groupes_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `groupes_delete` (`id` INT)  BEGIN
 	 DELETE FROM groupes 
 	 WHERE groupes.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `groupes_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `groupes_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE groupes 
 	 SET 
@@ -2093,6 +2284,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `groupes_disable` (`id` INT, `modifU
 	 AND groupes.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `groupes_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `groupes_insert` (`libelle` VARCHAR(45), `observations` MEDIUMTEXT, `creationUserId` INT)  BEGIN
 	 INSERT INTO groupes( 
 		 id, 
@@ -2114,6 +2306,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `groupes_insert` (`libelle` VARCHAR(
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `groupes_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `groupes_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -2135,6 +2328,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `groupes_selectAll` (`estActif` TINY
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `groupes_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `groupes_selectBy` (`id` INT(11), `libelle` VARCHAR(45), `observations` MEDIUMTEXT, `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -2178,6 +2372,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `groupes_selectBy` (`id` INT(11), `l
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `groupes_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `groupes_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			groupes.id,
@@ -2192,6 +2387,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `groupes_selectById` (`id` INT)  BEG
 		 WHERE groupes.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `groupes_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `groupes_update` (`id` INT, `libelle` VARCHAR(45), `observations` MEDIUMTEXT, `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE groupes
 		 SET 
@@ -2203,6 +2399,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `groupes_update` (`id` INT, `libelle
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `menus_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE menus 
 	 SET 
@@ -2213,11 +2410,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_activate` (`id` INT, `modifUs
 	 AND menus.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `menus_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_delete` (`id` INT)  BEGIN
 	 DELETE FROM menus 
 	 WHERE menus.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `menus_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE menus 
 	 SET 
@@ -2228,6 +2427,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_disable` (`id` INT, `modifUse
 	 AND menus.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `menus_getFilsAffecteAUnGroupe`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_getFilsAffecteAUnGroupe` (`menuPereId` INT, `groupeId` INT)  BEGIN
 
    SELECT `menus`.`id`,
@@ -2258,6 +2458,7 @@ FROM `menus`
     ORDER BY `menus`.`ordre`;
 END$$
 
+DROP PROCEDURE IF EXISTS `menus_getFilsByPere`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_getFilsByPere` (IN `pereId` INT)  BEGIN
 
   SELECT
@@ -2281,6 +2482,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_getFilsByPere` (IN `pereId` I
 	ORDER BY `menus`.`ordre`;
 END$$
 
+DROP PROCEDURE IF EXISTS `menus_getMenuFils`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_getMenuFils` ()  BEGIN
 
    SELECT `menus`.`id`,
@@ -2302,6 +2504,7 @@ FROM `menus`
 	ORDER BY `menus`.`ordre` ;
 END$$
 
+DROP PROCEDURE IF EXISTS `menus_getMenuFilsByGroupe`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_getMenuFilsByGroupe` (`menuPereId` INT, `groupeId` INT)  BEGIN
     SELECT `menus`.`id`,
     `menus`.`reference`,
@@ -2334,6 +2537,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_getMenuFilsByGroupe` (`menuPe
     ORDER BY `menus`.`ordre`;
 END$$
 
+DROP PROCEDURE IF EXISTS `menus_getMenuFilsByUserReference`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_getMenuFilsByUserReference` (`userId` INT, `referenceMenu` VARCHAR(50))  BEGIN
 	SELECT  distinct(`menus`.`id`),
 		`menus`.`reference`,
@@ -2364,6 +2568,7 @@ order by `menus`.`ordre`
 ;
 END$$
 
+DROP PROCEDURE IF EXISTS `menus_getMenuPere`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_getMenuPere` ()  BEGIN
 
    SELECT `menus`.`id`,
@@ -2385,6 +2590,7 @@ FROM `menus`
 	ORDER BY `menus`.`ordre` ;
 END$$
 
+DROP PROCEDURE IF EXISTS `menus_getMenuPrincipalByUser`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_getMenuPrincipalByUser` (`userId` INT)  BEGIN 
 	SELECT  distinct(`menus`.`id`),
 		`menus`.`reference`,
@@ -2411,6 +2617,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_getMenuPrincipalByUser` (`use
     
 END$$
 
+DROP PROCEDURE IF EXISTS `menus_getOngletsAffecteAUnGroupe`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_getOngletsAffecteAUnGroupe` (`groupeId` INT)  BEGIN
 SELECT DISTINCT `menus`.`id`,
    `menus`.`reference`,
@@ -2435,6 +2642,7 @@ SELECT DISTINCT `menus`.`id`,
     
 END$$
 
+DROP PROCEDURE IF EXISTS `menus_getPrincipalAffecteAUnGroupe`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_getPrincipalAffecteAUnGroupe` (`groupeId` INT)  BEGIN
    SELECT `menus`.`id`,
     `menus`.`reference`,
@@ -2465,6 +2673,7 @@ FROM `menus`
     ORDER BY `menus`.`ordre`;
 END$$
 
+DROP PROCEDURE IF EXISTS `menus_getWithOnglets`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_getWithOnglets` (`typeMenu` VARCHAR(20))  BEGIN
     SELECT DISTINCT(`menus`.`id`),
     `menus`.`reference`,
@@ -2492,6 +2701,7 @@ FROM `menus`
  ;
 END$$
 
+DROP PROCEDURE IF EXISTS `menus_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_insert` (`reference` VARCHAR(45), `libelle` VARCHAR(45), `descriptions` MEDIUMTEXT, `url` VARCHAR(120), `menuPereId` INT(11), `ordre` INT(11), `typeMenu` ENUM('Public','Prive'), `image` VARCHAR(45), `creationUserId` INT)  BEGIN
 	 INSERT INTO menus( 
 		 id, 
@@ -2525,6 +2735,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_insert` (`reference` VARCHAR(
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `menus_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -2552,6 +2763,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_selectAll` (`estActif` TINYIN
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `menus_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_selectBy` (`id` INT(11), `reference` VARCHAR(45), `libelle` VARCHAR(45), `descriptions` MEDIUMTEXT, `url` VARCHAR(120), `menuPereId` INT(11), `ordre` INT(11), `typeMenu` ENUM('Public','Prive'), `image` VARCHAR(45), `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -2619,6 +2831,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_selectBy` (`id` INT(11), `ref
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `menus_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			menus.id,
@@ -2639,6 +2852,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_selectById` (`id` INT)  BEGIN
 		 WHERE menus.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `menus_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_update` (`id` INT, `reference` VARCHAR(45), `libelle` VARCHAR(45), `descriptions` MEDIUMTEXT, `url` VARCHAR(120), `menuPereId` INT(11), `ordre` INT(11), `typeMenu` ENUM('Public','Prive'), `image` VARCHAR(45), `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE menus
 		 SET 
@@ -2656,6 +2870,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `menus_update` (`id` INT, `reference
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `modeaccess_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `modeaccess_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN
 	UPDATE `modeaccess`
 	SET
@@ -2666,11 +2881,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `modeaccess_activate` (`id` INT, `mo
 	AND `modeaccess`.`modifDate` = modifDate;
 END$$
 
+DROP PROCEDURE IF EXISTS `modeaccess_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `modeaccess_delete` (`id` INT)  BEGIN
 	DELETE FROM `modeaccess`
 	WHERE `modeaccess`.`id` = id;
 END$$
 
+DROP PROCEDURE IF EXISTS `modeaccess_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `modeaccess_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN
 	UPDATE `modeaccess`
 	SET
@@ -2681,6 +2898,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `modeaccess_disable` (`id` INT, `mod
 	AND `modeaccess`.`modifDate` = modifDate;
 END$$
 
+DROP PROCEDURE IF EXISTS `modeaccess_getAffectedByOngletAndGroupe`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `modeaccess_getAffectedByOngletAndGroupe` (`ongletId` INT, `groupeId` INT)  BEGIN
      SELECT
     `modeaccess`.`id`,
@@ -2701,6 +2919,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `modeaccess_getAffectedByOngletAndGr
     ORDER BY `modeaccess`.`libelle`;
 END$$
 
+DROP PROCEDURE IF EXISTS `modeaccess_getAffectesByMenuAndGroupe`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `modeaccess_getAffectesByMenuAndGroupe` (`menuId` INT, `groupeId` INT)  BEGIN
 
      SELECT
@@ -2722,6 +2941,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `modeaccess_getAffectesByMenuAndGrou
     ORDER BY `modeaccess`.`libelle`;
 END$$
 
+DROP PROCEDURE IF EXISTS `modeaccess_getNonAffectedByMenuAndGroupe`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `modeaccess_getNonAffectedByMenuAndGroupe` (`menuId` INT, `groupeId` INT)  BEGIN
 
     SELECT
@@ -2743,6 +2963,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `modeaccess_getNonAffectedByMenuAndG
     ORDER BY `modeaccess`.`libelle`;
 END$$
 
+DROP PROCEDURE IF EXISTS `modeaccess_getNotAffectedByOngletAndGroupe`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `modeaccess_getNotAffectedByOngletAndGroupe` (`ongletId` INT, `groupeId` INT)  BEGIN
 
     SELECT
@@ -2764,6 +2985,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `modeaccess_getNotAffectedByOngletAn
     ORDER BY `modeaccess`.`libelle`;
 END$$
 
+DROP PROCEDURE IF EXISTS `modeaccess_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `modeaccess_insert` (`libelle` VARCHAR(50), `creationUserId` INT)  BEGIN
 	INSERT INTO `suiviprojetpublicc`.`modeaccess`(
 		`id`,
@@ -2783,6 +3005,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `modeaccess_insert` (`libelle` VARCH
 		);
 END$$
 
+DROP PROCEDURE IF EXISTS `modeaccess_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `modeaccess_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN
 	DECLARE requeteSql varchar(500);
 	Set @requeteSql := 'SELECT
@@ -2804,6 +3027,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `modeaccess_selectAll` (`estActif` T
 	DEALLOCATE PREPARE statement;
 END$$
 
+DROP PROCEDURE IF EXISTS `modeaccess_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `modeaccess_selectBy` (`id` INT, `libelle` VARCHAR(50), `estActif` TINYINT, `creationDate` DATETIME, `creationUserId` INT, `modifDate` DATETIME, `modifUserId` INT, `debutDonnees` INT, `finDonnees` INT)  BEGIN
 	DECLARE requeteSql varchar(500);
 	SET @requeteSql := 'SELECT
@@ -2847,6 +3071,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `modeaccess_selectBy` (`id` INT, `li
 
 END$$
 
+DROP PROCEDURE IF EXISTS `modeaccess_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `modeaccess_selectById` (`id` INT)  BEGIN
 	SELECT
 		`modeaccess`.`id`,
@@ -2860,6 +3085,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `modeaccess_selectById` (`id` INT)  
 	WHERE `modeaccess`.`id` = id;
 END$$
 
+DROP PROCEDURE IF EXISTS `modeaccess_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `modeaccess_update` (`id` INT, `libelle` VARCHAR(50), `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	UPDATE `modeaccess`
 	SET
@@ -2870,6 +3096,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `modeaccess_update` (`id` INT, `libe
  		AND `modifDate` = modifDate;
 END$$
 
+DROP PROCEDURE IF EXISTS `natures_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `natures_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE natures 
 	 SET 
@@ -2880,11 +3107,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `natures_activate` (`id` INT, `modif
 	 AND natures.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `natures_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `natures_delete` (`id` INT)  BEGIN
 	 DELETE FROM natures 
 	 WHERE natures.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `natures_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `natures_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE natures 
 	 SET 
@@ -2895,6 +3124,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `natures_disable` (`id` INT, `modifU
 	 AND natures.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `natures_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `natures_insert` (`libelle` VARCHAR(45), `code` VARCHAR(20), `creationUserId` INT)  BEGIN
 	 INSERT INTO natures( 
 		 id, 
@@ -2916,6 +3146,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `natures_insert` (`libelle` VARCHAR(
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `natures_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `natures_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -2937,6 +3168,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `natures_selectAll` (`estActif` TINY
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `natures_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `natures_selectBy` (`id` INT(11), `libelle` VARCHAR(45), `code` VARCHAR(20), `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -2980,6 +3212,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `natures_selectBy` (`id` INT(11), `l
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `natures_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `natures_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			natures.id,
@@ -2994,6 +3227,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `natures_selectById` (`id` INT)  BEG
 		 WHERE natures.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `natures_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `natures_update` (`id` INT, `libelle` VARCHAR(45), `code` VARCHAR(20), `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE natures
 		 SET 
@@ -3005,6 +3239,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `natures_update` (`id` INT, `libelle
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `onglets_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `onglets_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE onglets 
 	 SET 
@@ -3015,11 +3250,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `onglets_activate` (`id` INT, `modif
 	 AND onglets.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `onglets_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `onglets_delete` (`id` INT)  BEGIN
 	 DELETE FROM onglets 
 	 WHERE onglets.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `onglets_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `onglets_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE onglets 
 	 SET 
@@ -3030,6 +3267,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `onglets_disable` (`id` INT, `modifU
 	 AND onglets.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `onglets_getAffectesByGroupeAndMenu`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `onglets_getAffectesByGroupeAndMenu` (`groupeId` INT, `menuId` INT)  BEGIN
 
 	SELECT `onglets`.`id`,
@@ -3061,6 +3299,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `onglets_getAffectesByGroupeAndMenu`
    ORDER BY `onglets`.`menuId`, `onglets`.`ordre`, `onglets`.`libelle`;
 END$$
 
+DROP PROCEDURE IF EXISTS `onglets_getOngletByGroupe`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `onglets_getOngletByGroupe` (`menuId` INT, `groupeId` INT)  BEGIN
    SELECT 
     `onglets`.`id`,
@@ -3095,6 +3334,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `onglets_getOngletByGroupe` (`menuId
     
 END$$
 
+DROP PROCEDURE IF EXISTS `onglets_getOngletByUserReferenceMenu`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `onglets_getOngletByUserReferenceMenu` (`userId` INT, `referenceMenu` VARCHAR(50))  BEGIN
 	SELECT  distinct(`onglets`.`id`),
     `onglets`.`menuId`,
@@ -3125,6 +3365,7 @@ ORDER BY `onglets`.`ordre`;
 
 END$$
 
+DROP PROCEDURE IF EXISTS `onglets_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `onglets_insert` (`menuId` INT(11), `reference` VARCHAR(30), `libelle` VARCHAR(45), `descriptions` MEDIUMTEXT, `type` ENUM('Public','Prive'), `ordre` INT(11), `url` VARCHAR(120), `image` VARCHAR(45), `creationUserId` INT)  BEGIN
 	 INSERT INTO onglets( 
 		 id, 
@@ -3158,6 +3399,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `onglets_insert` (`menuId` INT(11), 
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `onglets_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `onglets_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -3185,6 +3427,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `onglets_selectAll` (`estActif` TINY
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `onglets_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `onglets_selectBy` (`id` INT(11), `menuId` INT(11), `reference` VARCHAR(30), `libelle` VARCHAR(45), `descriptions` MEDIUMTEXT, `type` ENUM('Public','Prive'), `ordre` INT(11), `url` VARCHAR(120), `image` VARCHAR(45), `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -3252,6 +3495,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `onglets_selectBy` (`id` INT(11), `m
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `onglets_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `onglets_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			onglets.id,
@@ -3272,6 +3516,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `onglets_selectById` (`id` INT)  BEG
 		 WHERE onglets.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `onglets_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `onglets_update` (`id` INT, `menuId` INT(11), `reference` VARCHAR(30), `libelle` VARCHAR(45), `descriptions` MEDIUMTEXT, `type` ENUM('Public','Prive'), `ordre` INT(11), `url` VARCHAR(120), `image` VARCHAR(45), `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE onglets
 		 SET 
@@ -3289,6 +3534,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `onglets_update` (`id` INT, `menuId`
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `payss_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `payss_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE payss 
 	 SET 
@@ -3299,11 +3545,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `payss_activate` (`id` INT, `modifUs
 	 AND payss.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `payss_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `payss_delete` (`id` INT)  BEGIN
 	 DELETE FROM payss 
 	 WHERE payss.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `payss_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `payss_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE payss 
 	 SET 
@@ -3314,6 +3562,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `payss_disable` (`id` INT, `modifUse
 	 AND payss.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `payss_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `payss_insert` (`libelle` VARCHAR(50), `indicatifTel` INT(11), `deviseId` INT(11), `creationUserId` INT)  BEGIN
 	 INSERT INTO payss( 
 		 id, 
@@ -3337,6 +3586,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `payss_insert` (`libelle` VARCHAR(50
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `payss_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `payss_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -3359,6 +3609,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `payss_selectAll` (`estActif` TINYIN
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `payss_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `payss_selectBy` (`id` INT(11), `libelle` VARCHAR(50), `indicatifTel` INT(11), `deviseId` INT(11), `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -3406,6 +3657,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `payss_selectBy` (`id` INT(11), `lib
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `payss_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `payss_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			payss.id,
@@ -3421,6 +3673,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `payss_selectById` (`id` INT)  BEGIN
 		 WHERE payss.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `payss_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `payss_update` (`id` INT, `libelle` VARCHAR(50), `indicatifTel` INT(11), `deviseId` INT(11), `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE payss
 		 SET 
@@ -3433,6 +3686,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `payss_update` (`id` INT, `libelle` 
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `personnels_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `personnels_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE personnels 
 	 SET 
@@ -3443,11 +3697,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `personnels_activate` (`id` INT, `mo
 	 AND personnels.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `personnels_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `personnels_delete` (`id` INT)  BEGIN
 	 DELETE FROM personnels 
 	 WHERE personnels.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `personnels_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `personnels_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE personnels 
 	 SET 
@@ -3458,6 +3714,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `personnels_disable` (`id` INT, `mod
 	 AND personnels.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `personnels_getChauffeurByFlotteId`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `personnels_getChauffeurByFlotteId` (`flotteId` INT)  BEGIN
    SELECT
 			personnels.id,
@@ -3487,6 +3744,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `personnels_getChauffeurByFlotteId` 
 					);
 END$$
 
+DROP PROCEDURE IF EXISTS `personnels_getChauffeurNotAffectedToCamionToAFlotte`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `personnels_getChauffeurNotAffectedToCamionToAFlotte` (`flotteId` INT)  BEGIN
    SELECT
 			personnels.id,
@@ -3521,6 +3779,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `personnels_getChauffeurNotAffectedT
                 );
 END$$
 
+DROP PROCEDURE IF EXISTS `personnels_getChauffeurNotAffectedToCamionToASite`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `personnels_getChauffeurNotAffectedToCamionToASite` (`siteId` INT)  BEGIN
 	  SELECT
 			personnels.id,
@@ -3557,6 +3816,67 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `personnels_getChauffeurNotAffectedT
                 );
 END$$
 
+DROP PROCEDURE IF EXISTS `personnels_getChauffeurNotAffectedToEquipe`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `personnels_getChauffeurNotAffectedToEquipe` (`contratId` INT)  BEGIN
+	SELECT 
+			equipespersonnels.id,
+			equipespersonnels.equipeId,
+			equipespersonnels.personnelId,
+            `personnels`.`nom` as nom,
+            `personnels`.`prenoms` as prenoms,
+			equipespersonnels.debut,
+			equipespersonnels.fin
+		 FROM equipespersonnels
+		 INNER JOIN `personnels`  ON `equipespersonnels`.`personnelId` = `personnels`.`id`
+         INNER JOIN `type_fonctions`  ON `personnels`.`typeFonctionId` = `type_fonctions`.`id`
+		 INNER JOIN `statuts`  ON `personnels`.`statut` = `statuts`.`id`
+		 WHERE 
+		    personnels.contratId= contratId 
+		   And `type_fonctions`.`libelle` = "Chauffeur"
+		   AND `statuts`.`libelle`="Employé"
+           AND equipespersonnels.fin IS NULL AND equipespersonnels.personnelId NOT IN (
+			SELECT
+			camionschauffeurs.chauffeurId
+            from camionschauffeurs
+           );
+           
+END$$
+
+DROP PROCEDURE IF EXISTS `personnels_getPersonnelNotAffectedToEquipe`$$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `personnels_getPersonnelNotAffectedToEquipe` (`siteId` INT)  BEGIN
+	SELECT 
+			personnels.id,
+			personnels.nom,
+			personnels.prenoms,
+			personnels.telephone,
+			personnels.email,
+			personnels.contratId,
+			personnels.flotteId,
+			personnels.typeFonctionId,
+			personnels.statut
+		 FROM personnels
+		 INNER JOIN `type_fonctions`  ON `personnels`.`typeFonctionId` = `type_fonctions`.`id`
+		INNER JOIN `statuts`  ON `personnels`.`statut` = `statuts`.`id`
+		 WHERE 
+			personnels.contratId IS NOT NULL 
+           AND personnels.contratId= siteId 
+		   AND `statuts`.`libelle`="Employé"
+           AND personnels.id Not In(
+				select 
+                    equipesPersonnels.personnelId
+				from equipesPersonnels
+                INNER JOIN `equipes` E  ON `equipesPersonnels`.`equipeId` = E.`id`
+				where E.contratId = siteId AND equipespersonnels.fin IS NULL 
+           )
+           AND personnels.id Not In(
+				select 
+					equipes.superviseurId
+				from equipes
+				where equipes.contratId = siteId 
+           );
+END$$
+
+DROP PROCEDURE IF EXISTS `personnels_getSupperviseurNotAffectedToEquipe`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `personnels_getSupperviseurNotAffectedToEquipe` (`siteId` INT)  BEGIN
 	SELECT 
 			personnels.id,
@@ -3585,6 +3905,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `personnels_getSupperviseurNotAffect
            
 END$$
 
+DROP PROCEDURE IF EXISTS `personnels_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `personnels_insert` (`nom` VARCHAR(30), `prenoms` VARCHAR(45), `telephone` DOUBLE, `email` VARCHAR(20), `contratId` INT(11), `flotteId` INT(11), `typeFonctionId` INT(11), `statut` INT(11), `creationUserId` INT)  BEGIN
 	 INSERT INTO personnels( 
 		 id, 
@@ -3618,6 +3939,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `personnels_insert` (`nom` VARCHAR(3
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `personnels_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `personnels_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -3645,6 +3967,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `personnels_selectAll` (`estActif` T
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `personnels_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `personnels_selectBy` (`id` INT(11), `nom` VARCHAR(30), `prenoms` VARCHAR(45), `telephone` DOUBLE, `email` VARCHAR(20), `contratId` INT(11), `flotteId` INT(11), `typeFonctionId` INT(11), `statut` INT(11), `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -3718,6 +4041,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `personnels_selectBy` (`id` INT(11),
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `personnels_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `personnels_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			personnels.id,
@@ -3738,6 +4062,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `personnels_selectById` (`id` INT)  
 		 WHERE personnels.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `personnels_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `personnels_update` (`id` INT, `nom` VARCHAR(30), `prenoms` VARCHAR(45), `telephone` DOUBLE, `email` VARCHAR(20), `contratId` INT(11), `flotteId` INT(11), `typeFonctionId` INT(11), `statut` INT(11), `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE personnels
 		 SET 
@@ -3755,6 +4080,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `personnels_update` (`id` INT, `nom`
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `prefectures_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `prefectures_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN
 	UPDATE `prefectures`
 	SET
@@ -3765,11 +4091,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `prefectures_activate` (`id` INT, `m
 	AND `prefectures`.`modifDate` = modifDate;
 END$$
 
+DROP PROCEDURE IF EXISTS `prefectures_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `prefectures_delete` (`id` INT)  BEGIN
 	DELETE FROM `prefectures`
 	WHERE `prefectures`.`id` = id;
 END$$
 
+DROP PROCEDURE IF EXISTS `prefectures_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `prefectures_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN
 	UPDATE `prefectures`
 	SET
@@ -3780,6 +4108,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `prefectures_disable` (`id` INT, `mo
 	AND `prefectures`.`modifDate` = modifDate;
 END$$
 
+DROP PROCEDURE IF EXISTS `prefectures_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `prefectures_insert` (`regionId` INT, `libelle` VARCHAR(50), `code` VARCHAR(5), `creationUserId` INT)  BEGIN
 	INSERT INTO `suiviprojetpublicc`.`prefectures`(
 		`id`,
@@ -3803,6 +4132,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `prefectures_insert` (`regionId` INT
 		);
 END$$
 
+DROP PROCEDURE IF EXISTS `prefectures_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `prefectures_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN
 	DECLARE requeteSql varchar(500);
 	Set @requeteSql := 'SELECT
@@ -3828,6 +4158,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `prefectures_selectAll` (`estActif` 
 	DEALLOCATE PREPARE statement;
 END$$
 
+DROP PROCEDURE IF EXISTS `prefectures_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `prefectures_selectBy` (`id` INT, `regionId` INT, `libelle` VARCHAR(50), `code` VARCHAR(5), `estActif` TINYINT, `creationDate` DATETIME, `creationUserId` INT, `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	DECLARE requeteSql varchar(500);
 	SET @requeteSql := 'SELECT
@@ -3877,6 +4208,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `prefectures_selectBy` (`id` INT, `r
 
 END$$
 
+DROP PROCEDURE IF EXISTS `prefectures_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `prefectures_selectById` (`id` INT)  BEGIN
 	SELECT
 		`prefectures`.`id`,
@@ -3892,6 +4224,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `prefectures_selectById` (`id` INT) 
 	WHERE `prefectures`.`id` = id;
 END$$
 
+DROP PROCEDURE IF EXISTS `privileges_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `privileges_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE privileges 
 	 SET 
@@ -3902,11 +4235,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `privileges_activate` (`id` INT, `mo
 	 AND privileges.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `privileges_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `privileges_delete` (`id` INT)  BEGIN
 	 DELETE FROM privileges 
 	 WHERE privileges.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `privileges_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `privileges_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE privileges 
 	 SET 
@@ -3917,6 +4252,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `privileges_disable` (`id` INT, `mod
 	 AND privileges.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `privileges_getCountPrivilegeForActionMenu`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `privileges_getCountPrivilegeForActionMenu` (`userId` INT, `referenceMenu` VARCHAR(50), `modeAccesId` INT)  BEGIN
 	SELECT count(*) as `nombre`
     FROM `privileges` 
@@ -3929,6 +4265,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `privileges_getCountPrivilegeForActi
      AND `usergroupes`.`userId`=userId ;
 END$$
 
+DROP PROCEDURE IF EXISTS `privileges_getCountPrivilegeForActionOnglet`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `privileges_getCountPrivilegeForActionOnglet` (`userId` INT, `referenceMenu` VARCHAR(50), `referenceOnglet` VARCHAR(50))  BEGIN
 	SELECT  `privileges`.`modeAccesId`
     FROM `privileges` 
@@ -3944,6 +4281,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `privileges_getCountPrivilegeForActi
     
 END$$
 
+DROP PROCEDURE IF EXISTS `privileges_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `privileges_insert` (`menuId` INT(11), `ongletId` INT(11), `groupeId` INT(11), `modeAccesId` INT(11), `creationUserId` INT)  BEGIN
 	 INSERT INTO privileges( 
 		 id, 
@@ -3969,6 +4307,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `privileges_insert` (`menuId` INT(11
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `privileges_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `privileges_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -3992,6 +4331,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `privileges_selectAll` (`estActif` T
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `privileges_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `privileges_selectBy` (`id` INT(11), `menuId` INT(11), `ongletId` INT(11), `groupeId` INT(11), `modeAccesId` INT(11), `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -4043,6 +4383,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `privileges_selectBy` (`id` INT(11),
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `privileges_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `privileges_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			privileges.id,
@@ -4059,6 +4400,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `privileges_selectById` (`id` INT)  
 		 WHERE privileges.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `privileges_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `privileges_update` (`id` INT, `menuId` INT(11), `ongletId` INT(11), `groupeId` INT(11), `modeAccesId` INT(11), `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE privileges
 		 SET 
@@ -4072,6 +4414,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `privileges_update` (`id` INT, `menu
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `quartierdistricts_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `quartierdistricts_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE quartierdistricts 
 	 SET 
@@ -4082,11 +4425,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `quartierdistricts_activate` (`id` I
 	 AND quartierdistricts.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `quartierdistricts_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `quartierdistricts_delete` (`id` INT)  BEGIN
 	 DELETE FROM quartierdistricts 
 	 WHERE quartierdistricts.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `quartierdistricts_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `quartierdistricts_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE quartierdistricts 
 	 SET 
@@ -4097,6 +4442,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `quartierdistricts_disable` (`id` IN
 	 AND quartierdistricts.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `quartierdistricts_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `quartierdistricts_insert` (`communeId` INT(11), `libelle` VARCHAR(50), `code` VARCHAR(5), `creationUserId` INT)  BEGIN
 	 INSERT INTO quartierdistricts( 
 		 id, 
@@ -4120,6 +4466,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `quartierdistricts_insert` (`commune
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `quartierdistricts_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `quartierdistricts_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -4142,6 +4489,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `quartierdistricts_selectAll` (`estA
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `quartierdistricts_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `quartierdistricts_selectBy` (`id` INT(11), `communeId` INT(11), `libelle` VARCHAR(50), `code` VARCHAR(5), `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -4189,6 +4537,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `quartierdistricts_selectBy` (`id` I
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `quartierdistricts_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `quartierdistricts_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			quartierdistricts.id,
@@ -4204,6 +4553,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `quartierdistricts_selectById` (`id`
 		 WHERE quartierdistricts.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `quartierdistricts_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `quartierdistricts_update` (`id` INT, `communeId` INT(11), `libelle` VARCHAR(50), `code` VARCHAR(5), `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE quartierdistricts
 		 SET 
@@ -4216,6 +4566,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `quartierdistricts_update` (`id` INT
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `regions_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `regions_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE regions 
 	 SET 
@@ -4226,11 +4577,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `regions_activate` (`id` INT, `modif
 	 AND regions.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `regions_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `regions_delete` (`id` INT)  BEGIN
 	 DELETE FROM regions 
 	 WHERE regions.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `regions_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `regions_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE regions 
 	 SET 
@@ -4241,6 +4594,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `regions_disable` (`id` INT, `modifU
 	 AND regions.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `regions_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `regions_insert` (`paysId` INT(11), `libelle` VARCHAR(50), `code` VARCHAR(5), `creationUserId` INT)  BEGIN
 	 INSERT INTO regions( 
 		 id, 
@@ -4264,6 +4618,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `regions_insert` (`paysId` INT(11), 
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `regions_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `regions_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -4286,6 +4641,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `regions_selectAll` (`estActif` TINY
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `regions_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `regions_selectBy` (`id` INT(11), `paysId` INT(11), `libelle` VARCHAR(50), `code` VARCHAR(5), `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -4333,6 +4689,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `regions_selectBy` (`id` INT(11), `p
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `regions_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `regions_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			regions.id,
@@ -4348,6 +4705,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `regions_selectById` (`id` INT)  BEG
 		 WHERE regions.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `regions_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `regions_update` (`id` INT, `paysId` INT(11), `libelle` VARCHAR(50), `code` VARCHAR(5), `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE regions
 		 SET 
@@ -4360,6 +4718,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `regions_update` (`id` INT, `paysId`
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `secteurs_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `secteurs_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE secteurs 
 	 SET 
@@ -4370,11 +4729,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `secteurs_activate` (`id` INT, `modi
 	 AND secteurs.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `secteurs_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `secteurs_delete` (`id` INT)  BEGIN
 	 DELETE FROM secteurs 
 	 WHERE secteurs.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `secteurs_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `secteurs_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE secteurs 
 	 SET 
@@ -4385,6 +4746,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `secteurs_disable` (`id` INT, `modif
 	 AND secteurs.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `secteurs_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `secteurs_insert` (`quartierDistrictId` INT(11), `libelle` VARCHAR(50), `code` VARCHAR(5), `creationUserId` INT)  BEGIN
 	 INSERT INTO secteurs( 
 		 id, 
@@ -4408,6 +4770,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `secteurs_insert` (`quartierDistrict
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `secteurs_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `secteurs_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -4430,6 +4793,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `secteurs_selectAll` (`estActif` TIN
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `secteurs_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `secteurs_selectBy` (`id` INT(11), `quartierDistrictId` INT(11), `libelle` VARCHAR(50), `code` VARCHAR(5), `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -4477,6 +4841,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `secteurs_selectBy` (`id` INT(11), `
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `secteurs_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `secteurs_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			secteurs.id,
@@ -4492,6 +4857,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `secteurs_selectById` (`id` INT)  BE
 		 WHERE secteurs.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `secteurs_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `secteurs_update` (`id` INT, `quartierDistrictId` INT(11), `libelle` VARCHAR(50), `code` VARCHAR(5), `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE secteurs
 		 SET 
@@ -4504,6 +4870,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `secteurs_update` (`id` INT, `quarti
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `statuts_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `statuts_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE statuts 
 	 SET 
@@ -4514,11 +4881,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `statuts_activate` (`id` INT, `modif
 	 AND statuts.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `statuts_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `statuts_delete` (`id` INT)  BEGIN
 	 DELETE FROM statuts 
 	 WHERE statuts.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `statuts_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `statuts_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE statuts 
 	 SET 
@@ -4529,6 +4898,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `statuts_disable` (`id` INT, `modifU
 	 AND statuts.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `statuts_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `statuts_insert` (`libelle` VARCHAR(30), `observations` VARCHAR(45), `creationUserId` INT)  BEGIN
 	 INSERT INTO statuts( 
 		 id, 
@@ -4550,6 +4920,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `statuts_insert` (`libelle` VARCHAR(
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `statuts_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `statuts_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -4571,6 +4942,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `statuts_selectAll` (`estActif` TINY
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `statuts_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `statuts_selectBy` (`id` INT(11), `libelle` VARCHAR(30), `observations` VARCHAR(45), `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -4614,6 +4986,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `statuts_selectBy` (`id` INT(11), `l
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `statuts_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `statuts_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			statuts.id,
@@ -4628,6 +5001,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `statuts_selectById` (`id` INT)  BEG
 		 WHERE statuts.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `statuts_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `statuts_update` (`id` INT, `libelle` VARCHAR(30), `observations` VARCHAR(45), `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE statuts
 		 SET 
@@ -4639,6 +5013,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `statuts_update` (`id` INT, `libelle
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `trajets_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `trajets_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE trajets 
 	 SET 
@@ -4649,11 +5024,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `trajets_activate` (`id` INT, `modif
 	 AND trajets.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `trajets_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `trajets_delete` (`id` INT)  BEGIN
 	 DELETE FROM trajets 
 	 WHERE trajets.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `trajets_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `trajets_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE trajets 
 	 SET 
@@ -4664,6 +5041,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `trajets_disable` (`id` INT, `modifU
 	 AND trajets.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `trajets_getDistanceByContratIdAndChargementId`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `trajets_getDistanceByContratIdAndChargementId` (`contratId` INT, `chargementId` INT)  BEGIN
 		SELECT
 			trajets.distance
@@ -4671,6 +5049,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `trajets_getDistanceByContratIdAndCh
 		 WHERE trajets.contratId= contratId AND  trajets.dechargement= chargementId;
 END$$
 
+DROP PROCEDURE IF EXISTS `trajets_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `trajets_insert` (`contratId` INT(11), `dechargement` INT(11), `distance` INT(11), `creationUserId` INT)  BEGIN
 	 INSERT INTO trajets( 
 		 id, 
@@ -4694,6 +5073,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `trajets_insert` (`contratId` INT(11
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `trajets_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `trajets_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -4716,6 +5096,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `trajets_selectAll` (`estActif` TINY
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `trajets_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `trajets_selectBy` (`id` INT(11), `contratId` INT(11), `dechargement` INT(11), `distance` INT(11), `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -4769,6 +5150,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `trajets_selectBy` (`id` INT(11), `c
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `trajets_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `trajets_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			trajets.id,
@@ -4794,6 +5176,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `trajets_selectById` (`id` INT)  BEG
 		 WHERE trajets.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `trajets_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `trajets_update` (`id` INT, `contratId` INT(11), `dechargement` INT(11), `distance` INT(11), `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE trajets
 		 SET 
@@ -4806,6 +5189,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `trajets_update` (`id` INT, `contrat
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `type_fonctions_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `type_fonctions_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE type_fonctions 
 	 SET 
@@ -4816,11 +5200,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `type_fonctions_activate` (`id` INT,
 	 AND type_fonctions.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `type_fonctions_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `type_fonctions_delete` (`id` INT)  BEGIN
 	 DELETE FROM type_fonctions 
 	 WHERE type_fonctions.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `type_fonctions_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `type_fonctions_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE type_fonctions 
 	 SET 
@@ -4831,6 +5217,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `type_fonctions_disable` (`id` INT, 
 	 AND type_fonctions.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `type_fonctions_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `type_fonctions_insert` (`libelle` VARCHAR(30), `observations` VARCHAR(45), `creationUserId` INT)  BEGIN
 	 INSERT INTO type_fonctions( 
 		 id, 
@@ -4852,6 +5239,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `type_fonctions_insert` (`libelle` V
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `type_fonctions_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `type_fonctions_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -4873,6 +5261,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `type_fonctions_selectAll` (`estActi
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `type_fonctions_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `type_fonctions_selectBy` (`id` INT(11), `libelle` VARCHAR(30), `observations` VARCHAR(45), `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -4916,6 +5305,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `type_fonctions_selectBy` (`id` INT(
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `type_fonctions_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `type_fonctions_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			type_fonctions.id,
@@ -4930,6 +5320,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `type_fonctions_selectById` (`id` IN
 		 WHERE type_fonctions.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `type_fonctions_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `type_fonctions_update` (`id` INT, `libelle` VARCHAR(30), `observations` VARCHAR(45), `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE type_fonctions
 		 SET 
@@ -4941,6 +5332,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `type_fonctions_update` (`id` INT, `
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `unites_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `unites_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE unites 
 	 SET 
@@ -4951,11 +5343,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `unites_activate` (`id` INT, `modifU
 	 AND unites.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `unites_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `unites_delete` (`id` INT)  BEGIN
 	 DELETE FROM unites 
 	 WHERE unites.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `unites_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `unites_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE unites 
 	 SET 
@@ -4966,6 +5360,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `unites_disable` (`id` INT, `modifUs
 	 AND unites.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `unites_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `unites_insert` (`libelle` VARCHAR(45), `symbole` VARCHAR(5), `creationUserId` INT)  BEGIN
 	 INSERT INTO unites( 
 		 id, 
@@ -4987,6 +5382,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `unites_insert` (`libelle` VARCHAR(4
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `unites_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `unites_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -5008,6 +5404,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `unites_selectAll` (`estActif` TINYI
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `unites_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `unites_selectBy` (`id` INT(11), `libelle` VARCHAR(45), `symbole` VARCHAR(5), `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -5051,6 +5448,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `unites_selectBy` (`id` INT(11), `li
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `unites_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `unites_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			unites.id,
@@ -5065,6 +5463,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `unites_selectById` (`id` INT)  BEGI
 		 WHERE unites.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `unites_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `unites_update` (`id` INT, `libelle` VARCHAR(45), `symbole` VARCHAR(5), `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE unites
 		 SET 
@@ -5076,6 +5475,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `unites_update` (`id` INT, `libelle`
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `userconnexions_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `userconnexions_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE userconnexions 
 	 SET 
@@ -5086,11 +5486,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `userconnexions_activate` (`id` INT,
 	 AND userconnexions.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `userconnexions_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `userconnexions_delete` (`id` INT)  BEGIN
 	 DELETE FROM userconnexions 
 	 WHERE userconnexions.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `userconnexions_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `userconnexions_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE userconnexions 
 	 SET 
@@ -5101,6 +5503,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `userconnexions_disable` (`id` INT, 
 	 AND userconnexions.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `userconnexions_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `userconnexions_insert` (`userId` INT(11), `adressIp` VARCHAR(20), `fin` DATETIME, `creationUserId` INT)  BEGIN
 	 INSERT INTO userconnexions( 
 		 id, 
@@ -5124,6 +5527,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `userconnexions_insert` (`userId` IN
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `userconnexions_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `userconnexions_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -5146,6 +5550,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `userconnexions_selectAll` (`estActi
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `userconnexions_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `userconnexions_selectBy` (`id` INT(11), `userId` INT(11), `adressIp` VARCHAR(20), `fin` DATETIME, `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -5193,6 +5598,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `userconnexions_selectBy` (`id` INT(
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `userconnexions_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `userconnexions_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			userconnexions.id,
@@ -5208,6 +5614,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `userconnexions_selectById` (`id` IN
 		 WHERE userconnexions.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `userconnexions_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `userconnexions_update` (`id` INT, `userId` INT(11), `adressIp` VARCHAR(20), `fin` DATETIME, `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE userconnexions
 		 SET 
@@ -5220,6 +5627,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `userconnexions_update` (`id` INT, `
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `usergroupes_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `usergroupes_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE usergroupes 
 	 SET 
@@ -5230,11 +5638,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `usergroupes_activate` (`id` INT, `m
 	 AND usergroupes.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `usergroupes_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `usergroupes_delete` (`id` INT)  BEGIN
 	 DELETE FROM usergroupes 
 	 WHERE usergroupes.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `usergroupes_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `usergroupes_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE usergroupes 
 	 SET 
@@ -5245,6 +5655,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `usergroupes_disable` (`id` INT, `mo
 	 AND usergroupes.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `usergroupes_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `usergroupes_insert` (`userId` INT(11), `groupeId` INT(11), `creationUserId` INT)  BEGIN
 	 INSERT INTO usergroupes( 
 		 id, 
@@ -5266,6 +5677,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `usergroupes_insert` (`userId` INT(1
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `usergroupes_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `usergroupes_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -5287,6 +5699,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `usergroupes_selectAll` (`estActif` 
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `usergroupes_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `usergroupes_selectBy` (`id` INT(11), `userId` INT(11), `groupeId` INT(11), `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -5330,6 +5743,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `usergroupes_selectBy` (`id` INT(11)
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `usergroupes_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `usergroupes_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			usergroupes.id,
@@ -5344,6 +5758,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `usergroupes_selectById` (`id` INT) 
 		 WHERE usergroupes.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `usergroupes_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `usergroupes_update` (`id` INT, `userId` INT(11), `groupeId` INT(11), `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE usergroupes
 		 SET 
@@ -5355,6 +5770,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `usergroupes_update` (`id` INT, `use
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `userpasswords_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `userpasswords_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE userpasswords 
 	 SET 
@@ -5365,11 +5781,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `userpasswords_activate` (`id` INT, 
 	 AND userpasswords.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `userpasswords_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `userpasswords_delete` (`id` INT)  BEGIN
 	 DELETE FROM userpasswords 
 	 WHERE userpasswords.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `userpasswords_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `userpasswords_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE userpasswords 
 	 SET 
@@ -5380,6 +5798,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `userpasswords_disable` (`id` INT, `
 	 AND userpasswords.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `userpasswords_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `userpasswords_insert` (`userId` INT(11), `type` ENUM('Auto','Perso'), `creationUserId` INT)  BEGIN
 	 INSERT INTO userpasswords( 
 		 id, 
@@ -5401,6 +5820,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `userpasswords_insert` (`userId` INT
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `userpasswords_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `userpasswords_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -5422,6 +5842,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `userpasswords_selectAll` (`estActif
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `userpasswords_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `userpasswords_selectBy` (`id` INT(11), `userId` INT(11), `type` ENUM('Auto','Perso'), `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -5465,6 +5886,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `userpasswords_selectBy` (`id` INT(1
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `userpasswords_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `userpasswords_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			userpasswords.id,
@@ -5479,6 +5901,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `userpasswords_selectById` (`id` INT
 		 WHERE userpasswords.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `userpasswords_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `userpasswords_update` (`id` INT, `userId` INT(11), `type` ENUM('Auto','Perso'), `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE userpasswords
 		 SET 
@@ -5490,6 +5913,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `userpasswords_update` (`id` INT, `u
 		 AND modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `users_activate`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `users_activate` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE users 
 	 SET 
@@ -5500,11 +5924,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `users_activate` (`id` INT, `modifUs
 	 AND users.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `users_delete`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `users_delete` (`id` INT)  BEGIN
 	 DELETE FROM users 
 	 WHERE users.id = id; 
  END$$
 
+DROP PROCEDURE IF EXISTS `users_disable`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `users_disable` (`id` INT, `modifUserId` INT, `modifDate` DATETIME)  BEGIN 
 	 UPDATE users 
 	 SET 
@@ -5515,6 +5941,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `users_disable` (`id` INT, `modifUse
 	 AND users.modifDate = modifDate; 
  END$$
 
+DROP PROCEDURE IF EXISTS `users_getAffecteByGroupe`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `users_getAffecteByGroupe` (`groupeId` INT)  BEGIN
 
 	SELECT `users`.`id`,
@@ -5537,6 +5964,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `users_getAffecteByGroupe` (`groupeI
 	ORDER BY `users`.`prenoms`;
 END$$
 
+DROP PROCEDURE IF EXISTS `users_getNonAffecteByGroupe`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `users_getNonAffecteByGroupe` (`groupeId` INT)  BEGIN
 	SELECT `users`.`id`,
 			`users`.`name`,
@@ -5559,6 +5987,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `users_getNonAffecteByGroupe` (`grou
     
 END$$
 
+DROP PROCEDURE IF EXISTS `users_insert`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `users_insert` (`name` VARCHAR(15), `prenoms` VARCHAR(45), `telephone` INT(11), `password` VARCHAR(10), `adresse` INT(11), `creationUserId` INT)  BEGIN
 	 INSERT INTO users( 
 		 id, 
@@ -5586,6 +6015,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `users_insert` (`name` VARCHAR(15), 
 			 ); 
  END$$
 
+DROP PROCEDURE IF EXISTS `users_selectAll`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `users_selectAll` (`estActif` TINYINT, `debut` INT, `fin` INT)  BEGIN 
 	 DECLARE requeteSql varchar(500); 
 	 Set @requeteSql := 'SELECT 
@@ -5610,6 +6040,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `users_selectAll` (`estActif` TINYIN
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `users_selectBy`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `users_selectBy` (`id` INT(11), `name` VARCHAR(15), `prenoms` VARCHAR(45), `telephone` INT(11), `password` VARCHAR(10), `adresse` INT(11), `estActif` TINYINT(4), `creationDate` DATETIME, `creationUserId` INT(11), `modifDate` DATETIME, `modifUserId` INT(11))  BEGIN
  DECLARE requeteSql varchar(500); 
 	 SET @requeteSql :=   
@@ -5665,6 +6096,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `users_selectBy` (`id` INT(11), `nam
 	 DEALLOCATE PREPARE statement;
  END$$
 
+DROP PROCEDURE IF EXISTS `users_selectById`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `users_selectById` (`id` INT)  BEGIN
 		 SELECT 
 			users.id,
@@ -5682,6 +6114,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `users_selectById` (`id` INT)  BEGIN
 		 WHERE users.id= id ;
  END$$
 
+DROP PROCEDURE IF EXISTS `users_update`$$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `users_update` (`id` INT, `name` VARCHAR(15), `prenoms` VARCHAR(45), `telephone` INT(11), `password` VARCHAR(10), `adresse` INT(11), `modifDate` DATETIME, `modifUserId` INT)  BEGIN
 	 UPDATE users
 		 SET 
@@ -5704,51 +6137,48 @@ DELIMITER ;
 -- Structure de la table `bonlivraisons`
 --
 
-CREATE TABLE `bonlivraisons` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `bonlivraisons`;
+CREATE TABLE IF NOT EXISTS `bonlivraisons` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `contratId` int(11) NOT NULL,
   `flotteId` int(11) NOT NULL,
   `camionId` int(11) NOT NULL,
   `chauffeurId` int(11) NOT NULL,
   `trajetId` int(11) NOT NULL,
+  `equipeId` int(11) NOT NULL,
   `numeroBl` int(11) NOT NULL,
   `dateChargement` datetime DEFAULT NULL,
   `heure` time NOT NULL,
   `poidsChargee` double NOT NULL DEFAULT 0,
   `poidsVide` int(11) DEFAULT 0,
   `tonnageSurBon` int(11) DEFAULT 0,
-  `distanceMine` int(11) NOT NULL,
   `statutBon` varchar(100) NOT NULL,
+  `distanceMine` int(11) NOT NULL,
   `Observations` longtext DEFAULT NULL,
   `estActif` tinyint(4) NOT NULL DEFAULT 1,
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_bonLivraisons_camionId_idx` (`camionId`),
+  KEY `fk_bonLivraisons_contratId_idx` (`contratId`),
+  KEY `fk_bonLivraisons_trajetId_idx` (`trajetId`),
+  KEY `fk_bonLivraisons_equipeId_idx` (`equipeId`),
+  KEY `fk_bonLivraisons_flotteId_idx` (`flotteId`),
+  KEY `fk_bonLivraisons_chauffeurId` (`chauffeurId`)
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `bonlivraisons`
 --
 
-INSERT INTO `bonlivraisons` (`id`, `contratId`, `flotteId`, `camionId`, `chauffeurId`, `trajetId`, `numeroBl`, `dateChargement`, `heure`, `poidsChargee`, `poidsVide`, `tonnageSurBon`, `distanceMine`, `statutBon`, `Observations`, `estActif`, `creationDate`, `creationUserId`, `modifDate`, `modifUserId`) VALUES
-(5, 3, 3, 29, 14, 66, 42562, '2023-07-08 00:00:00', '16:00:00', 30000, 10000, 30000, 5, 'Chargé', NULL, 1, '2023-07-08 14:59:04', 2, '2023-07-10 19:51:29', 1),
-(6, 3, 3, 30, 14, 66, 14425, '2023-07-15 00:00:00', '16:06:00', 10000, 8000, 2000, 5, 'Chargé', NULL, 1, '2023-07-08 15:06:33', 2, '2023-07-10 11:53:58', 1),
-(7, 3, 2, 30, 14, 2276, 14556, '2023-07-20 00:00:00', '18:08:00', 12456, 5000, 30, 70, 'Chargé', NULL, 1, '2023-07-08 15:08:21', 2, '2023-07-09 16:46:53', 1),
-(8, 3, 3, 29, 14, 2276, 21000, '2023-07-08 00:00:00', '20:01:00', 15, 5, 15, 70, 'Chargé', NULL, 1, '2023-07-08 18:02:38', 2, '2023-07-10 12:02:16', 1),
-(10, 3, 2, 29, 14, 66, 33256, '2023-07-12 00:00:00', '19:17:00', 5000, 2000, 0, 5, 'Chargé', NULL, 1, '2023-07-08 18:16:51', 2, '2023-07-08 18:16:51', 2),
-(11, 3, 3, 30, 14, 2276, 12025, '2023-07-15 00:00:00', '20:41:00', 15000, 14525, 15000, 70, 'Chargé', NULL, 1, '2023-07-08 18:40:32', 2, '2023-07-10 11:51:53', 1),
-(13, 3, 2, 29, 14, 66, 4428, '2023-07-09 00:00:00', '07:13:00', 45, 20, 1335, 5, 'Cloturé', NULL, 1, '2023-07-09 19:17:45', 2, '2023-07-09 19:45:26', 3),
-(14, 3, 3, 30, 15, 2276, 3328, '2023-07-09 00:00:00', '10:18:00', 22, 12, 0, 70, 'Chargé', NULL, 1, '2023-07-09 19:18:49', 2, '2023-07-09 19:18:49', 2),
-(15, 3, 2, 29, 14, 66, 1515, '2023-07-09 00:00:00', '20:23:00', 64, 14, 0, 5, 'Chargé', NULL, 1, '2023-07-09 19:23:11', 2, '2023-07-09 19:23:11', 2),
-(16, 3, 3, 29, 15, 2276, 1415, '2023-07-09 00:00:00', '21:26:00', 70, 30, 0, 70, 'Chargé', NULL, 1, '2023-07-09 19:24:49', 2, '2023-07-09 19:24:49', 2),
-(17, 3, 2, 29, 14, 120, 5555, '2023-07-10 00:00:00', '10:59:00', 2000, 1000, 2000, 15, 'Cloturé', NULL, 1, '2023-07-10 11:00:19', 2, '2023-07-10 11:01:57', 3),
-(18, 3, 3, 31, 15, 66, 4446, '2023-07-10 00:00:00', '13:02:00', 1500, 1200, 1500, 5, 'Cloturé', NULL, 1, '2023-07-10 11:00:53', 2, '2023-07-10 11:02:12', 3),
-(19, 3, 3, 30, 14, 2276, 1345, '2023-07-10 00:00:00', '11:27:00', 5000, 4000, 5000, 70, 'Chargé', NULL, 1, '2023-07-10 11:28:47', 1, '2023-07-10 14:14:16', 1),
-(20, 3, 2, 30, 14, 66, 33000, '2023-07-11 00:00:00', '00:02:00', 30, 25, 30, 5, 'Chargé', NULL, 1, '2023-07-11 00:02:39', 1, '2023-07-11 00:02:39', 1),
-(21, 3, 2, 29, 14, 66, 44458, '2023-07-13 00:00:00', '13:34:00', 2500, 1000, 2500, 5, 'Chargé', NULL, 1, '2023-07-13 13:35:37', 1, '2023-07-13 13:35:37', 1),
-(22, 3, 3, 29, 14, 66, 1414, '2023-07-13 00:00:00', '15:02:00', 5000, 4444, 5000, 5, 'Chargé', NULL, 1, '2023-07-13 14:02:27', 1, '2023-07-13 14:02:27', 1),
-(23, 3, 2, 32, 15, 2276, 124576, '2023-07-13 00:00:00', '14:05:00', 67421, 1424, 24576, 70, 'Chargé', NULL, 1, '2023-07-13 14:09:50', 2, '2023-07-13 14:09:50', 2);
+INSERT INTO `bonlivraisons` (`id`, `contratId`, `flotteId`, `camionId`, `chauffeurId`, `trajetId`, `equipeId`, `numeroBl`, `dateChargement`, `heure`, `poidsChargee`, `poidsVide`, `tonnageSurBon`, `statutBon`, `distanceMine`, `Observations`, `estActif`, `creationDate`, `creationUserId`, `modifDate`, `modifUserId`) VALUES
+(33, 3, 2, 43, 15, 120, 3, 1456, '2023-07-22 00:00:00', '23:53:00', 3000, 2500, 3000, 'Chargé', 15, NULL, 1, '2023-07-22 23:55:00', 1, '2023-07-23 21:21:35', 1),
+(34, 3, 2, 43, 15, 66, 3, 8962, '2023-07-22 00:00:00', '00:57:00', 10, 5, 10, 'Chargé', 5, NULL, 1, '2023-07-22 23:57:41', 1, '2023-07-23 21:21:20', 1),
+(35, 3, 2, 43, 15, 66, 3, 5656, '2023-07-30 00:00:00', '00:01:00', 1500, 1000, 1500, 'Chargé', 5, NULL, 1, '2023-07-23 00:02:22', 1, '2023-07-23 21:20:54', 1),
+(36, 3, 2, 43, 15, 120, 3, 3354, '2023-07-23 00:00:00', '22:31:00', 70, 45, 70, 'Chargé', 15, 'Une observation donnée', 1, '2023-07-23 22:32:29', 1, '2023-07-23 22:32:29', 1),
+(37, 3, 3, 30, 15, 120, 3, 3425, '2023-07-23 00:00:00', '23:33:00', 58, 47, 58, 'Chargé', 15, NULL, 1, '2023-07-23 22:33:45', 1, '2023-07-23 22:33:45', 1);
 
 -- --------------------------------------------------------
 
@@ -5756,8 +6186,9 @@ INSERT INTO `bonlivraisons` (`id`, `contratId`, `flotteId`, `camionId`, `chauffe
 -- Structure de la table `camions`
 --
 
-CREATE TABLE `camions` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `camions`;
+CREATE TABLE IF NOT EXISTS `camions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `libelle` varchar(45) NOT NULL,
   `flotteId` int(11) NOT NULL,
   `titulaire` int(11) DEFAULT NULL,
@@ -5768,8 +6199,11 @@ CREATE TABLE `camions` (
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_camions_flotteId_idx` (`flotteId`),
+  KEY `fk_camions_titulaire_idx` (`titulaire`)
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `camions`
@@ -5792,7 +6226,8 @@ INSERT INTO `camions` (`id`, `libelle`, `flotteId`, `titulaire`, `capaciteThBenn
 (42, 'SCHACMAN', 4, NULL, 50, 'AM4791', '', 1, '2023-07-06 22:56:16', 1, '2023-07-06 22:56:16', 1),
 (43, 'SCHACMAN', 2, NULL, 50, 'AI9131', '', 1, '2023-07-06 22:59:46', 1, '2023-07-06 22:59:46', 1),
 (44, 'SCHACMAN', 2, NULL, 50, 'AI9118', '', 1, '2023-07-06 23:00:29', 1, '2023-07-10 10:20:15', 1),
-(45, 'HOWO JAUNE', 5, NULL, 50, 'AM1961', '', 1, '2023-07-06 23:03:18', 1, '2023-07-06 23:03:18', 1);
+(45, 'HOWO JAUNE', 5, NULL, 50, 'AM1961', '', 1, '2023-07-06 23:03:18', 1, '2023-07-06 23:03:18', 1),
+(46, 'SCHACMAN', 2, NULL, 57, 'AZ3333', 'RXX 1225', 1, '2023-07-22 11:46:28', 1, '2023-07-22 11:46:28', 1);
 
 -- --------------------------------------------------------
 
@@ -5800,8 +6235,9 @@ INSERT INTO `camions` (`id`, `libelle`, `flotteId`, `titulaire`, `capaciteThBenn
 -- Structure de la table `camionschauffeurs`
 --
 
-CREATE TABLE `camionschauffeurs` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `camionschauffeurs`;
+CREATE TABLE IF NOT EXISTS `camionschauffeurs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `chauffeurId` int(11) NOT NULL,
   `camionId` int(11) NOT NULL,
   `estTitulaire` int(11) NOT NULL DEFAULT 0,
@@ -5809,15 +6245,11 @@ CREATE TABLE `camionschauffeurs` (
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Déchargement des données de la table `camionschauffeurs`
---
-
-INSERT INTO `camionschauffeurs` (`id`, `chauffeurId`, `camionId`, `estTitulaire`, `estActif`, `creationDate`, `creationUserId`, `modifDate`, `modifUserId`) VALUES
-(23, 15, 30, 0, 1, '2023-07-07 20:47:06', 1, '2023-07-07 20:47:06', 1);
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_camions_camionId_idx` (`camionId`),
+  KEY `fk_camions_personnelId_idx` (`chauffeurId`)
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -5825,8 +6257,9 @@ INSERT INTO `camionschauffeurs` (`id`, `chauffeurId`, `camionId`, `estTitulaire`
 -- Structure de la table `camionsites`
 --
 
-CREATE TABLE `camionsites` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `camionsites`;
+CREATE TABLE IF NOT EXISTS `camionsites` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `camionId` int(11) NOT NULL,
   `siteId` int(11) NOT NULL,
   `observations` longtext DEFAULT NULL,
@@ -5834,8 +6267,11 @@ CREATE TABLE `camionsites` (
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_camions_camionId_idx` (`camionId`),
+  KEY `fk_camions_siteId_idx` (`siteId`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `camionsites`
@@ -5851,7 +6287,10 @@ INSERT INTO `camionsites` (`id`, `camionId`, `siteId`, `observations`, `estActif
 (9, 31, 3, NULL, 1, '2023-07-07 20:05:48', 1, '2023-07-07 20:05:48', 1),
 (10, 32, 3, NULL, 1, '2023-07-07 20:06:13', 1, '2023-07-07 20:06:13', 1),
 (11, 43, 2, NULL, 1, '2023-07-07 20:08:02', 1, '2023-07-07 20:08:02', 1),
-(12, 44, 2, NULL, 1, '2023-07-07 20:08:12', 1, '2023-07-07 20:08:12', 1);
+(12, 44, 2, NULL, 1, '2023-07-07 20:08:12', 1, '2023-07-07 20:08:12', 1),
+(13, 45, 3, NULL, 1, '2023-07-22 01:51:28', 1, '2023-07-22 01:51:28', 1),
+(14, 45, 2, NULL, 1, '2023-07-22 02:15:10', 1, '2023-07-22 02:15:10', 1),
+(15, 43, 3, NULL, 1, '2023-07-22 11:48:40', 1, '2023-07-22 11:48:40', 1);
 
 -- --------------------------------------------------------
 
@@ -5859,8 +6298,9 @@ INSERT INTO `camionsites` (`id`, `camionId`, `siteId`, `observations`, `estActif
 -- Structure de la table `communes`
 --
 
-CREATE TABLE `communes` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `communes`;
+CREATE TABLE IF NOT EXISTS `communes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `prefectureId` int(11) NOT NULL,
   `libelle` varchar(50) NOT NULL,
   `code` varchar(5) DEFAULT NULL,
@@ -5868,8 +6308,10 @@ CREATE TABLE `communes` (
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_commune_prefectureId_idx` (`prefectureId`)
+) ENGINE=InnoDB AUTO_INCREMENT=475 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `communes`
@@ -6242,8 +6684,9 @@ INSERT INTO `communes` (`id`, `prefectureId`, `libelle`, `code`, `estActif`, `cr
 -- Structure de la table `contratflottes`
 --
 
-CREATE TABLE `contratflottes` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `contratflottes`;
+CREATE TABLE IF NOT EXISTS `contratflottes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `contratId` int(11) NOT NULL,
   `flotteId` int(11) NOT NULL,
   `observations` longtext DEFAULT NULL,
@@ -6251,8 +6694,11 @@ CREATE TABLE `contratflottes` (
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_contratFlote_contratId_idx` (`contratId`),
+  KEY `fk_contratFlotte_flotteId_idx` (`flotteId`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `contratflottes`
@@ -6262,7 +6708,8 @@ INSERT INTO `contratflottes` (`id`, `contratId`, `flotteId`, `observations`, `es
 (2, 3, 2, '', 1, '2023-07-02 18:39:14', 1, '2023-07-02 19:43:41', 1),
 (3, 2, 2, NULL, 1, '2023-07-03 22:24:15', 1, '2023-07-05 12:10:44', 1),
 (4, 3, 3, NULL, 1, '2023-07-07 20:04:30', 1, '2023-07-07 20:04:30', 1),
-(5, 3, 5, NULL, 1, '2023-07-10 10:29:44', 1, '2023-07-10 10:29:44', 1);
+(5, 3, 5, NULL, 1, '2023-07-10 10:29:44', 1, '2023-07-10 10:29:44', 1),
+(6, 2, 5, NULL, 1, '2023-07-22 02:14:12', 1, '2023-07-22 02:14:12', 1);
 
 -- --------------------------------------------------------
 
@@ -6270,8 +6717,9 @@ INSERT INTO `contratflottes` (`id`, `contratId`, `flotteId`, `observations`, `es
 -- Structure de la table `contrats`
 --
 
-CREATE TABLE `contrats` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `contrats`;
+CREATE TABLE IF NOT EXISTS `contrats` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `localisationId` int(11) NOT NULL,
   `debut` datetime NOT NULL,
   `libelle` varchar(45) NOT NULL,
@@ -6281,8 +6729,10 @@ CREATE TABLE `contrats` (
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_contrats_localisationId_idx` (`localisationId`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `contrats`
@@ -6298,15 +6748,17 @@ INSERT INTO `contrats` (`id`, `localisationId`, `debut`, `libelle`, `documentLin
 -- Structure de la table `couleurs`
 --
 
-CREATE TABLE `couleurs` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `couleurs`;
+CREATE TABLE IF NOT EXISTS `couleurs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `libelle` varchar(45) NOT NULL,
   `codeHtml` varchar(10) NOT NULL,
   `estActif` tinyint(4) NOT NULL DEFAULT 1,
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -6315,16 +6767,18 @@ CREATE TABLE `couleurs` (
 -- Structure de la table `devises`
 --
 
-CREATE TABLE `devises` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `devises`;
+CREATE TABLE IF NOT EXISTS `devises` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `libelle` varchar(45) NOT NULL,
   `symbole` varchar(10) NOT NULL,
   `estActif` tinyint(4) NOT NULL DEFAULT 1,
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -6332,27 +6786,32 @@ CREATE TABLE `devises` (
 -- Structure de la table `equipes`
 --
 
-CREATE TABLE `equipes` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `equipes`;
+CREATE TABLE IF NOT EXISTS `equipes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `contratId` int(11) NOT NULL,
-  `superviseurId` int(11) NOT NULL,
+  `superviseurId` int(11) DEFAULT NULL,
   `libelle` varchar(30) NOT NULL,
   `observations` varchar(45) DEFAULT NULL,
-  `heureFin` varchar(45) NOT NULL,
+  `heureFin` time NOT NULL,
   `heureDebut` time NOT NULL,
   `estActif` tinyint(4) NOT NULL DEFAULT 1,
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_equipes_contrats_idx` (`contratId`),
+  KEY `fk_equipes_superviseur_idx` (`superviseurId`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `equipes`
 --
 
 INSERT INTO `equipes` (`id`, `contratId`, `superviseurId`, `libelle`, `observations`, `heureFin`, `heureDebut`, `estActif`, `creationDate`, `creationUserId`, `modifDate`, `modifUserId`) VALUES
-(2, 3, 16, 'Equipe du soir', NULL, '18:52', '17:51:00', 1, '2023-07-18 15:49:59', 1, '2023-07-18 15:49:59', 1);
+(2, 3, 16, 'Equipe du soir', NULL, '18:52:00', '17:51:00', 1, '2023-07-18 15:49:59', 1, '2023-07-21 10:21:48', 1),
+(3, 3, 17, 'Equipe matinale', NULL, '17:36:00', '08:36:00', 1, '2023-07-20 22:36:54', 1, '2023-07-20 22:36:54', 1);
 
 -- --------------------------------------------------------
 
@@ -6360,17 +6819,40 @@ INSERT INTO `equipes` (`id`, `contratId`, `superviseurId`, `libelle`, `observati
 -- Structure de la table `equipespersonnels`
 --
 
-CREATE TABLE `equipespersonnels` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `equipespersonnels`;
+CREATE TABLE IF NOT EXISTS `equipespersonnels` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `equipeId` int(11) NOT NULL,
   `personnelId` int(11) NOT NULL,
   `debut` date NOT NULL,
   `fin` date DEFAULT NULL,
+  `estActif` tinyint(4) NOT NULL DEFAULT 1,
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_personnelEquipements_personnelId_idx` (`personnelId`),
+  KEY `fk_personnelEquipements_equipeId_idx` (`equipeId`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `equipespersonnels`
+--
+
+INSERT INTO `equipespersonnels` (`id`, `equipeId`, `personnelId`, `debut`, `fin`, `estActif`, `creationDate`, `creationUserId`, `modifDate`, `modifUserId`) VALUES
+(1, 2, 14, '2023-07-01', '2023-07-20', 1, '2023-07-20 08:51:26', 1, '2023-07-20 12:32:09', 1),
+(3, 2, 14, '2023-07-20', '2023-07-22', 1, '2023-07-20 14:26:34', 1, '2023-07-20 22:49:03', 1),
+(4, 2, 15, '2023-07-20', '2023-07-23', 1, '2023-07-20 22:56:10', 1, '2023-07-20 22:57:29', 1),
+(10, 2, 15, '2023-07-22', '2023-07-23', 1, '2023-07-21 10:35:47', 1, '2023-07-21 14:43:59', 1),
+(11, 2, 14, '2023-07-23', '2023-07-27', 1, '2023-07-21 10:37:24', 1, '2023-07-22 01:53:10', 1),
+(12, 3, 15, '2023-07-21', '2023-07-23', 1, '2023-07-21 14:44:17', 1, '2023-07-21 22:49:09', 1),
+(13, 3, 15, '2023-07-13', '2023-07-30', 1, '2023-07-21 22:49:28', 1, '2023-07-21 22:50:10', 1),
+(14, 2, 15, '2023-07-23', '2023-08-04', 1, '2023-07-21 22:59:36', 1, '2023-07-22 01:54:11', 1),
+(15, 2, 14, '2023-07-23', '2023-07-30', 1, '2023-07-22 01:57:34', 1, '2023-07-22 14:59:15', 1),
+(16, 3, 15, '2023-07-11', '2023-07-23', 1, '2023-07-22 11:49:48', 1, '2023-07-22 11:50:06', 1),
+(17, 3, 15, '2023-07-20', NULL, 1, '2023-07-22 11:51:52', 1, '2023-07-22 11:51:52', 1),
+(18, 2, 14, '2023-07-20', '2023-07-24', 1, '2023-07-23 21:46:14', 1, '2023-07-23 21:50:51', 1);
 
 -- --------------------------------------------------------
 
@@ -6378,8 +6860,9 @@ CREATE TABLE `equipespersonnels` (
 -- Structure de la table `flottes`
 --
 
-CREATE TABLE `flottes` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `flottes`;
+CREATE TABLE IF NOT EXISTS `flottes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `libelle` varchar(30) NOT NULL,
   `Responsable` varchar(45) NOT NULL,
   `telephone` int(20) NOT NULL,
@@ -6388,8 +6871,9 @@ CREATE TABLE `flottes` (
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `flottes`
@@ -6407,16 +6891,18 @@ INSERT INTO `flottes` (`id`, `libelle`, `Responsable`, `telephone`, `email`, `es
 -- Structure de la table `groupes`
 --
 
-CREATE TABLE `groupes` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `groupes`;
+CREATE TABLE IF NOT EXISTS `groupes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `libelle` varchar(45) NOT NULL,
   `observations` mediumtext DEFAULT NULL,
   `estActif` tinyint(4) NOT NULL DEFAULT 1,
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `groupes`
@@ -6435,8 +6921,9 @@ INSERT INTO `groupes` (`id`, `libelle`, `observations`, `estActif`, `creationDat
 -- Structure de la table `menus`
 --
 
-CREATE TABLE `menus` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `menus`;
+CREATE TABLE IF NOT EXISTS `menus` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `reference` varchar(45) DEFAULT NULL,
   `libelle` varchar(45) NOT NULL,
   `descriptions` mediumtext DEFAULT NULL,
@@ -6449,8 +6936,9 @@ CREATE TABLE `menus` (
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=96 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `menus`
@@ -6540,15 +7028,17 @@ INSERT INTO `menus` (`id`, `reference`, `libelle`, `descriptions`, `url`, `menuP
 -- Structure de la table `modeaccess`
 --
 
-CREATE TABLE `modeaccess` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `modeaccess`;
+CREATE TABLE IF NOT EXISTS `modeaccess` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `libelle` varchar(50) NOT NULL,
   `estActif` tinyint(4) NOT NULL DEFAULT 1,
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `modeaccess`
@@ -6567,15 +7057,17 @@ INSERT INTO `modeaccess` (`id`, `libelle`, `estActif`, `creationDate`, `creation
 -- Structure de la table `natures`
 --
 
-CREATE TABLE `natures` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `natures`;
+CREATE TABLE IF NOT EXISTS `natures` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `libelle` varchar(45) NOT NULL,
   `code` varchar(20) DEFAULT NULL,
   `estActif` tinyint(4) NOT NULL DEFAULT 1,
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -6584,8 +7076,9 @@ CREATE TABLE `natures` (
 -- Structure de la table `onglets`
 --
 
-CREATE TABLE `onglets` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `onglets`;
+CREATE TABLE IF NOT EXISTS `onglets` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `menuId` int(11) NOT NULL,
   `reference` varchar(30) NOT NULL,
   `libelle` varchar(45) NOT NULL,
@@ -6598,8 +7091,10 @@ CREATE TABLE `onglets` (
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_onglet_menuId_idx` (`menuId`)
+) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `onglets`
@@ -6702,8 +7197,9 @@ INSERT INTO `onglets` (`id`, `menuId`, `reference`, `libelle`, `descriptions`, `
 -- Structure de la table `payss`
 --
 
-CREATE TABLE `payss` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `payss`;
+CREATE TABLE IF NOT EXISTS `payss` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `libelle` varchar(50) NOT NULL,
   `indicatifTel` int(11) NOT NULL,
   `deviseId` int(11) DEFAULT NULL,
@@ -6711,8 +7207,10 @@ CREATE TABLE `payss` (
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`,`estActif`),
+  KEY `fk_pays_deviseId_idx` (`deviseId`)
+) ENGINE=InnoDB AUTO_INCREMENT=244 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `payss`
@@ -6964,8 +7462,9 @@ INSERT INTO `payss` (`id`, `libelle`, `indicatifTel`, `deviseId`, `estActif`, `c
 -- Structure de la table `personnels`
 --
 
-CREATE TABLE `personnels` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `personnels`;
+CREATE TABLE IF NOT EXISTS `personnels` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `nom` varchar(30) NOT NULL,
   `prenoms` varchar(45) NOT NULL,
   `telephone` double NOT NULL,
@@ -6978,8 +7477,13 @@ CREATE TABLE `personnels` (
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_personnels_typeFonctionId_idx` (`typeFonctionId`),
+  KEY `fk_personnels_statutId_idx` (`statut`),
+  KEY `fk_personnels_contratId_idx` (`contratId`),
+  KEY `fk_personnels_flotteId_idx` (`flotteId`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `personnels`
@@ -6987,8 +7491,6 @@ CREATE TABLE `personnels` (
 
 INSERT INTO `personnels` (`id`, `nom`, `prenoms`, `telephone`, `email`, `contratId`, `flotteId`, `typeFonctionId`, `statut`, `estActif`, `creationDate`, `creationUserId`, `modifDate`, `modifUserId`) VALUES
 (9, 'Bangoura', 'Fodé', 621124502, 'barryboubacar@gmail.', NULL, 2, 1, 2, 1, '2023-07-04 15:07:23', 1, '2023-07-04 15:07:23', 1),
-(10, 'Barry', 'Amadou', 6555555, 'barryboub@gmail.com', NULL, 2, 1, 2, 1, '2023-07-04 15:08:01', 1, '2023-07-04 15:08:01', 1),
-(11, 'amina', 'sydibé', 622141516, 'dubrekacare@gmail.co', NULL, 2, 1, 2, 1, '2023-07-04 15:08:25', 1, '2023-07-04 15:08:25', 1),
 (12, 'Sylla', 'fatoumata', 628112588, '', NULL, 2, 1, 2, 1, '2023-07-04 15:08:54', 1, '2023-07-04 15:08:54', 1),
 (13, 'Barry', 'Aboudoulay', 621196376, '', NULL, 2, 1, 2, 1, '2023-07-04 15:09:14', 1, '2023-07-04 15:09:14', 1),
 (14, 'Camara', 'Abdoulaye', 622195264, '', 3, NULL, 1, 2, 1, '2023-07-04 19:44:54', 1, '2023-07-04 19:44:54', 1),
@@ -7002,8 +7504,9 @@ INSERT INTO `personnels` (`id`, `nom`, `prenoms`, `telephone`, `email`, `contrat
 -- Structure de la table `prefectures`
 --
 
-CREATE TABLE `prefectures` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `prefectures`;
+CREATE TABLE IF NOT EXISTS `prefectures` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `regionId` int(11) NOT NULL,
   `libelle` varchar(50) NOT NULL,
   `code` varchar(5) DEFAULT NULL,
@@ -7011,8 +7514,10 @@ CREATE TABLE `prefectures` (
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_prefecture_regionId_idx` (`regionId`)
+) ENGINE=InnoDB AUTO_INCREMENT=157 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `prefectures`
@@ -7177,8 +7682,9 @@ INSERT INTO `prefectures` (`id`, `regionId`, `libelle`, `code`, `estActif`, `cre
 -- Structure de la table `privileges`
 --
 
-CREATE TABLE `privileges` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `privileges`;
+CREATE TABLE IF NOT EXISTS `privileges` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `menuId` int(11) DEFAULT NULL,
   `ongletId` int(11) DEFAULT NULL,
   `groupeId` int(11) NOT NULL,
@@ -7187,8 +7693,13 @@ CREATE TABLE `privileges` (
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_privilege_menuId_idx` (`menuId`),
+  KEY `fk_privilege_ongletId_idx` (`ongletId`),
+  KEY `fk_privilege_groupeId_idx` (`groupeId`),
+  KEY `fk_privilege_modeAccesId_idx` (`modeAccesId`)
+) ENGINE=InnoDB AUTO_INCREMENT=295 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `privileges`
@@ -7370,8 +7881,9 @@ INSERT INTO `privileges` (`id`, `menuId`, `ongletId`, `groupeId`, `modeAccesId`,
 -- Structure de la table `quartierdistricts`
 --
 
-CREATE TABLE `quartierdistricts` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `quartierdistricts`;
+CREATE TABLE IF NOT EXISTS `quartierdistricts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `communeId` int(11) NOT NULL,
   `libelle` varchar(50) NOT NULL,
   `code` varchar(5) DEFAULT NULL,
@@ -7379,8 +7891,10 @@ CREATE TABLE `quartierdistricts` (
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_quartier_communeId_idx` (`communeId`)
+) ENGINE=InnoDB AUTO_INCREMENT=4008 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `quartierdistricts`
@@ -8236,8 +8750,7 @@ INSERT INTO `quartierdistricts` (`id`, `communeId`, `libelle`, `code`, `estActif
 (1035, 67, 'DONGHORA', '', 1, '2013-06-21 18:28:18', 2, '2013-06-21 18:28:18', 2),
 (1036, 67, 'DOW SARE', '', 1, '2013-06-21 18:28:41', 2, '2013-06-21 18:28:41', 2),
 (1037, 67, 'FADY', '', 1, '2013-06-21 18:29:03', 2, '2013-06-21 18:29:03', 2),
-(1038, 67, 'FAFABHE', '', 1, '2013-06-21 18:29:20', 2, '2013-06-21 18:29:20', 2);
-INSERT INTO `quartierdistricts` (`id`, `communeId`, `libelle`, `code`, `estActif`, `creationDate`, `creationUserId`, `modifDate`, `modifUserId`) VALUES
+(1038, 67, 'FAFABHE', '', 1, '2013-06-21 18:29:20', 2, '2013-06-21 18:29:20', 2),
 (1039, 67, 'FALO BOWE', '', 1, '2013-06-21 18:29:40', 2, '2013-06-21 18:29:40', 2),
 (1040, 67, 'HORE SAALA', '', 1, '2013-06-21 18:29:59', 2, '2013-09-18 09:53:45', 1),
 (1041, 67, 'KONKOLA', '', 1, '2013-06-21 18:30:21', 2, '2013-06-21 18:30:21', 2),
@@ -9080,8 +9593,7 @@ INSERT INTO `quartierdistricts` (`id`, `communeId`, `libelle`, `code`, `estActif
 (1892, 49, 'KENEMA', '', 1, '2013-06-24 23:01:43', 1, '2013-09-18 12:52:57', 1),
 (1893, 49, 'KOUNDOU-TOH', '', 1, '2013-06-24 23:02:09', 1, '2013-09-18 12:56:01', 1),
 (1894, 49, 'N\\\'GOUAHOU', '', 1, '2013-06-24 23:02:41', 1, '2013-09-24 10:26:19', 1),
-(1895, 50, 'BAWA', '', 1, '2013-06-24 23:04:52', 1, '2013-06-24 23:04:52', 1);
-INSERT INTO `quartierdistricts` (`id`, `communeId`, `libelle`, `code`, `estActif`, `creationDate`, `creationUserId`, `modifDate`, `modifUserId`) VALUES
+(1895, 50, 'BAWA', '', 1, '2013-06-24 23:04:52', 1, '2013-06-24 23:04:52', 1),
 (1896, 50, 'TOUMANDOU', '', 1, '2013-06-24 23:05:10', 1, '2013-06-24 23:05:10', 1),
 (1897, 51, 'MONGO', '', 1, '2013-06-24 23:06:20', 1, '2013-06-24 23:06:20', 1),
 (1898, 50, 'KONDEMBADOU', '', 1, '2013-06-24 23:06:44', 1, '2013-06-24 23:06:44', 1),
@@ -9927,8 +10439,7 @@ INSERT INTO `quartierdistricts` (`id`, `communeId`, `libelle`, `code`, `estActif
 (2878, 282, 'SIMBAYA', '', 1, '2013-09-17 12:54:29', 1, '2013-09-17 12:54:29', 1),
 (2879, 282, 'LONGORI', '', 1, '2013-09-17 12:55:17', 1, '2013-09-17 12:55:17', 1),
 (2880, 330, 'M&Ouml;R&Ouml;DE', '', 1, '2013-09-17 12:55:29', 1, '2013-09-17 12:55:29', 1),
-(2881, 282, 'SILIKHOUN', '', 1, '2013-09-17 12:56:20', 1, '2013-09-17 12:56:20', 1);
-INSERT INTO `quartierdistricts` (`id`, `communeId`, `libelle`, `code`, `estActif`, `creationDate`, `creationUserId`, `modifDate`, `modifUserId`) VALUES
+(2881, 282, 'SILIKHOUN', '', 1, '2013-09-17 12:56:20', 1, '2013-09-17 12:56:20', 1),
 (2882, 173, 'SILAMANA', '', 1, '2013-09-17 12:57:58', 1, '2013-09-17 12:57:58', 1),
 (2883, 173, 'TENINMAMOUDOUYAH CEN', '', 1, '2013-09-17 12:58:32', 1, '2013-09-17 12:59:26', 1),
 (2884, 173, 'YARAYA', '', 1, '2013-09-17 12:59:03', 1, '2013-09-17 12:59:03', 1),
@@ -10675,8 +11186,9 @@ INSERT INTO `quartierdistricts` (`id`, `communeId`, `libelle`, `code`, `estActif
 -- Structure de la table `regions`
 --
 
-CREATE TABLE `regions` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `regions`;
+CREATE TABLE IF NOT EXISTS `regions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `paysId` int(11) NOT NULL,
   `libelle` varchar(50) NOT NULL,
   `code` varchar(5) DEFAULT NULL,
@@ -10684,8 +11196,10 @@ CREATE TABLE `regions` (
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_region_paysId_idx` (`paysId`)
+) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `regions`
@@ -10820,8 +11334,9 @@ INSERT INTO `regions` (`id`, `paysId`, `libelle`, `code`, `estActif`, `creationD
 -- Structure de la table `secteurs`
 --
 
-CREATE TABLE `secteurs` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `secteurs`;
+CREATE TABLE IF NOT EXISTS `secteurs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `quartierDistrictId` int(11) NOT NULL,
   `libelle` varchar(50) NOT NULL,
   `code` varchar(5) DEFAULT NULL,
@@ -10829,7 +11344,9 @@ CREATE TABLE `secteurs` (
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_secteurs_districtId_idx` (`quartierDistrictId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -10838,16 +11355,18 @@ CREATE TABLE `secteurs` (
 -- Structure de la table `statuts`
 --
 
-CREATE TABLE `statuts` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `statuts`;
+CREATE TABLE IF NOT EXISTS `statuts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `libelle` varchar(30) NOT NULL,
   `observations` varchar(45) DEFAULT NULL,
   `estActif` tinyint(4) NOT NULL DEFAULT 1,
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `statuts`
@@ -10863,8 +11382,9 @@ INSERT INTO `statuts` (`id`, `libelle`, `observations`, `estActif`, `creationDat
 -- Structure de la table `trajets`
 --
 
-CREATE TABLE `trajets` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `trajets`;
+CREATE TABLE IF NOT EXISTS `trajets` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `contratId` int(11) NOT NULL,
   `dechargement` int(11) NOT NULL,
   `distance` int(11) NOT NULL,
@@ -10872,8 +11392,11 @@ CREATE TABLE `trajets` (
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_trajets_contratId_idx` (`contratId`),
+  KEY `fk_trajets_dechargement_idx` (`dechargement`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `trajets`
@@ -10890,16 +11413,18 @@ INSERT INTO `trajets` (`id`, `contratId`, `dechargement`, `distance`, `estActif`
 -- Structure de la table `type_fonctions`
 --
 
-CREATE TABLE `type_fonctions` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `type_fonctions`;
+CREATE TABLE IF NOT EXISTS `type_fonctions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `libelle` varchar(30) NOT NULL,
   `observations` varchar(45) DEFAULT NULL,
   `estActif` tinyint(4) NOT NULL DEFAULT 1,
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `type_fonctions`
@@ -10917,15 +11442,17 @@ INSERT INTO `type_fonctions` (`id`, `libelle`, `observations`, `estActif`, `crea
 -- Structure de la table `unites`
 --
 
-CREATE TABLE `unites` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `unites`;
+CREATE TABLE IF NOT EXISTS `unites` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `libelle` varchar(45) NOT NULL,
   `symbole` varchar(5) NOT NULL,
   `estActif` tinyint(4) NOT NULL DEFAULT 1,
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -10934,8 +11461,9 @@ CREATE TABLE `unites` (
 -- Structure de la table `userconnexions`
 --
 
-CREATE TABLE `userconnexions` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `userconnexions`;
+CREATE TABLE IF NOT EXISTS `userconnexions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` int(11) NOT NULL,
   `adressIp` varchar(20) DEFAULT NULL,
   `fin` datetime DEFAULT NULL,
@@ -10943,8 +11471,10 @@ CREATE TABLE `userconnexions` (
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_userconnexionUserId_idx` (`userId`)
+) ENGINE=InnoDB AUTO_INCREMENT=514 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -10952,16 +11482,20 @@ CREATE TABLE `userconnexions` (
 -- Structure de la table `usergroupes`
 --
 
-CREATE TABLE `usergroupes` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `usergroupes`;
+CREATE TABLE IF NOT EXISTS `usergroupes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` int(11) NOT NULL,
   `groupeId` int(11) NOT NULL,
   `estActif` tinyint(4) NOT NULL DEFAULT 1,
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_usergroupe_userId_idx` (`userId`),
+  KEY `fk_usergroupe_groupeId_idx` (`groupeId`)
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `usergroupes`
@@ -10986,15 +11520,18 @@ INSERT INTO `usergroupes` (`id`, `userId`, `groupeId`, `estActif`, `creationDate
 -- Structure de la table `userpasswords`
 --
 
-CREATE TABLE `userpasswords` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `userpasswords`;
+CREATE TABLE IF NOT EXISTS `userpasswords` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` int(11) NOT NULL,
   `type` enum('Auto','Perso') DEFAULT NULL,
   `estActif` tinyint(4) NOT NULL DEFAULT 1,
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_userconnexionUserId_idx` (`userId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -11003,8 +11540,9 @@ CREATE TABLE `userpasswords` (
 -- Structure de la table `users`
 --
 
-CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(15) NOT NULL,
   `prenoms` varchar(45) NOT NULL,
   `telephone` int(11) NOT NULL,
@@ -11014,8 +11552,10 @@ CREATE TABLE `users` (
   `creationDate` datetime NOT NULL,
   `creationUserId` int(11) NOT NULL,
   `modifDate` datetime NOT NULL,
-  `modifUserId` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `modifUserId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_users_adresse_idx` (`adresse`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `users`
@@ -11025,438 +11565,6 @@ INSERT INTO `users` (`id`, `name`, `prenoms`, `telephone`, `password`, `adresse`
 (1, 'Barry', 'Cherif', 621196376, '99857914190f407368f5396b0bc84606', 117, 1, '2023-06-23 14:19:37', 1, '2023-06-23 14:19:37', 1),
 (2, 'Barry', 'Ibrahima sory', 622195264, '99857914190f407368f5396b0bc84606', 117, 1, '2023-07-07 17:49:36', 1, '2023-07-07 17:49:36', 1),
 (3, 'Diallo', 'Ahmadou', 628112588, '99857914190f407368f5396b0bc84606', 117, 1, '2023-07-09 20:23:15', 1, '2023-07-09 20:23:15', 1);
-
---
--- Index pour les tables déchargées
---
-
---
--- Index pour la table `bonlivraisons`
---
-ALTER TABLE `bonlivraisons`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_bonLivraisons_camionId_idx` (`camionId`),
-  ADD KEY `fk_bonLivraisons_trajetId_idx` (`trajetId`),
-  ADD KEY `fk_bonLivraisons_contratId_idx` (`contratId`),
-  ADD KEY `fk_bonLivraisons_flotteId_idx` (`flotteId`),
-  ADD KEY `fk_bonLivraisons_chauffeurId` (`chauffeurId`);
-
---
--- Index pour la table `camions`
---
-ALTER TABLE `camions`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_camions_flotteId_idx` (`flotteId`),
-  ADD KEY `fk_camions_titulaire_idx` (`titulaire`);
-
---
--- Index pour la table `camionschauffeurs`
---
-ALTER TABLE `camionschauffeurs`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_camions_camionId_idx` (`camionId`),
-  ADD KEY `fk_camions_personnelId_idx` (`chauffeurId`);
-
---
--- Index pour la table `camionsites`
---
-ALTER TABLE `camionsites`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_camions_camionId_idx` (`camionId`),
-  ADD KEY `fk_camions_siteId_idx` (`siteId`);
-
---
--- Index pour la table `communes`
---
-ALTER TABLE `communes`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_commune_prefectureId_idx` (`prefectureId`);
-
---
--- Index pour la table `contratflottes`
---
-ALTER TABLE `contratflottes`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_contratFlote_contratId_idx` (`contratId`),
-  ADD KEY `fk_contratFlotte_flotteId_idx` (`flotteId`);
-
---
--- Index pour la table `contrats`
---
-ALTER TABLE `contrats`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_contrats_localisationId_idx` (`localisationId`);
-
---
--- Index pour la table `couleurs`
---
-ALTER TABLE `couleurs`
-  ADD PRIMARY KEY (`id`);
-
---
--- Index pour la table `devises`
---
-ALTER TABLE `devises`
-  ADD PRIMARY KEY (`id`);
-
---
--- Index pour la table `equipes`
---
-ALTER TABLE `equipes`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_equipes_contrats_idx` (`contratId`),
-  ADD KEY `fk_equipes_superviseur_idx` (`superviseurId`);
-
---
--- Index pour la table `equipespersonnels`
---
-ALTER TABLE `equipespersonnels`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_personnelEquipements_personnelId_idx` (`personnelId`),
-  ADD KEY `fk_personnelEquipements_equipeId_idx` (`equipeId`);
-
---
--- Index pour la table `flottes`
---
-ALTER TABLE `flottes`
-  ADD PRIMARY KEY (`id`);
-
---
--- Index pour la table `groupes`
---
-ALTER TABLE `groupes`
-  ADD PRIMARY KEY (`id`);
-
---
--- Index pour la table `menus`
---
-ALTER TABLE `menus`
-  ADD PRIMARY KEY (`id`);
-
---
--- Index pour la table `modeaccess`
---
-ALTER TABLE `modeaccess`
-  ADD PRIMARY KEY (`id`);
-
---
--- Index pour la table `natures`
---
-ALTER TABLE `natures`
-  ADD PRIMARY KEY (`id`);
-
---
--- Index pour la table `onglets`
---
-ALTER TABLE `onglets`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_onglet_menuId_idx` (`menuId`);
-
---
--- Index pour la table `payss`
---
-ALTER TABLE `payss`
-  ADD PRIMARY KEY (`id`,`estActif`),
-  ADD KEY `fk_pays_deviseId_idx` (`deviseId`);
-
---
--- Index pour la table `personnels`
---
-ALTER TABLE `personnels`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_personnels_typeFonctionId_idx` (`typeFonctionId`),
-  ADD KEY `fk_personnels_statutId_idx` (`statut`),
-  ADD KEY `fk_personnels_contratId_idx` (`contratId`),
-  ADD KEY `fk_personnels_flotteId_idx` (`flotteId`);
-
---
--- Index pour la table `prefectures`
---
-ALTER TABLE `prefectures`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_prefecture_regionId_idx` (`regionId`);
-
---
--- Index pour la table `privileges`
---
-ALTER TABLE `privileges`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_privilege_menuId_idx` (`menuId`),
-  ADD KEY `fk_privilege_ongletId_idx` (`ongletId`),
-  ADD KEY `fk_privilege_groupeId_idx` (`groupeId`),
-  ADD KEY `fk_privilege_modeAccesId_idx` (`modeAccesId`);
-
---
--- Index pour la table `quartierdistricts`
---
-ALTER TABLE `quartierdistricts`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_quartier_communeId_idx` (`communeId`);
-
---
--- Index pour la table `regions`
---
-ALTER TABLE `regions`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_region_paysId_idx` (`paysId`);
-
---
--- Index pour la table `secteurs`
---
-ALTER TABLE `secteurs`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_secteurs_districtId_idx` (`quartierDistrictId`);
-
---
--- Index pour la table `statuts`
---
-ALTER TABLE `statuts`
-  ADD PRIMARY KEY (`id`);
-
---
--- Index pour la table `trajets`
---
-ALTER TABLE `trajets`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_trajets_contratId_idx` (`contratId`),
-  ADD KEY `fk_trajets_dechargement_idx` (`dechargement`);
-
---
--- Index pour la table `type_fonctions`
---
-ALTER TABLE `type_fonctions`
-  ADD PRIMARY KEY (`id`);
-
---
--- Index pour la table `unites`
---
-ALTER TABLE `unites`
-  ADD PRIMARY KEY (`id`);
-
---
--- Index pour la table `userconnexions`
---
-ALTER TABLE `userconnexions`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_userconnexionUserId_idx` (`userId`);
-
---
--- Index pour la table `usergroupes`
---
-ALTER TABLE `usergroupes`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_usergroupe_userId_idx` (`userId`),
-  ADD KEY `fk_usergroupe_groupeId_idx` (`groupeId`);
-
---
--- Index pour la table `userpasswords`
---
-ALTER TABLE `userpasswords`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_userconnexionUserId_idx` (`userId`);
-
---
--- Index pour la table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_users_adresse_idx` (`adresse`);
-
---
--- AUTO_INCREMENT pour les tables déchargées
---
-
---
--- AUTO_INCREMENT pour la table `bonlivraisons`
---
-ALTER TABLE `bonlivraisons`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
-
---
--- AUTO_INCREMENT pour la table `camions`
---
-ALTER TABLE `camions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
-
---
--- AUTO_INCREMENT pour la table `camionschauffeurs`
---
-ALTER TABLE `camionschauffeurs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
-
---
--- AUTO_INCREMENT pour la table `camionsites`
---
-ALTER TABLE `camionsites`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
-
---
--- AUTO_INCREMENT pour la table `communes`
---
-ALTER TABLE `communes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=475;
-
---
--- AUTO_INCREMENT pour la table `contratflottes`
---
-ALTER TABLE `contratflottes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT pour la table `contrats`
---
-ALTER TABLE `contrats`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT pour la table `couleurs`
---
-ALTER TABLE `couleurs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT pour la table `devises`
---
-ALTER TABLE `devises`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT pour la table `equipes`
---
-ALTER TABLE `equipes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT pour la table `equipespersonnels`
---
-ALTER TABLE `equipespersonnels`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT pour la table `flottes`
---
-ALTER TABLE `flottes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT pour la table `groupes`
---
-ALTER TABLE `groupes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
-
---
--- AUTO_INCREMENT pour la table `menus`
---
-ALTER TABLE `menus`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
-
---
--- AUTO_INCREMENT pour la table `modeaccess`
---
-ALTER TABLE `modeaccess`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT pour la table `natures`
---
-ALTER TABLE `natures`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT pour la table `onglets`
---
-ALTER TABLE `onglets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
-
---
--- AUTO_INCREMENT pour la table `payss`
---
-ALTER TABLE `payss`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=244;
-
---
--- AUTO_INCREMENT pour la table `personnels`
---
-ALTER TABLE `personnels`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
-
---
--- AUTO_INCREMENT pour la table `prefectures`
---
-ALTER TABLE `prefectures`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=157;
-
---
--- AUTO_INCREMENT pour la table `privileges`
---
-ALTER TABLE `privileges`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=295;
-
---
--- AUTO_INCREMENT pour la table `quartierdistricts`
---
-ALTER TABLE `quartierdistricts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4008;
-
---
--- AUTO_INCREMENT pour la table `regions`
---
-ALTER TABLE `regions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=127;
-
---
--- AUTO_INCREMENT pour la table `secteurs`
---
-ALTER TABLE `secteurs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT pour la table `statuts`
---
-ALTER TABLE `statuts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT pour la table `trajets`
---
-ALTER TABLE `trajets`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT pour la table `type_fonctions`
---
-ALTER TABLE `type_fonctions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT pour la table `unites`
---
-ALTER TABLE `unites`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT pour la table `userconnexions`
---
-ALTER TABLE `userconnexions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=514;
-
---
--- AUTO_INCREMENT pour la table `usergroupes`
---
-ALTER TABLE `usergroupes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
-
---
--- AUTO_INCREMENT pour la table `userpasswords`
---
-ALTER TABLE `userpasswords`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT pour la table `users`
---
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Contraintes pour les tables déchargées
@@ -11469,8 +11577,9 @@ ALTER TABLE `bonlivraisons`
   ADD CONSTRAINT `fk_bonLivraisons_camionId` FOREIGN KEY (`camionId`) REFERENCES `camions` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_bonLivraisons_chauffeurId` FOREIGN KEY (`chauffeurId`) REFERENCES `personnels` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_bonLivraisons_contratId` FOREIGN KEY (`contratId`) REFERENCES `contrats` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_bonLivraisons_equipeId` FOREIGN KEY (`equipeId`) REFERENCES `equipes` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_bonLivraisons_flotteId` FOREIGN KEY (`flotteId`) REFERENCES `flottes` (`id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_bonLivraisons_trajetId` FOREIGN KEY (`trajetId`) REFERENCES `quartierdistricts` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_bonLivraisons_trajetId` FOREIGN KEY (`trajetId`) REFERENCES `trajets` (`dechargement`) ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `camions`

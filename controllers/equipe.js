@@ -27,6 +27,12 @@ function selectAllEquipe(req, res, next) {
     .catch(error => res.status(400).json(error))
 }
 
+function getPersonnelNotAffectedToEquipe(req, res, next) {
+  const id = req.params.id
+  Equipe.getPersonnelNotAffectedToEquipe(id)
+    .then(equipe => res.status(200).json(equipe))
+    .catch(error => res.status(400).json(error))
+}
 function getSupperviseurNotAffectedToEquipe(req, res, next) {
   const id = req.params.id
   Equipe.getSupperviseurNotAffectedToEquipe(id)
@@ -48,7 +54,6 @@ function addEquipe(req, res, next) {
     estActif: 1,
   }
 
-  console.log(req.body)
   Equipe.equipeSelectByInModel(equipeObj)
     .then(equipes => {
       if (equipes.length == 0) {
@@ -128,6 +133,7 @@ function deleteEquipe(req, res, next) {
 module.exports = {
   equipeSelectBy,
   getSupperviseurNotAffectedToEquipe,
+  getPersonnelNotAffectedToEquipe,
   selectAllEquipe,
   selectByIdEquipe,
   addEquipe,
