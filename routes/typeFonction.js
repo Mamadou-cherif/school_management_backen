@@ -1,6 +1,6 @@
 const express=require("express")
 const router= express.Router()
-const typeFonctionController= require("../controllers/typeFonction")
+const typeFonctionController= require("../controllers/typefonction")
 
     router.post("/typeFonctionSelectBy", typeFonctionController.typefonctionSelectBy)
     router.get("/selectAllTypeFonction", typeFonctionController.selectAlltypeFonction)
