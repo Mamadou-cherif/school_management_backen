@@ -79,7 +79,6 @@ function updateTrajet(req, res, next) {
     dechargement: req.body.dechargement,
     estActif:1,
 }
-console.log(obj)
 Trajet.trajetSelectByInModel(obj)
 .then(trajet => {
   if (trajet.length == 0 || trajet[0].id== req.body.id) {
@@ -95,7 +94,6 @@ Trajet.trajetSelectByInModel(obj)
     Trajet.updateTrajetInModel(trajetObj)
     .then(() => res.status(201).json({succes: "ajout reussi avec succès"}))
     .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée trajet_insert" }));
-  
   }
   else {
     res.status(500).json({ error: "Dupplicata du trajet" })

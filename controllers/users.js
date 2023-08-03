@@ -1,21 +1,12 @@
 const User = require("../models/users")
-const express = require("express")
-const bodyParser = require("body-parser")
-const app = express()
-app.use(bodyParser.json())
-const bcrypt = require("bcrypt")
-const initUserClass = require("../classes/users")
 const md5 = require("md5")
-const initUserConnexion = require("../classes/userConnexion")
 const userConnexion = require("../models/userConnexion")
 const userPassword = require("../models/userPassword")
-const initUserPassword = require("../classes/userPassword")
 const jwt = require("../services/jwt")
 const crypto = require('crypto');
 const multersd = require('multer')
 const path = require('path');
 const fs = require("fs")
-const { redirect } = require("express/lib/response")
 
 
 
@@ -57,51 +48,26 @@ function files(req, res, next) {
 
 
 function addUser(req, res, next) {
-    initUserClass.user.telephone1 = req.body.indicatifTel.toString() + req.body.telephone1
     const objUser1 = {
-        telephone1: req.body.indicatifTel.toString() + req.body.telephone1,
+        telephone: req.body.telephone,
         estActif: 1
     }
-    //verifie si l'utilisateur existe en base
     User.checkIfUserExists(objUser1)
         .then(user => {
             if (user.length == 0) {
-                if (req.body.telephone2) {
-
-                    initUserClass.user.telephone2 = req.body.indicatifTel.toString() + req.body.telephone2
-                } else {
-                    initUserClass.user.telephone2 = null
-                }
                 const userInsert = {
-                    structureId: req.body.structureId,
-                    prestataireId: req.body.prestataireId,
-                    nom: req.body.nom,
+                    contratId: req.body.contratId,
+                    flotteId: req.body.flotteId,
+                    name: req.body.name,
                     prenoms: req.body.prenoms,
-                    fonction: req.body.fonction,
-                    telephone1: initUserClass.user.telephone1,
-                    telephone2: initUserClass.user.telephone2,
+                    telephone: req.body.telephone,
                     email: req.body.email,
-                    photo: imageUrl,
                     password: md5(req.body.password),
-                    quartierdistrictId: req.body.quartierdistrictId,
-                    observations: req.body.observations,
-                    estAlerte: req.body.estAlerte,
-                    estSuspendu: req.body.estSuspendu,
+                    adresse: req.body.adresse,
                     creationUserId: req.body.creationUserId
-
                 }
-
                 User.addUserInModel(userInsert)
-                    .then(donnee => {
-
-                        const userIstPwt = {
-                            userId: donnee[0].lastId,
-                            type: "Auto",
-                            creationUserId: req.body.creationUserId
-                        }
-                        userPassword.userPasswordInsertInModel(userIstPwt)
-                            .then(() => { })
-                            .catch(() => { })
+                    .then(() => {
                         res.status(201).json({ succes: "La creation a reussi" })
                     })
                     .catch(() => res.status(400).json({ error: "erreur de la procédure stocké" }));
@@ -123,96 +89,6 @@ function getImageFile(req, res) {
         }
     });
 }
-// function login(req, res, next) {
-//     bool = false
-//     const login = {
-//         // telephone: req.body.indicatifTel + req.body.telephone1,
-//         telephone:  req.body.telephone1,
-//         motDePasse: md5(req.body.password)
-//     }
-//     User.getNbAuthenticateInModel(login)
-//         .then(data => {
-            
-//             if (data[0].nombre >= 0) {
-//                 User.getAuthenticateInModel(login)
-//                     .then(user => {
-//                         if (user) {
-//                             initUserConnexion.userConnexion.debutDonnees = 0
-//                             initUserConnexion.userConnexion.finDonnees = 1
-//                             initUserConnexion.userConnexion.estActif = 1
-//                             initUserConnexion.userConnexion.userId = user[0].id
-//                             userConnexion.userConnexionSelectByInModel(initUserConnexion.userConnexion)
-//                                 .then(data => {
-//                                     if (data.length == 0) {
-//                                         bool = true
-//                                     } else {
-//                                         if (data[0].fin == null) {
-//                                             bool = true
-//                                         }
-//                                         else {
-//                                             bool = true
-//                                         }
-//                                     }
-//                                     if (bool) {
-//                                         initUserPassword.userPassword.userId = user[0].id
-//                                         initUserPassword.userPassword.estActif = 1
-//                                         initUserPassword.userPassword.debutDonnees = 0
-//                                         initUserPassword.userPassword.finDonnees = 1
-
-//                                         userPassword.userPasswordSelectByInModel(initUserPassword.userPassword)
-//                                             .then(userpassword => {
-//                                                 console.log(userpassword)
-//                                                 if (userpassword[0].type == "Auto") {
-//                                                      return res.status(200).json({ customisePassword: true,user, })
-//                                                 }
-//                                                 else {
-                                                    
-//                                                     const userconnect = {
-//                                                         userId: user[0].id,
-//                                                         creationUserId: user[0].creationUserId,
-//                                                         adressIp: null,
-//                                                         fin: null,
-//                                                     }
-
-//                                                     userConnexion.userConnexionInsertInModel(userconnect)
-//                                                         .then(() => { })
-//                                                         .catch(() => { })
-//                                                     user.telephone2 = undefined
-//                                                     res.status(200).json({
-//                                                         customisePassword: false,
-//                                                         user,
-//                                                         token: jwt.createtoken(user)
-//                                                     })
-//                                                 }
-//                                             })
-//                                     }
-//                                     else {
-
-//                                     }
-//                                 })
-//                                 .catch(error => res.status(400).json(error))
-//                             // }
-//                             // else{
-//                             //     return res.status(500).json({error: "le mot de pass saisi est invalid"})
-//                             // }
-
-//                         }
-//                         else {
-//                             return res.status(500).json({ error: "vos identifiants sont incorrects." })
-//                         }
-
-
-
-//                     })
-//                     .catch(error => res.status(400).json(error))
-//             }
-//             else {
-//                 return res.status(500).json({ message: "identifiants invalides" })
-//             }
-//         })
-//         .catch(error => res.status(400).json(error))
-
-// }
 
 function login(req, res, next) {
     bool = false
@@ -263,7 +139,7 @@ function disableUser(req, res, next) {
 
 function updateUser(req, res, next) {
     const user = {
-        telephone1: req.body.telephone1,
+        telephone: req.body.telephone,
         estActif: 1
     }
     User.checkIfUserExists(user)
@@ -272,20 +148,13 @@ function updateUser(req, res, next) {
 
                 const objUser = {
                     id: req.body.id,
-                    structureId: req.body.structureId,
-                    prestataireId: req.body.prestataireId,
-                    nom: req.body.nom,
+                    contratId: req.body.contratId,
+                    flotteId: req.body.flotteId,
+                    name: req.body.name,
                     prenoms: req.body.prenoms,
-                    fonction: req.body.fonction,
-                    telephone1: req.body.telephone1,
-                    telephone2: req.body.telephone2,
+                    telephone: req.body.telephone,
                     email: req.body.email,
-                    photo: imageUrl,
-                    password: req.body.password,
-                    quartierdistrictId: req.body.quartierdistrictId,
-                    observations: req.body.observations,
-                    estAlerte: req.body.estAlerte,
-                    estSuspendu: req.body.estSuspendu,
+                    adresse: req.body.adresse,
                     modifDate: req.body.modifDate,
                     modifUserId: req.body.modifUserId
                 }
@@ -307,26 +176,18 @@ function updateUser(req, res, next) {
 function userSelectBy(req, res, next){
     const userObj= {
         id: req.body.id || null, 
-        structureId: req.body.structureId || null, 
+        contratId: req.body.contratId || null, 
         prestataireId: req.body.prestataireId || null, 
-        nom: req.body.nom || null, 
+        flotteId: req.body.flotteId || null, 
+        name: req.body.name || null, 
         prenoms: req.body.prenoms || null, 
-        fonction: req.body.fonction || null, 
-        telephone1: req.body.telephone1 || null, 
-        telephone2: req.body.telephone2 || null, 
-        email: req.body.email || null, 
-        photo: "" || null, 
-        quartierdistrictId: req.body.quartierdistrictId || null, 
-        observations: req.body.observations || null, 
-        estAlerte: req.body.estAlerte || null, 
-        estSuspendu: req.body.estSuspendu || null, 
-        estActif: 1 || null, 
+        telephone: req.body.telephone || null, 
+        adresse: req.body.adresse || null, 
+        estActif: 1, 
         creationDate: req.body.creationDate || null, 
         creationUserId: req.body.creationUserId || null, 
         modifDate: req.body.modifDate || null, 
         modifUserId: req.body.modifUserId || null, 
-        debutDonnees: req.body.debutDonnees || null, 
-        finDonnees: req.body.finDonnees || null, 
     }
 
     User.checkIfUserExists(userObj)

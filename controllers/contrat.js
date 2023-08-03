@@ -20,9 +20,6 @@ Contrat.contratSelectByInModel(obj)
 }
 
 
-
-
-
 function selectAllContrat(req, res, next) {
 
     Contrat.selectAllContratInModel(req)
@@ -58,10 +55,9 @@ function addContrat(req, res, next) {
           Contrat.addContratInModel(contratObj)
           .then(() => res.status(201).json({succes: "ajout reussi avec succès"}))
           .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée contrat_insert" }));
-      
     }
       else {
-        res.status(500).json({ error: "Cette contrat existe déjà" })
+        res.status(500).json({ error: "Cet contrat existe déjà" })
       }
     })
     .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée contrat_selectBy" }))

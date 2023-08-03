@@ -1,4 +1,4 @@
-const Onglet = require("../models/Onglets")
+const Onglet = require("../models/onglets")
 const express = require("express")
 const bodyParser = require("body-parser")
 const app = express()

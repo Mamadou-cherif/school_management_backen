@@ -63,9 +63,10 @@ function getChauffeurBySiteId(theReq) {
     )
   })
 }
+
 function addBonLivraisonInModel(theReq) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL bonlivraisons_insert(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL bonlivraisons_insert(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.contratId,
         theReq.flotteId,
@@ -81,18 +82,88 @@ function addBonLivraisonInModel(theReq) {
         theReq.tonnageSurBon,
         theReq.statutBon,
         theReq.distanceMine,
-        theReq.observations,
+        theReq.files,
+        theReq.Observations,
         theReq.creationUserId,
       ],
 
       ((err, results, fields) => {
         if (err) {
-            console.log()
+            console.log(err)
           reject(err)
           //connection.end();
         }
         else {
           resolve(results);
+        }
+      })
+    )
+  })
+}
+
+
+
+function getTonnageByChauffeurAndMonth(theReq) {
+  return new Promise((resolve, reject) => {
+    connection.query("CALL bonlivraisons_getTonnageByChauffeurAndMonth(?,?)",
+      [
+       theReq.annee+ '-' + theReq.mois,
+       theReq.site
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+            console.log(err)
+          reject(err)
+          //connection.end();
+        }
+        else {
+          resolve(results[0]);
+        }
+
+      })
+    )
+  })
+}
+
+function situationCamionParMois(theReq) {
+  return new Promise((resolve, reject) => {
+    connection.query("CALL bonlivraisons_situationCamionParMois(?,?)",
+      [
+       theReq.annee+ '-' + theReq.mois,
+       theReq.site
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+            console.log(err)
+          reject(err)
+          //connection.end();
+        }
+        else {
+          resolve(results[0]);
+        }
+
+      })
+    )
+  })
+}
+function getBonLivraisonsByMonthAndYears(theReq) {
+  return new Promise((resolve, reject) => {
+    connection.query("CALL bonlivraisons_getBonLivraisonsByMonthAndYears(?,?)",
+      [
+       theReq.annee+ '-' + theReq.mois,
+       theReq.site
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+            console.log(err)
+          reject(err)
+          //connection.end();
+        }
+        else {
+          resolve(results[0]);
         }
 
       })
@@ -103,7 +174,7 @@ function addBonLivraisonInModel(theReq) {
 function updateBonLivraisonInModel(theReq) {
   console.log(theReq)
   return new Promise((resolve, reject) => {
-    connection.query("CALL bonlivraisons_update(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL bonlivraisons_update(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.contratId,
@@ -120,11 +191,11 @@ function updateBonLivraisonInModel(theReq) {
         theReq.tonnageSurBon,
         theReq.statutBon,
         theReq.distanceMine,
-        theReq.observations,
+        theReq.files,
+        theReq.Observations,
         theReq.modifDate,
         theReq.modifUserId,
       ],
-
       ((err, results, fields) => {
         if (err) {
           console.log(err)
@@ -218,7 +289,7 @@ function bonlivraisonSelectByInModel(theReq) {
         theReq.tonnageSurBon,
         theReq.statutBon,
         theReq.distanceMine,
-        theReq.observations,
+        theReq.Observations,
         theReq.estActif,
         theReq.creationDate,
         theReq.creationUserId,
@@ -242,12 +313,15 @@ function bonlivraisonSelectByInModel(theReq) {
 
 module.exports = {
   getPointageToEexportToExcel,
+  situationCamionParMois,
   getPointageToExportByDay,
+  getTonnageByChauffeurAndMonth,
   bonlivraisonSelectByInModel,
   getChauffeurBySiteId,
   addBonLivraisonInModel,
   updateBonLivraisonInModel,
   selectByIdBonLivraisonInModel,
   selectAllBonLivraisonInModel,
+  getBonLivraisonsByMonthAndYears,
   deleteBonLivraisonInModel
 }

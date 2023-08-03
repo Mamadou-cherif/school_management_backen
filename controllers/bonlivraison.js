@@ -1,4 +1,44 @@
 const BonLivraison = require("../models/bonlivraison")
+const crypto = require('crypto');
+const multersd = require('multer')
+const path = require('path');
+const fs = require("fs")
+
+let linkedFile = '';
+
+const storage = multersd.diskStorage({
+  destination: './uploads/bonLivraison/',
+  filename: function (req, file, callback) {
+    crypto.pseudoRandomBytes(16, function (err, raw) {
+      if (err) return callback(err);
+      let derniereImage = raw.toString('hex') + path.extname(file.originalname);
+      callback(null, derniereImage);
+    })
+  }
+})
+
+const upload = multersd({ storage: storage });
+
+const singleUpload = upload.single('image');
+
+function files(req, res, next) {
+  try {
+    singleUpload(req, res, function (err) {
+      if (err) {
+        return res.status(422).send({ error: [{ title: 'File Upload Error', detail: err.message }] });
+      }
+      if (!req.file.originalname.match(/\.(docx|pdf|ppt|jpg|jpeg|png|PNG|JPG|JPEG)$/)) {
+        return res.status(400).json({ error: 'only  autorized' })
+      }
+      linkedFile = req.file.filename;
+
+      return res.json({ 'fileUrl': linkedFile });
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(400).send(err)
+  }
+}
 
 function bonlivraisonSelectBy(req, res, next) {
     const obj={
@@ -17,7 +57,7 @@ function bonlivraisonSelectBy(req, res, next) {
         tonnageSurBon: req.body.tonnageSurBon || null,
         distanceMine: req.body.distanceMine || null,
         statutBon: req.body.statutBon || null,
-        observations: req.body.observations || null,
+        Observations: req.body.Observations || null,
         estActif:1,
         creationDate : req.body.creationDate || null,
         creationUserId: req.body.creationUserId || null,
@@ -28,8 +68,6 @@ BonLivraison.bonlivraisonSelectByInModel(obj)
     .then(bonlivraison => res.status(200).json(bonlivraison))
     .catch(error => res.status(400).json({ error }))
 }
-
-
 
 
 function selectAllBonLivraison(req, res, next) {
@@ -68,9 +106,11 @@ function addBonLivraison(req, res, next) {
       numeroBl: req.body.numeroBl,
         estActif:1,
     }
+
+console.log(linkedFile)
+
   BonLivraison.bonlivraisonSelectByInModel(obj)
     .then(bonlivraison => {
-      console.log(req.body.distanceMine)
       if (bonlivraison.length == 0) {
         const bonlivraisonObj = {
           contratId: req.body.contratId,
@@ -79,6 +119,7 @@ function addBonLivraison(req, res, next) {
           chauffeurId: req.body.chauffeurId,
           trajetId: req.body.trajetId,
           equipeId: req.body.equipeId,
+          files: linkedFile,
           numeroBl: req.body.numeroBl,
           dateChargement: req.body.dateChargement,
           heure: req.body.heure,
@@ -87,7 +128,7 @@ function addBonLivraison(req, res, next) {
           tonnageSurBon: req.body.tonnageSurBon,
           statutBon: req.body.statutBon,
           distanceMine: req.body.distanceMine,
-          observations: req.body.observations,
+          Observations: req.body.Observations,
           creationUserId: req.body.creationUserId,
         }
        
@@ -101,7 +142,6 @@ function addBonLivraison(req, res, next) {
       }
     })
     .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée bonlivraison_selectBy" }))
-
   }
 
 
@@ -128,8 +168,9 @@ BonLivraison.bonlivraisonSelectByInModel(obj)
       poidsVide: req.body.poidsVide,
       tonnageSurBon: req.body.tonnageSurBon,
       distanceMine: req.body.distanceMine,
+      files: linkedFile,
       statutBon: req.body.statutBon,
-      observations: req.body.observations,
+      Observations: req.body.Observations,
       modifUserId: req.body.modifUserId,
       modifDate: req.body.modifDate,
     }
@@ -157,7 +198,59 @@ function deleteBonLivraison(req, res, next) {
 }
 
 
+function getTonnageByChauffeurAndMonth(req, res, next) {
+  const obj={
+    site: req.body.site,
+    mois: req.body.mois,
+    annee: req.body.annee
+  }
+
+  BonLivraison.getTonnageByChauffeurAndMonth(obj)
+    .then(bon => res.status(201).json(bon))
+    .catch(() => res.status(400).json({ error: "Impossible de supprimer cet élément car il est lié à une autre table" }));
+}
+
+function situationCamionParMois(req, res, next) {
+  const obj={
+    site: req.body.site,
+    mois: req.body.mois,
+    annee: req.body.annee
+  }
+
+  BonLivraison.situationCamionParMois(obj)
+    .then(bon => res.status(201).json(bon))
+    .catch(() => res.status(400).json({ error: "Impossible de supprimer cet élément car il est lié à une autre table" }));
+}
+
+function getBonLivraisonsByMonthAndYears(req, res, next) {
+  const obj={
+    site: req.body.site,
+    mois: req.body.mois,
+    annee: req.body.annee
+  }
+  BonLivraison.getBonLivraisonsByMonthAndYears(obj)
+    .then(bon => res.status(201).json(bon))
+    .catch(() => res.status(400).json({ error: "Impossible de supprimer cet élément car il est lié à une autre table" }));
+}
+
+
+function getImageFile(req, res) {
+
+  var image_file = req.params.File;
+  var path_file = './uploads/bonLivraison/' + image_file;
+  fs.exists(path_file, (exists) => {
+    if (exists) {
+      res.sendFile(path.resolve(path_file));
+    }
+  });
+}
+
 module.exports = {
+  getBonLivraisonsByMonthAndYears,
+  files,
+  getImageFile,
+  getTonnageByChauffeurAndMonth,
+  situationCamionParMois,
   getPointageToExportByDay,
   getPointageToEexportToExcel,
   bonlivraisonSelectBy,

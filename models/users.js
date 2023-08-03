@@ -1,26 +1,19 @@
 const mysql = require("mysql2");
 const config = require("../configs/dbconfig")
 let connection = mysql.createConnection(config)
-const express = require("express")
-const app = express();
-const bcrypt = require("bcrypt");
-const res = require("express/lib/response");
-const { reject } = require("bcrypt/promises");
-
-
-
 
 function checkIfUserExists(theReq) {
-  console.log(theReq)
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL users_selectBy(?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL users_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
+        theReq.contratId,
+        theReq.flotteId,
         theReq.name,
         theReq.prenoms,
         theReq.telephone,
-        theReq.passwords,
+        theReq.password,
         theReq.adresse,
         theReq.estActif,
         theReq.creationDate,
@@ -88,37 +81,28 @@ function getAuthenticateInModel(theReq) {
 
 
 
-function addUserInModel(theObject) {
+function addUserInModel(theReq) {
 
   return new Promise((resolve, reject) => {
-    connection.query("CALL users_insert(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL users_insert(?,?,?,?,?,?,?,?)",
       [
-        theObject.structureId,
-        theObject.prestataireId,
-        theObject.nom,
-        theObject.prenoms,
-        theObject.fonction,
-        theObject.telephone1,
-        theObject.telephone2,
-        theObject.email,
-        theObject.photo,
-        theObject.password,
-        theObject.quartierdistrictId,
-        theObject.observations,
-        theObject.estAlerte,
-        theObject.estSuspendu,
-        theObject.creationUserId
+        theReq.contratId,
+        theReq.flotteId,
+        theReq.name,
+        theReq.prenoms,
+        theReq.telephone,
+        theReq.password,
+        theReq.adresse,
+        theReq.creationUserId
       ]
       ,
       (err, results, fields) => {
         if (err) {
-
+          console.log(err)
           reject(err)
           //connection.end();
         }
         else {
-
-
           resolve(results[0]);
           // connection.end()
         }
@@ -170,23 +154,15 @@ function disableUserInModel(theReq, theResponse) {
 
 function updateUserInModel(theReq) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL users_update(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL users_update(?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
-        theReq.structureId,
-        theReq.prestataireId,
-        theReq.nom,
+        theReq.contratId,
+        theReq.flotteId,
+        theReq.name,
         theReq.prenoms,
-        theReq.fonction,
-        theReq.telephone1,
-        theReq.telephone2,
-        theReq.email,
-        theReq.photo,
-        theReq.password,
-        theReq.quartierdistrictId,
-        theReq.observations,
-        theReq.estAlerte,
-        theReq.estSuspendu,
+        theReq.telephone,
+        theReq.adresse,
         theReq.modifDate,
         theReq.modifUserId
       ],
