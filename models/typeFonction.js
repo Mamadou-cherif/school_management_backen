@@ -128,7 +128,6 @@ function type_fonctionsSelectByInModel(data) {
         data.creationUserId,
         data.modifDate,
         data.modifUserId
-     
       ],
 
       ((err, results, fields) => {

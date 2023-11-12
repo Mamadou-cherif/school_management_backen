@@ -12,7 +12,7 @@ exports.createtoken = function (user) {
         nom: user.nom,
         prenoms: user.prenoms,
         fonction: user.fonction,
-        telephone1: user.telephone1,
+        telephone: user.telephone,
         telephone2: user.telephone2,
         email: user.email,
         quartierdistrictId: user.quartierdistrictId,

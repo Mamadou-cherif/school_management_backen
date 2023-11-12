@@ -18,19 +18,15 @@ const communesRoutes = require("./routes/communes")
 const checktokenexpire = require("./routes/checktokenexpire")
 const applicationRoute = require("./routes/application")
 const couleurRoute = require("./routes/couleur");
-const flotteRoute = require("./routes/flotte");
 const typeFonctionRoute = require("./routes/typefonction");
-const personnelRoute = require("./routes/personnel");
-const statuProjetRoutes = require("./routes/statutprojet")
-const camionRoutes = require("./routes/camion")
-const contratRoutes = require("./routes/contrat")
-const camionChauffeurRoutes = require("./routes/camionchauffeur")
- const contratFlotteRoutes = require("./routes/contratflotte")
- const camionSiteRoutes = require("./routes/camionsite")
- const trajetRoutes = require("./routes/trajet")
- const bonlivraisonRoutes = require("./routes/bonlivraison")
- const equipeRoutes = require("./routes/equipe")
- const equipepersonnelRoutes = require("./routes/equipepersonnel")
+const ecoleRoute = require("./routes/ecole");
+const eleveRoute = require("./routes/eleve");
+const classseRoute = require("./routes/classse");
+const trancheRoute = require("./routes/tranche");
+const payementRoute = require("./routes/payement");
+const prestationRoute = require("./routes/prestation");
+const ficheRenRoute = require("./routes/ficherenseignement");
+const storySaleRoute = require("./routes/storySale");
 
 app.use(bodyParser.json())
 
@@ -42,35 +38,32 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use("/", bienvenueRoute)
-app.use("/api", checktokenexpire)
-app.use("/api", userRoute)
-app.use("/api", groupeRoute)
-app.use("/api", userGroupeRoute)
-app.use("/api", menuRoute),
-app.use("/api", ongletRoute)
-app.use("/api", modeAccesRoute)
-app.use("/api", privilegeRoute)
-app.use("/api", paysRoute)
-app.use("/api", couleurRoute)
-app.use("/api", regionsRoute)
-app.use("/api", prefectureRoutes)
-app.use("/api", quartiersRoutes)
-app.use("/api", communesRoutes)
-app.use("/api", deviseRoute)
-app.use("/api", applicationRoute)
-app.use("/api", flotteRoute)
-app.use("/api", typeFonctionRoute)
-app.use("/api", personnelRoute)
-app.use("/api", statuProjetRoutes)
-app.use("/api", camionRoutes)
-app.use("/api", camionChauffeurRoutes)
-app.use("/api", contratRoutes)
-app.use("/api", contratFlotteRoutes)
-app.use("/api", camionSiteRoutes)
-app.use("/api", trajetRoutes)
-app.use("/api", bonlivraisonRoutes)
-app.use("/api", equipeRoutes)
-app.use("/api", equipepersonnelRoutes)
+    app.use("/", bienvenueRoute)
+    app.use("/api", checktokenexpire)
+    app.use("/api", userRoute)
+    app.use("/api", groupeRoute)
+    app.use("/api", userGroupeRoute)
+    app.use("/api", menuRoute),
+    app.use("/api", ongletRoute)
+    app.use("/api", modeAccesRoute)
+    app.use("/api", privilegeRoute)
+    app.use("/api", paysRoute)
+    app.use("/api", couleurRoute)
+    app.use("/api", regionsRoute)
+    app.use("/api", prefectureRoutes)
+    app.use("/api", quartiersRoutes)
+    app.use("/api", communesRoutes)
+    app.use("/api", deviseRoute)
+    app.use("/api", applicationRoute)
+    app.use("/api", typeFonctionRoute)
+    app.use("/api", ecoleRoute)
+    app.use("/api", eleveRoute)
+    app.use("/api", trancheRoute)
+    app.use("/api", classseRoute)
+    app.use("/api", payementRoute)
+    app.use("/api", prestationRoute)
+    app.use("/api", ficheRenRoute)
+    app.use("/api", storySaleRoute)
+
 
 module.exports = app

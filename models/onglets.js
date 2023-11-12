@@ -144,7 +144,6 @@ function getOngletByGroupeModel(theReq) {
 
 function getOngletByUserReferenceMenuInModel(theReq) {
   return new Promise((resolve, reject) => {
-
     connection.query("CALL onglets_getOngletByUserReferenceMenu(?,?)",
       [
         theReq.userId,

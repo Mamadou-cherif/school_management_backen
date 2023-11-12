@@ -53,7 +53,7 @@ function addOnglet(req, res, next) {
 function disableOnglet(req, res, next){
   Onglet.disableOngletInModel(req)
   .then(()=> res.status(200).json({succes: "La suppression a reussi"}))
-  .catch(error => res.status(400).json(console.log(error)))
+  .catch(error => res.status(400).json(error))
 
 }
 function getOngletByGroupe(req, res, next) {

@@ -7,7 +7,7 @@ const crypto = require('crypto');
 const multersd = require('multer')
 const path = require('path');
 const fs = require("fs")
-
+const UserGroupeModel = require('../models/userGroupes')
 
 
 let imageUrl = '';
@@ -25,7 +25,6 @@ const storage = multersd.diskStorage({
 })
 
 const upload = multersd({ storage: storage });
-
 const singleUpload = upload.single('image');
 
 function files(req, res, next) {
@@ -56,18 +55,33 @@ function addUser(req, res, next) {
         .then(user => {
             if (user.length == 0) {
                 const userInsert = {
-                    contratId: req.body.contratId,
-                    flotteId: req.body.flotteId,
                     name: req.body.name,
+                    ecoleId: req.body.ecoleId,
                     prenoms: req.body.prenoms,
                     telephone: req.body.telephone,
+                    fonction: req.body.fonction,
                     email: req.body.email,
                     password: md5(req.body.password),
                     adresse: req.body.adresse,
                     creationUserId: req.body.creationUserId
                 }
                 User.addUserInModel(userInsert)
-                    .then(() => {
+                    .then(user => {
+                        /// 
+                        
+                        if(req.body.ajoutEnseignant == 'oui'){
+                            const usergroupeObj={
+                            body:{
+                             groupeId: 18,
+                             userId: user[0].lastUserId,
+                             creationUserId: req.body.creationUserId
+                            }
+                        }
+                            UserGroupeModel.addUserGroupeInModel(usergroupeObj)
+                            .then(()=>{})
+                            .catch(()=>{})
+                        }
+                       
                         res.status(201).json({ succes: "La creation a reussi" })
                     })
                     .catch(() => res.status(400).json({ error: "erreur de la procédure stocké" }));
@@ -77,7 +91,6 @@ function addUser(req, res, next) {
             }
         })
         .catch(() => res.status(400).json({ error: "erreur retournée par la procédure stocké" }))
-
 }
 
 function getImageFile(req, res) {
@@ -93,14 +106,14 @@ function getImageFile(req, res) {
 function login(req, res, next) {
     bool = false
     const login = {
-        // telephone: req.body.indicatifTel + req.body.telephone1,
-        telephone:  req.body.telephone1,
+        // telephone: req.body.indicatifTel + req.body.telephone,
+        telephone:  req.body.telephone,
         // motDePasse: md5(req.body.password)
     }
     User.checkIfUserExists(login)
         .then(data=>{
             if(data.length == 0){
-                return res.status(500).json({eror: "cet utilisateur n'existe pas dans notre base de données!"})
+                return res.status(500).json({error: "cet utilisateur n'existe pas dans notre système!"})
             }
             else{
                 if(data[0].password == md5(req.body.password)){
@@ -110,6 +123,7 @@ function login(req, res, next) {
                         adressIp: null,
                         fin: null,
                     }
+                    
 
                     userConnexion.userConnexionInsertInModel(userconnect)
                         .then(() => { })
@@ -121,8 +135,12 @@ function login(req, res, next) {
                         token: jwt.createtoken(data)
                     })
                 }
+                else{
+                    return res.status(500).json({error: "Le mot de passe saisi est incorrect"})   
+                }
             }
         })
+        .catch(error=>res.status(200).json(error))
 
 }
 
@@ -148,12 +166,13 @@ function updateUser(req, res, next) {
 
                 const objUser = {
                     id: req.body.id,
-                    contratId: req.body.contratId,
-                    flotteId: req.body.flotteId,
                     name: req.body.name,
+                    ecoleId: req.body.ecoleId,
                     prenoms: req.body.prenoms,
                     telephone: req.body.telephone,
+                    fonction: req.body.fonction,
                     email: req.body.email,
+                    password: req.body.password,
                     adresse: req.body.adresse,
                     modifDate: req.body.modifDate,
                     modifUserId: req.body.modifUserId
@@ -172,16 +191,25 @@ function updateUser(req, res, next) {
 
 }
 
+function getEnseignantNotAffectedToClasses(req, res, next){
+    const userObj= {
+        ecoleId: req.body.ecoleId || null, 
+    }
+
+    User.getEnseignantNotAffectedToClasses(userObj)
+    .then(user=>res.status(200).json(user))
+    .catch(error=>res.status(400).json(error))
+}
 
 function userSelectBy(req, res, next){
     const userObj= {
         id: req.body.id || null, 
-        contratId: req.body.contratId || null, 
-        prestataireId: req.body.prestataireId || null, 
-        flotteId: req.body.flotteId || null, 
+        ecoleId: req.body.ecoleId || null, 
         name: req.body.name || null, 
         prenoms: req.body.prenoms || null, 
+        fonction: req.body.fonction || null, 
         telephone: req.body.telephone || null, 
+        password: req.body.password || null, 
         adresse: req.body.adresse || null, 
         estActif: 1, 
         creationDate: req.body.creationDate || null, 
@@ -217,6 +245,15 @@ function updatePassword(req, res, next) {
 
 
 
+}
+
+function getEnseignantByEcoleId(req, res, next) {
+    const obj={
+        ecoleId: req.body.ecoleId
+    }
+    User.getEnseignantByEcoleId(obj)
+        .then(users => res.status(200).json(users))
+        .catch(error => res.status(400).json(error))
 }
 
 function getAsingleUser(req, res, next) {
@@ -255,19 +292,15 @@ function getAffecteByGroup(req, res, next) {
 function userSelectBy(req, res, next) {
     const objUser = {
         id: req.body.id || null,
-        structureId: req.body.structureId || null,
-        prestataireId: req.body.prestataireId || null,
-        nom: req.body.nom || null,
+        ecoleId: req.body.ecoleId || null,
+        name: req.body.name || null,
         prenoms: req.body.prenoms || null,
         fonction: req.body.fonction || null,
-        telephone1: req.body.telephone1 || null,
-        telephone2: req.body.telephone2 || null,
+        telephone: req.body.telephone || null,
         email: req.body.email || null,
-        photo: req.body.photo || null,
         password: req.body.password || null,
-        quartierdistrictId: req.body.quartierdistrictId || null,
-        observations: req.body.observations || null,
-        estSuspendu: req.body.estSuspendu || null,
+        adresse: req.body.adresse || null,
+     
         estActif: 1,
         creationDate: req.body.creationDate || null,
         creationUserId: req.body.creationUserId || null,
@@ -278,7 +311,7 @@ function userSelectBy(req, res, next) {
     }
 
     User.checkIfUserExists(objUser)
-        .then(document => res.status(200).json(document))
+        .then(user => res.status(200).json(user))
         .catch(error => res.status(400).json(error))
 }
 
@@ -291,11 +324,13 @@ module.exports = {
     login,
     addUser,
     updateUser,
+    getEnseignantNotAffectedToClasses,
     getAsingleUser,
     getAllUsers,
     activateUser,
     updatePassword,
     userSelectBy,
     files,
+    getEnseignantByEcoleId,
     getImageFile
 }

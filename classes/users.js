@@ -6,7 +6,7 @@ const user={
         nom:null,
         prenoms:null,
         fonction:null,
-        telephone1: null,
+        telephone: null,
         telephone2: null,
         email: null,
         photo:null,

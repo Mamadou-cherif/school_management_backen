@@ -8,10 +8,10 @@ function checkIfUserExists(theReq) {
     connection.query("CALL users_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
-        theReq.contratId,
-        theReq.flotteId,
+        theReq.ecoleId,
         theReq.name,
         theReq.prenoms,
+        theReq.fonction,
         theReq.telephone,
         theReq.password,
         theReq.adresse,
@@ -36,11 +36,13 @@ function checkIfUserExists(theReq) {
 }
 
 
+
+
 function getNbAuthenticateInModel(theReq) {
   return new Promise((resolve, reject) => {
     connection.query("CALL users_getNbAuthenticate(?,?)",
       [
-        theReq.telephone1,
+        theReq.telephone,
         theReq.motDePasse
       ],
 
@@ -62,7 +64,7 @@ function getAuthenticateInModel(theReq) {
 
     connection.query("CALL users_getAuthenticate(?,?)",
       [
-        theReq.telephone1,
+        theReq.telephone,
         theReq.motDePasse
       ],
 
@@ -82,14 +84,13 @@ function getAuthenticateInModel(theReq) {
 
 
 function addUserInModel(theReq) {
-
   return new Promise((resolve, reject) => {
     connection.query("CALL users_insert(?,?,?,?,?,?,?,?)",
       [
-        theReq.contratId,
-        theReq.flotteId,
+        theReq.ecoleId,
         theReq.name,
         theReq.prenoms,
+        theReq.fonction,
         theReq.telephone,
         theReq.password,
         theReq.adresse,
@@ -154,14 +155,15 @@ function disableUserInModel(theReq, theResponse) {
 
 function updateUserInModel(theReq) {
   return new Promise((resolve, reject) => {
-    connection.query("CALL users_update(?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL users_update(?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
-        theReq.contratId,
-        theReq.flotteId,
+        theReq.ecoleId,
         theReq.name,
         theReq.prenoms,
+        theReq.fonction,
         theReq.telephone,
+        theReq.password,
         theReq.adresse,
         theReq.modifDate,
         theReq.modifUserId
@@ -169,10 +171,13 @@ function updateUserInModel(theReq) {
 
       ((err, results, fields) => {
         if (err) {
+          console.log(err)
           reject(err)
         }
+        else{
+          resolve(results[0])
+        }
         // (results[0])
-        resolve(results[0])
       })
     )
   })
@@ -289,6 +294,24 @@ function userUpdatePasswordInModel(theReq) {
   })
 }
 
+function getEnseignantNotAffectedToClasses(theReq) {
+  return new Promise((resolve, reject) => {
+    connection.query("CALL users_getEnseignantNotAffectedToClasses(?)",
+      [
+        theReq.ecoleId
+      ],
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+      })
+    )
+  })
+}
 
 
 function getAffecteByGroupInModel(theReq) {
@@ -312,6 +335,29 @@ function getAffecteByGroupInModel(theReq) {
     )
   })
 }
+
+function getEnseignantByEcoleId(theReq) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL users_getEnseignantByEcoleId(?)",
+      [
+        theReq.ecoleId
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+            console.log(err)
+          reject(err)
+        }
+        else{
+            resolve(results[0])
+        }
+      })
+    )
+  })
+}
+
 
 function getNonAffecteByGroupInModel(theReq) {
   return new Promise((resolve, reject) => {
@@ -341,12 +387,14 @@ module.exports = {
   checkIfUserExists,
   addUserInModel,
   deleteUserInModel,
+  getEnseignantByEcoleId,
   disableUserInModel,
   getAsingleUserInModel,
   getAllUsersInModel,
   activateUser,
   UpdateUserConnexionInstance,
   getNbAuthenticateInModel,
+  getEnseignantNotAffectedToClasses,
   getAuthenticateInModel,
   userUpdatePasswordInModel
 }

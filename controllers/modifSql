@@ -476,7 +476,7 @@ BEGIN
     `projets`.`titre` as projet,
     `projets`.`code` as codeProjet,
     `structures`.`nom` as structure,
-    `structures`.`telephone1` as telephone,
+    `structures`.`telephone` as telephone,
     `financement`.`structureId`,
     `financement`.`type`,
     `financement`.`typeAppui`,

@@ -2,7 +2,7 @@ let config = {
   host: 'localhost',
   user: 'root',
   password: '',
-  database: 'logistiquebanki'
+  database: 'schoolpayementmanager1'
 };
 
 module.exports = config;
