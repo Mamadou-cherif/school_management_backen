@@ -162,6 +162,27 @@ function updatePayementInModel(theReq) {
     )
   })
 }
+function getStorySaleByEleve(theReq) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL payements_getStorySaleByEleve(?,?)",
+      [
+        theReq.eleveId,
+        theReq.mois,
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+            console.log(err)
+          reject(err)
+        }
+        else{
+            resolve(results[0])
+        }
+      })
+    )
+  })
+}
 
 function getElevePasPaye(theReq) {
   return new Promise((resolve, reject) => {
@@ -234,6 +255,7 @@ function selectAllPayement() {
 
 module.exports = {
   addPayementInModel,
+  getStorySaleByEleve,
   getStudentSituationByClasseId,
   getElevePasPaye,
   deletePayementInModel,

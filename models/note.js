@@ -3,20 +3,20 @@ const config = require("../configs/dbconfig")
 let connection = mysql.createConnection(config)
 
 
-function addEleveInModel(theReq) {
+function addNoteInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL eleves_insert(?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL notes_insert(?,?,?,?,?,?,?,?,?,?)",
       [
-        theReq.sessionId,
-        theReq.classeId,
-        theReq.matricule,
-        theReq.nom,
-        theReq.prenoms,
-        theReq.numeroTuteur1,
-        theReq.numeroTuteur2,
-        theReq.numeroTuteur4,
-        theReq.statut,
+        theReq.ticketId,
+        theReq.eleveId,
+        theReq.matiereId,
+        theReq.valeur,
+        theReq.semestre,
+        theReq.mois,
+        theReq.isOral,
+        theReq.isEcrit,
+        theReq.observations,
         theReq.creationUserId
       ],
 
@@ -33,21 +33,21 @@ function addEleveInModel(theReq) {
   })
 }
 
-function eleveSelectByInModel(theReq) {
+function noteSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL eleves_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL notes_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
-        theReq.sessionId,
-        theReq.classeId,
-        theReq.matricule,
-        theReq.nom,
-        theReq.prenoms,
-        theReq.numeroTuteur1,
-        theReq.numeroTuteur2,
-        theReq.numeroTuteur4,
-        theReq.statut,
+        theReq.ticketId,
+        theReq.eleveId,
+        theReq.matiereId,
+        theReq.valeur,
+        theReq.semestre,
+        theReq.mois,
+        theReq.isOral,
+        theReq.isEcrit,
+        theReq.observations,
         theReq.estActif,
         theReq.creationDate,
         theReq.creationUserId,
@@ -69,10 +69,10 @@ function eleveSelectByInModel(theReq) {
 }
 
 
-function deleteEleveInModel(id) {
+function deleteNoteInModel(id) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL eleves_delete(?)",
+    connection.query("CALL notes_delete(?)",
       [
         id
 
@@ -91,10 +91,10 @@ function deleteEleveInModel(id) {
     )
   })
 }
-function selectEleveById(id) {
+function selectNoteById(id) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL eleves_selectById(?)",
+    connection.query("CALL notes_selectById(?)",
       [
         id
 
@@ -114,34 +114,12 @@ function selectEleveById(id) {
   })
 }
 
-function getEleveByMatriculeAndEcoleId(theReq) {
+
+
+function disableNoteInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL eleves_getEleveByMatriculeAndEcoleId(?,?)",
-      [
-        theReq.ecoleId,
-        theReq.matricule,
-
-      ],
-
-      ((err, results, fields) => {
-        if (err) {
-          console.log(err)
-          reject(err)
-        }
-        else{
-          resolve(results[0])
-        }
-        
-      })
-    )
-  })
-}
-
-function disableEleveInModel(theReq) {
-  return new Promise((resolve, reject) => {
-
-    connection.query("CALL eleves_disable(?,?,?)",
+    connection.query("CALL notes_disable(?,?,?)",
       [
         theReq.id,
         theReq.modifUserId,
@@ -162,21 +140,21 @@ function disableEleveInModel(theReq) {
   })
 }
 
-function updateEleveInModel(theReq) {
+function updateNoteInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL eleves_update(?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL notes_update(?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
-        theReq.sessionId,
-        theReq.classeId,
-        theReq.matricule,
-        theReq.nom,
-        theReq.prenoms,
-        theReq.numeroTuteur1,
-        theReq.numeroTuteur2,
-        theReq.numeroTuteur4,
-        theReq.statut,
+        theReq.ticketId,
+        theReq.eleveId,
+        theReq.matiereId,
+        theReq.valeur,
+        theReq.semestre,
+        theReq.mois,
+        theReq.isOral,
+        theReq.isEcrit,
+        theReq.observations,
         theReq.modifDate,
         theReq.modifUserId
       ],
@@ -194,10 +172,10 @@ function updateEleveInModel(theReq) {
   })
 }
 
-function selectAllEleve() {
+function selectAllNote() {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL eleves_selectAll(?,?,?)",
+    connection.query("CALL notes_selectAll(?,?,?)",
       [
         1,
         null,
@@ -220,12 +198,11 @@ function selectAllEleve() {
 
 
 module.exports = {
-  addEleveInModel,
-  deleteEleveInModel,
-  disableEleveInModel,
-  updateEleveInModel,
-  getEleveByMatriculeAndEcoleId,
-  selectEleveById,
-  selectAllEleve,
-  eleveSelectByInModel
+  addNoteInModel,
+  deleteNoteInModel,
+  disableNoteInModel,
+  updateNoteInModel,
+  selectNoteById,
+  selectAllNote,
+  noteSelectByInModel
 }

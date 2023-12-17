@@ -3,20 +3,15 @@ const config = require("../configs/dbconfig")
 let connection = mysql.createConnection(config)
 
 
-function addEleveInModel(theReq) {
+function addTicketInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL eleves_insert(?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL tickets_insert(?,?,?,?,?)",
       [
         theReq.sessionId,
         theReq.classeId,
-        theReq.matricule,
-        theReq.nom,
-        theReq.prenoms,
-        theReq.numeroTuteur1,
-        theReq.numeroTuteur2,
-        theReq.numeroTuteur4,
-        theReq.statut,
+        theReq.libelle,
+        theReq.observations,
         theReq.creationUserId
       ],
 
@@ -33,21 +28,16 @@ function addEleveInModel(theReq) {
   })
 }
 
-function eleveSelectByInModel(theReq) {
+function ticketSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL eleves_selectBy(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL tickets_selectBy(?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.sessionId,
         theReq.classeId,
-        theReq.matricule,
-        theReq.nom,
-        theReq.prenoms,
-        theReq.numeroTuteur1,
-        theReq.numeroTuteur2,
-        theReq.numeroTuteur4,
-        theReq.statut,
+        theReq.libelle,
+        theReq.observations,
         theReq.estActif,
         theReq.creationDate,
         theReq.creationUserId,
@@ -69,10 +59,10 @@ function eleveSelectByInModel(theReq) {
 }
 
 
-function deleteEleveInModel(id) {
+function deleteTicketInModel(id) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL eleves_delete(?)",
+    connection.query("CALL tickets_delete(?)",
       [
         id
 
@@ -91,10 +81,10 @@ function deleteEleveInModel(id) {
     )
   })
 }
-function selectEleveById(id) {
+function selectTicketById(id) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL eleves_selectById(?)",
+    connection.query("CALL tickets_selectById(?)",
       [
         id
 
@@ -114,34 +104,12 @@ function selectEleveById(id) {
   })
 }
 
-function getEleveByMatriculeAndEcoleId(theReq) {
+
+
+function disableTicketInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL eleves_getEleveByMatriculeAndEcoleId(?,?)",
-      [
-        theReq.ecoleId,
-        theReq.matricule,
-
-      ],
-
-      ((err, results, fields) => {
-        if (err) {
-          console.log(err)
-          reject(err)
-        }
-        else{
-          resolve(results[0])
-        }
-        
-      })
-    )
-  })
-}
-
-function disableEleveInModel(theReq) {
-  return new Promise((resolve, reject) => {
-
-    connection.query("CALL eleves_disable(?,?,?)",
+    connection.query("CALL tickets_disable(?,?,?)",
       [
         theReq.id,
         theReq.modifUserId,
@@ -162,21 +130,16 @@ function disableEleveInModel(theReq) {
   })
 }
 
-function updateEleveInModel(theReq) {
+function updateTicketInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL eleves_update(?,?,?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL tickets_update(?,?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.sessionId,
         theReq.classeId,
-        theReq.matricule,
-        theReq.nom,
-        theReq.prenoms,
-        theReq.numeroTuteur1,
-        theReq.numeroTuteur2,
-        theReq.numeroTuteur4,
-        theReq.statut,
+        theReq.libelle,
+        theReq.observations,
         theReq.modifDate,
         theReq.modifUserId
       ],
@@ -194,10 +157,10 @@ function updateEleveInModel(theReq) {
   })
 }
 
-function selectAllEleve() {
+function selectAllTicket() {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL eleves_selectAll(?,?,?)",
+    connection.query("CALL tickets_selectAll(?,?,?)",
       [
         1,
         null,
@@ -220,12 +183,11 @@ function selectAllEleve() {
 
 
 module.exports = {
-  addEleveInModel,
-  deleteEleveInModel,
-  disableEleveInModel,
-  updateEleveInModel,
-  getEleveByMatriculeAndEcoleId,
-  selectEleveById,
-  selectAllEleve,
-  eleveSelectByInModel
+  addTicketInModel,
+  deleteTicketInModel,
+  disableTicketInModel,
+  updateTicketInModel,
+  selectTicketById,
+  selectAllTicket,
+  ticketSelectByInModel
 }

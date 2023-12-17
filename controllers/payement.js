@@ -19,6 +19,16 @@ Payement.payementSelectByInModel(obj)
     .catch(error => res.status(400).json({ error }))
 }
 
+
+function getStorySaleByEleve(req, res, next) {
+  const obj= {
+    eleveId: req.body.eleveId,
+    mois: req.body.mois,
+  }
+    Payement.getStorySaleByEleve(obj)
+    .then(payement => res.status(200).json(payement))
+    .catch(error => res.status(400).json(error))
+  }
 function getElevePasPaye(req, res, next) {
   const obj= {
     classeId: req.body.classeId,
@@ -70,12 +80,9 @@ async function addPayement(req, res, next) {
       let request =  Payement.addPayementInModel(payementObj)
 
       if(request){
-        console.log("bonjour")
           res.status(200).json({succes: "L'ajout a réussi"})
       }
       else{
-        console.log("bonjour")
-
         res.status(400).json({error: "L'ajout a échoué"})
       }
     } 
@@ -143,6 +150,7 @@ function deletePayement(req, res, next) {
 module.exports = {
   payementSelectBy,
   getStudentSituationByClasseId,
+  getStorySaleByEleve,
   getElevePasPaye,
   selectAllPayement,
   selectPayementById,

@@ -3,6 +3,7 @@ const Eleve = require("../models/eleve")
 function eleveSelectBy(req, res, next) {
   const obj={
     id: req.body.id || null,
+    sessionId: req.body.sessionId || null,
     classeId: req.body.classeId || null,
     matricule: req.body.matricule || null,
     nom: req.body.nom || null,
@@ -53,6 +54,7 @@ async function  addEleve(req, res, next) {
 
   for (let index = 0; index < tabEleve.length; index++) {
     let obj={
+      sessionId: req.body.sessionId,
       classeId: tabEleve[0].classeId,
     }
     let eleve = await Eleve.eleveSelectByInModel(obj)
@@ -60,7 +62,9 @@ async function  addEleve(req, res, next) {
 
     let matricule = generateMatriculeByPrenomsAndNom(tabEleve[index].prenoms +" " + tabEleve[index].nom, taille)
     let eleveObj = {
+
               classeId: tabEleve[index].classeId,
+              sessionId: tabEleve[index].sessionId,
               matricule: matricule,
               nom: tabEleve[index].nom,
               prenoms: tabEleve[index].prenoms,
@@ -152,6 +156,7 @@ function updateEleve(req, res, next) {
   //verifie si l'utilisateur existe en base
         const eleveObj = {
             id: req.body.id,
+            sessionId: req.body.sessionId,
             classeId: req.body.classeId,
             matricule: req.body.matricule,
             nom: req.body.nom,

@@ -27,6 +27,11 @@ const payementRoute = require("./routes/payement");
 const prestationRoute = require("./routes/prestation");
 const ficheRenRoute = require("./routes/ficherenseignement");
 const storySaleRoute = require("./routes/storySale");
+const sessionRoute = require("./routes/session");
+const ticketRoute = require("./routes/ticket");
+const ticketmatiereRoute = require("./routes/ticketmatiere");
+const matiereRoute = require("./routes/matiere");
+const noteRoute = require("./routes/note");
 
 app.use(bodyParser.json())
 
@@ -64,6 +69,11 @@ app.use((req, res, next) => {
     app.use("/api", prestationRoute)
     app.use("/api", ficheRenRoute)
     app.use("/api", storySaleRoute)
+    app.use("/api", sessionRoute)
+    app.use("/api", matiereRoute)
+    app.use("/api", ticketmatiereRoute)
+    app.use("/api", ticketRoute)
+    app.use("/api", noteRoute)
 
-
+    
 module.exports = app
