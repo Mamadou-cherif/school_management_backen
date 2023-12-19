@@ -40,6 +40,16 @@ function getEleveByMatriculeAndEcoleId(req, res, next) {
     .catch(error => res.status(400).json(error))
 }
 
+function makeClassement(req, res, next) {
+  const obj={
+    ticketId: req.body.ticketId,
+    classeId: req.body.classeId,
+  }
+  Eleve.makeClassement(obj)
+    .then(eleve => res.status(200).json(eleve))
+    .catch(error => res.status(400).json(error))
+}
+
 function selectEleveById(req, res, next) {
   const id = req.params.id
   Eleve.selectEleveById(id)
@@ -190,6 +200,7 @@ module.exports = {
   getEleveByMatriculeAndEcoleId,
   selectEleveById,
   addEleve,
+  makeClassement,
   disableEleve,
   updateEleve,
   deleteEleve
