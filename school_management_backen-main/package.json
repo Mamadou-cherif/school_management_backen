@@ -1,0 +1,29 @@
+{
+  "name": "suiviprojetpublic",
+  "version": "1.0.0",
+  "description": "un projet de pointage",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Cherif Barry",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.20.0",
+    "express": "^4.17.3",
+    "jsonwebtoken": "^8.5.1",
+    "md5": "^2.3.0",
+    "moment": "^2.29.2",
+    "multer": "^1.4.2",
+    "mysql2": "^2.3.3",
+    "node-cron": "^3.0.3",
+    "path": "^0.12.7",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/express": "^4.17.13"
+  }
+}
