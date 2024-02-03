@@ -5,7 +5,7 @@ function enseignantclasseSelectBy(req, res, next) {
     id: req.body.id || null,
     sessionId: req.body.sessionId || null,
     enseignantId: req.body.enseignantId || null,
-    classeId: req.body.classeId || null,
+    matiereId: req.body.matiereId || null,
     estPpricipale: req.body.estPpricipale || null,
     estActif:1,
     creationDate:null,
@@ -18,6 +18,15 @@ EnseignantClasse.enseignantclasseSelectByInModel(obj)
     .catch(error => res.status(400).json({ error }))
 }
 
+
+function getEnseignantByClasseId(req, res, next) {
+  const obj={
+    classeId:req.body.classeId
+  }
+  EnseignantClasse.getEnseignantByClasseId(obj)
+  .then(enseignantclasse => res.status(200).json(enseignantclasse))
+  .catch(error => res.status(400).json(error))
+}
 function selectAllEnseignantClasse(req, res, next) {
 
     EnseignantClasse.selectAllEnseignantClasse(req)
@@ -36,7 +45,7 @@ function selectEnseignantClasseById(req, res, next) {
 function addEnseignantClasse(req, res, next) {
   const enseignantclasseObj = {
     sessionId: req.body.sessionId,
-    classeId: req.body.classeId,
+    matiereId: req.body.matiereId,
     enseignantId: req.body.enseignantId,
     estActif: 1,
   }
@@ -47,7 +56,7 @@ function addEnseignantClasse(req, res, next) {
         const enseignantclasseObj = {
           sessionId: req.body.sessionId,
           enseignantId: req.body.enseignantId,
-          classeId: req.body.classeId,
+          matiereId: req.body.matiereId,
           estPpricipale: req.body.estPpricipale,
           creationUserId: req.body.creationUserId,
         }
@@ -68,7 +77,7 @@ function addEnseignantClasse(req, res, next) {
 function updateEnseignantClasse(req, res, next) {
   const enseignantclasseObj = {
     sessionId: req.body.sessionId,
-    classeId: req.body.classeId,
+    matiereId: req.body.matiereId,
     enseignantId: req.body.enseignantId,
     estActif: 1,
   }
@@ -81,7 +90,7 @@ function updateEnseignantClasse(req, res, next) {
             id: req.body.id,
             sessionId: req.body.sessionId,
             enseignantId: req.body.enseignantId,
-            classeId: req.body.classeId,
+            matiereId: req.body.matiereId,
             estPpricipale: req.body.estPpricipale,
             modifDate: req.body.modifDate,
           }
@@ -112,6 +121,7 @@ module.exports = {
   selectAllEnseignantClasse,
   selectEnseignantClasseById,
   addEnseignantClasse,
+  getEnseignantByClasseId,
   updateEnseignantClasse,
   deleteEnseignantClasse
 }

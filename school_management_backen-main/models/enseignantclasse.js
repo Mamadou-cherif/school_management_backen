@@ -10,9 +10,30 @@ function addEnseignantClasseInModel(theReq) {
       [
         theReq.sessionId,
         theReq.enseignantId,
-        theReq.classeId,
+        theReq.matiereId,
         theReq.estPpricipale,
         theReq.creationUserId
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+        resolve(results[0])
+        }
+      })
+    )
+  })
+}
+
+function getEnseignantByClasseId(theReq) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL enseignantclasses_getEnseignantByClasseId(?)",
+      [
+        theReq.classeId,
       ],
 
       ((err, results, fields) => {
@@ -36,7 +57,7 @@ function enseignantclasseSelectByInModel(theReq) {
         theReq.id,
         theReq.sessionId,
         theReq.enseignantId,
-        theReq.classeId,
+        theReq.matiereId,
         theReq.estPpricipale,
         theReq.estActif,
         theReq.creationDate,
@@ -137,7 +158,7 @@ function updateEnseignantClasseInModel(theReq) {
         theReq.id,
         theReq.sessionId,
         theReq.enseignantId,
-        theReq.classeId,
+        theReq.matiereId,
         theReq.estPpricipale,
         theReq.modifDate,
         theReq.modifUserId
@@ -181,6 +202,7 @@ function selectAllEnseignantClasse() {
 }
 
 module.exports = {
+  getEnseignantByClasseId,
   addEnseignantClasseInModel,
   deleteEnseignantClasseInModel,
   disableEnseignantClasseInModel,
