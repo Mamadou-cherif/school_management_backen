@@ -80,6 +80,28 @@ function enseignantclasseSelectByInModel(theReq) {
 }
 
 
+function getClasseAffectedToEnseignant(theReq) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL enseignantclasses_getClasseAffectedToEnseignant(?)",
+      [
+        theReq.enseignantId
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+}
 function deleteEnseignantClasseInModel(id) {
   return new Promise((resolve, reject) => {
 
@@ -206,6 +228,7 @@ module.exports = {
   addEnseignantClasseInModel,
   deleteEnseignantClasseInModel,
   disableEnseignantClasseInModel,
+  getClasseAffectedToEnseignant,
   updateEnseignantClasseInModel,
   selectEnseignantClasseById,
   selectAllEnseignantClasse,

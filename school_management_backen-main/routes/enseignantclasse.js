@@ -2,6 +2,7 @@ const express=require("express")
 const router= express.Router()
 const enseignantclasseController= require("../controllers/enseignantclasse")
 
+    router.post("/getClasseAffectedToEnseignant", enseignantclasseController.getClasseAffectedToEnseignant)
     router.post("/getEnseignantByClasseId", enseignantclasseController.getEnseignantByClasseId)
     router.post("/enseignantclasseSelectBy", enseignantclasseController.enseignantclasseSelectBy)
     router.get("/selectAllEnseignantClasse", enseignantclasseController.selectAllEnseignantClasse)

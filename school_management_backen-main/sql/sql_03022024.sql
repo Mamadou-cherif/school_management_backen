@@ -12411,6 +12411,28 @@ ALTER TABLE `users`
   ADD CONSTRAINT `fk_users_quartierDistrickId` FOREIGN KEY (`adresse`) REFERENCES `quartierdistricts` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 COMMIT;
 
+
+
+
+DELIMITER $$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `enseignantclasses_getClasseAffectedToEnseignant`(enseignantId INT)
+BEGIN
+	 SELECT 
+			enseignantclasses.id,
+			classses.libelle,
+			enseignantclasses.matiereId
+			 
+		 FROM enseignantclasses
+         LEFT JOIN matieres on enseignantclasses.matiereId = matieres.id
+         LEFT JOIN classses on  matieres.classeId = classses.id
+		 WHERE enseignantclasses.enseignantId= enseignantId and enseignantclasses.estActif =1 and matieres.estActif =1 and classses.estActif = 1;
+END$$
+
+DELIMITER ;
+;
+
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

@@ -1,4 +1,5 @@
 const EnseignantClasse = require("../models/enseignantclasse")
+const UserGroupe = require("../models/userGroupes")
 
 function enseignantclasseSelectBy(req, res, next) {
   const obj={
@@ -18,6 +19,15 @@ EnseignantClasse.enseignantclasseSelectByInModel(obj)
     .catch(error => res.status(400).json({ error }))
 }
 
+
+function getClasseAffectedToEnseignant(req, res, next) {
+  const obj={
+    enseignantId:req.body.enseignantId
+  }
+  EnseignantClasse.getClasseAffectedToEnseignant(obj)
+  .then(enseignantclasse => res.status(200).json(enseignantclasse))
+  .catch(error => res.status(400).json(error))
+}
 
 function getEnseignantByClasseId(req, res, next) {
   const obj={
@@ -42,7 +52,7 @@ function selectEnseignantClasseById(req, res, next) {
 }
 
 
-function addEnseignantClasse(req, res, next) {
+ async function addEnseignantClasse(req, res, next) {
   const enseignantclasseObj = {
     sessionId: req.body.sessionId,
     matiereId: req.body.matiereId,
@@ -62,7 +72,20 @@ function addEnseignantClasse(req, res, next) {
         }
 
         EnseignantClasse.addEnseignantClasseInModel(enseignantclasseObj)
-        .then(data => res.status(201).json(data))
+        .then(async data => {
+          
+        const usergroupeObj= {
+          body:{
+              userId: req.body.enseignantId,
+              groupeId: 19,
+              creationUserId: req.body.creationUserId,
+          }
+        }
+         
+        await UserGroupe.addUserGroupeInModel(usergroupeObj);
+
+          res.status(201).json(data)
+        })
         .catch(() => res.status(400).json({ error: "Erreur de la procedure stockée enseignantclasse_insert" }));
    
       }
@@ -118,6 +141,7 @@ function deleteEnseignantClasse(req, res, next) {
 
 module.exports = {
   enseignantclasseSelectBy,
+  getClasseAffectedToEnseignant,
   selectAllEnseignantClasse,
   selectEnseignantClasseById,
   addEnseignantClasse,
