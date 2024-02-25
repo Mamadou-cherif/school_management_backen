@@ -138,10 +138,36 @@ function getEleveByMatriculeAndEcoleId(theReq) {
   })
 }
 
+
+
 function makeClassement(theReq) {
   return new Promise((resolve, reject) => {
 
     connection.query("CALL eleves_makeClassement(?,?)",
+      [
+        theReq.ticketId,
+        theReq.classeId,
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+}
+
+function makeSecondaryClassement(theReq) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL eleves_makeSecondaryClassement(?,?)",
       [
         theReq.ticketId,
         theReq.classeId,
@@ -251,6 +277,7 @@ module.exports = {
   makeClassement,
   getEleveByMatriculeAndEcoleId,
   selectEleveById,
+  makeSecondaryClassement,
   selectAllEleve,
   eleveSelectByInModel
 }

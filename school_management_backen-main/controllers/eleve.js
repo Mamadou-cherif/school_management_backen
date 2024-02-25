@@ -50,6 +50,16 @@ function makeClassement(req, res, next) {
     .catch(error => res.status(400).json(error))
 }
 
+function makeSecondaryClassement(req, res, next) {
+  const obj={
+    ticketId: req.body.ticketId,
+    classeId: req.body.classeId,
+  }
+  Eleve.makeSecondaryClassement(obj)
+    .then(eleve => res.status(200).json(eleve))
+    .catch(error => res.status(400).json(error))
+}
+
 function selectEleveById(req, res, next) {
   const id = req.params.id
   Eleve.selectEleveById(id)
@@ -201,6 +211,7 @@ module.exports = {
   selectEleveById,
   addEleve,
   makeClassement,
+  makeSecondaryClassement,
   disableEleve,
   updateEleve,
   deleteEleve

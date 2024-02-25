@@ -80,7 +80,11 @@ function enseignantclasseSelectByInModel(theReq) {
 }
 
 
-function getClasseAffectedToEnseignant(theReq) {
+function 
+
+
+
+getClasseAffectedToEnseignant(theReq) {
   return new Promise((resolve, reject) => {
 
     connection.query("CALL enseignantclasses_getClasseAffectedToEnseignant(?)",
@@ -89,6 +93,10 @@ function getClasseAffectedToEnseignant(theReq) {
 
       ],
 
+
+
+
+      
       ((err, results, fields) => {
         if (err) {
           console.log(err)

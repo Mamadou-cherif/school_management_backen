@@ -39,49 +39,79 @@ function selectNoteById(req, res, next) {
 
 
 async function addNote(req, res, next) {
+  let tabNoteToAdd= req.body
+  console.log(tabNoteToAdd)
  // i est le compteur des note à ajouter
-  let note =[]
-  for (let i = 0; i < req.body.length; i++) {
-    for (let j = 0; j < req.body[i].note.length; j++) {
-      const noteObj = {
-        ticketId: req.body[i].ticketId,
-        eleveId: req.body[i].eleveId,
-        matiereId: req.body[i].note[j].matId,
-        valeur: req.body[i].note[j].note,
-        semestre: req.body[i].semestre,
-        mois: req.body[i].mois,
-        isOral: req.body[i].isOral || "",
-        isEcrit: req.body[i].isEcrit  || "",
-        observations: req.body[i].observations || "",
-        creationUserId: req.body[i].creationUserId,
-      }
-      const objNote={
-        ticketId: req.body[i].ticketId,
-        eleveId: req.body[i].eleveId,
-        matiereId: req.body[i].note[j].matId,
-        estActif:1
-      }
+ if(!tabNoteToAdd[0].estSecondaire){
 
-      let existNote=await Note.noteSelectByInModel(objNote)
+   for (let i = 0; i < req.body.length; i++) {
+     for (let j = 0; j < req.body[i].note.length; j++) {
+       const noteObj = {
+         ticketId: req.body[i].ticketId,
+         eleveId: req.body[i].eleveId,
+         matiereId: req.body[i].note[j].matId,
+         valeur: req.body[i].note[j].note,
+         semestre: req.body[i].semestre,
+         mois: req.body[i].mois,
+         isOral: req.body[i].isOral || "",
+         isEcrit: req.body[i].isEcrit  || "",
+         observations: req.body[i].observations || "",
+         creationUserId: req.body[i].creationUserId,
+       }
+       const objNote={
+         ticketId: req.body[i].ticketId,
+         eleveId: req.body[i].eleveId,
+         matiereId: req.body[i].note[j].matId,
+         estActif:1
+       }
+ 
+       let existNote=await Note.noteSelectByInModel(objNote)
+       
+       if(existNote.length == 0){
+         Note.addNoteInModel(noteObj)
+           .then(data => {})
+           .catch(() => {});
+       }
+       
+       // let request = await  Note.addNoteInModel(noteObj)
+       //   if(request){
+       //      res.status(200).json({succes: "L'ajout a réussi"})
+       //   }
+       //   else{
+       //     res.status(400).json({error: "L'ajout a échoué"})
+       //   }
+     }
+     
+     
+     
+   }
+ }
+ else{
+  for (let i = 0; i < req.body.length; i++) {
+    const noteObj = {
+      ticketId: req.body[i].ticketId,
+      eleveId: req.body[i].eleveId,
+      matiereId: req.body[i].matiereId,
+      semestre: req.body[i].semestre || "",
+      mois: req.body[i].mois || "" ,
+      isOral: req.body[i].note.orale || null,
+      isEcrit: req.body[i].note.ecrite  || null,
+      observations: req.body[i].observations || "",
+      creationUserId: req.body[i].creationUserId,
+    }
+    let existNote=await Note.noteSelectByInModel(noteObj)
       
       if(existNote.length == 0){
         Note.addNoteInModel(noteObj)
           .then(data => {})
           .catch(() => {});
       }
-      
-      // let request = await  Note.addNoteInModel(noteObj)
-      //   if(request){
-      //      res.status(200).json({succes: "L'ajout a réussi"})
-      //   }
-      //   else{
-      //     res.status(400).json({error: "L'ajout a échoué"})
-      //   }
-    }
+    
     
     
     
   }
+ }
 
 }
 

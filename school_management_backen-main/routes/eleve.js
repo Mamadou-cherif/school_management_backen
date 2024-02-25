@@ -4,6 +4,7 @@ const eleveController= require("../controllers/eleve")
 
     router.post("/getEleveByMatriculeAndEcoleId", eleveController.getEleveByMatriculeAndEcoleId)
     router.post("/makeClassement", eleveController.makeClassement)
+    router.post("/makeSecondaryClassement", eleveController.makeSecondaryClassement)
     router.get("/selectAllEleve", eleveController.selectAllEleve)
     router.post("/eleveSelectBy", eleveController.eleveSelectBy)
     router.get("/selectEleveById/:id", eleveController.selectEleveById)
