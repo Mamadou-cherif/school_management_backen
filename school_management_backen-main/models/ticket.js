@@ -6,11 +6,12 @@ let connection = mysql.createConnection(config)
 function addTicketInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL tickets_insert(?,?,?,?,?)",
+    connection.query("CALL tickets_insert(?,?,?,?,?,?)",
       [
         theReq.sessionId,
         theReq.classeId,
         theReq.libelle,
+        theReq.typeEvaluation,
         theReq.observations,
         theReq.creationUserId
       ],
@@ -31,12 +32,13 @@ function addTicketInModel(theReq) {
 function ticketSelectByInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL tickets_selectBy(?,?,?,?,?,?,?,?,?,?)",
+    connection.query("CALL tickets_selectBy(?,?,?,?,?,?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.sessionId,
         theReq.classeId,
         theReq.libelle,
+        theReq.typeEvaluation,
         theReq.observations,
         theReq.estActif,
         theReq.creationDate,
@@ -133,12 +135,13 @@ function disableTicketInModel(theReq) {
 function updateTicketInModel(theReq) {
   return new Promise((resolve, reject) => {
 
-    connection.query("CALL tickets_update(?,?,?,?,?,?,?)",
+    connection.query("CALL tickets_update(?,?,?,?,?,?,?,?)",
       [
         theReq.id,
         theReq.sessionId,
         theReq.classeId,
         theReq.libelle,
+        theReq.typeEvaluation,
         theReq.observations,
         theReq.modifDate,
         theReq.modifUserId

@@ -6,6 +6,7 @@ function ticketSelectBy(req, res, next) {
     sessionId: req.body.sessionId || null,
     classeId: req.body.classeId || null,
     libelle: req.body.libelle || null,
+    typeEvaluation: req.body.typeEvaluation || null,
     observations: req.body.observations || null,
     estActif:1,
     creationDate:null,
@@ -48,6 +49,7 @@ function addTicket(req, res, next) {
           sessionId: req.body.sessionId,
           classeId: req.body.classeId,
           libelle: req.body.libelle,
+          typeEvaluation: req.body.typeEvaluation,
           observations: req.body.observations,
           creationUserId: req.body.creationUserId,
         }
@@ -80,6 +82,7 @@ function updateTicket(req, res, next) {
             sessionId: req.body.sessionId,
             classeId: req.body.classeId,
             libelle: req.body.libelle,
+            typeEvaluation: req.body.typeEvaluation,
             observations: req.body.observations,
             modifUserId: req.body.modifUserId,
             modifDate: req.body.modifDate,
