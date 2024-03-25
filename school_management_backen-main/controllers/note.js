@@ -40,11 +40,11 @@ function selectNoteById(req, res, next) {
 
 async function addNote(req, res, next) {
   let tabNoteToAdd= req.body
-  console.log(tabNoteToAdd)
  // i est le compteur des note à ajouter
  if(!tabNoteToAdd[0].estSecondaire){
 
    for (let i = 0; i < req.body.length; i++) {
+    // parcourir le tableau des note 
      for (let j = 0; j < req.body[i].note.length; j++) {
        const noteObj = {
          ticketId: req.body[i].ticketId,
@@ -58,28 +58,21 @@ async function addNote(req, res, next) {
          observations: req.body[i].observations || "",
          creationUserId: req.body[i].creationUserId,
        }
+
        const objNote={
          ticketId: req.body[i].ticketId,
          eleveId: req.body[i].eleveId,
          matiereId: req.body[i].note[j].matId,
          estActif:1
        }
- 
+       // Verifier si cette note a été dejà ajouté pour ce ticket et pour cet élève et pour cette matière.
        let existNote=await Note.noteSelectByInModel(objNote)
-       
+
        if(existNote.length == 0){
          Note.addNoteInModel(noteObj)
            .then(data => {})
            .catch(() => {});
        }
-       
-       // let request = await  Note.addNoteInModel(noteObj)
-       //   if(request){
-       //      res.status(200).json({succes: "L'ajout a réussi"})
-       //   }
-       //   else{
-       //     res.status(400).json({error: "L'ajout a échoué"})
-       //   }
      }
      
      
@@ -106,10 +99,6 @@ async function addNote(req, res, next) {
           .then(data => {})
           .catch(() => {});
       }
-    
-    
-    
-    
   }
  }
 

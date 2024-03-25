@@ -40,6 +40,26 @@ function getEleveByMatriculeAndEcoleId(req, res, next) {
     .catch(error => res.status(400).json(error))
 }
 
+function getEleveOfficialClassementByTicket(req, res, next) {
+  const obj={
+    classeId: req.body.classeId,
+    ticketId: req.body.ticketId,
+  }
+  Eleve.getEleveOfficialClassementByTicket(obj)
+    .then(eleve => res.status(200).json(eleve))
+    .catch(error => res.status(400).json(error))
+}
+
+function getEleveOfficialClassement(req, res, next) {
+  const obj={
+    classeId: req.body.classeId,
+    sessionId: req.body.sessionId,
+  }
+  Eleve.getEleveOfficialClassement(obj)
+    .then(eleve => res.status(200).json(eleve))
+    .catch(error => res.status(400).json(error))
+}
+
 function makeClassement(req, res, next) {
   const obj={
     ticketId: req.body.ticketId,
@@ -214,5 +234,7 @@ module.exports = {
   makeSecondaryClassement,
   disableEleve,
   updateEleve,
-  deleteEleve
+  deleteEleve,
+  getEleveOfficialClassement,
+  getEleveOfficialClassementByTicket
 }

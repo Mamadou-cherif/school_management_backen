@@ -41,7 +41,6 @@ function addFicheRen(req, res, next) {
     estActif: 1,
   }
 
-  console.log(ficherenObj)
   FicheRen.ficherenSelectByInModel(ficherenObj)
     .then(ficheren => {
       if (ficheren.length == 0) {

@@ -114,6 +114,55 @@ function selectEleveById(id) {
   })
 }
 
+
+
+function getEleveOfficialClassement(theReq) {
+  return new Promise((resolve, reject) => {
+    connection.query("CALL eleves_getEleveOfficialClassement(?,?)",
+      [
+        theReq.classeId,
+        theReq.sessionId,
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+}
+
+function getEleveOfficialClassementByTicket(theReq) {
+  return new Promise((resolve, reject) => {
+    connection.query("CALL eleves_getEleveOfficialClassementByTicket(?,?)",
+      [
+        theReq.classeId,
+        theReq.ticketId,
+
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+}
+
+
 function getEleveByMatriculeAndEcoleId(theReq) {
   return new Promise((resolve, reject) => {
 
@@ -279,5 +328,7 @@ module.exports = {
   selectEleveById,
   makeSecondaryClassement,
   selectAllEleve,
-  eleveSelectByInModel
+  eleveSelectByInModel,
+  getEleveOfficialClassement,
+  getEleveOfficialClassementByTicket
 }
