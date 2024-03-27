@@ -68,7 +68,51 @@ function noteSelectByInModel(theReq) {
   })
 }
 
+function calculeMoyenneParClasseEtSession(theReq) {
+  return new Promise((resolve, reject) => {
 
+    connection.query("CALL notes_calculeMoyenneParClasseEtSession(?,?)",
+      [
+        theReq.classeId,
+        theReq.sessionId
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+}
+
+function getMoyenneByTicketAndEleveId(theReq) {
+  return new Promise((resolve, reject) => {
+
+    connection.query("CALL notes_getMoyenneByTicketAndEleveId(?,?)",
+      [
+        theReq.ticketId,
+        theReq.eleveId
+      ],
+
+      ((err, results, fields) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+        }
+        else{
+          resolve(results[0])
+        }
+        
+      })
+    )
+  })
+}
 function deleteNoteInModel(id) {
   return new Promise((resolve, reject) => {
 
@@ -199,10 +243,12 @@ function selectAllNote() {
 
 module.exports = {
   addNoteInModel,
+  calculeMoyenneParClasseEtSession,
   deleteNoteInModel,
   disableNoteInModel,
   updateNoteInModel,
   selectNoteById,
   selectAllNote,
+  getMoyenneByTicketAndEleveId,
   noteSelectByInModel
 }

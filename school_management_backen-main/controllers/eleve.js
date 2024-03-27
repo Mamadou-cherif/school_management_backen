@@ -1,4 +1,6 @@
 const Eleve = require("../models/eleve")
+const Ticket = require("../models/ticket")
+const Note = require("../models/note")
 
 function eleveSelectBy(req, res, next) {
   const obj={
@@ -55,9 +57,51 @@ function getEleveOfficialClassement(req, res, next) {
     classeId: req.body.classeId,
     sessionId: req.body.sessionId,
   }
+  
+  
+  
   Eleve.getEleveOfficialClassement(obj)
-    .then(eleve => res.status(200).json(eleve))
+    .then( async (eleve) => {
+      // res.status(200).json(eleve)
+      let ticket = await Ticket.ticketSelectByInModel(obj)
+      for(let i =0; i<eleve.length; i++){
+        let tabMoyenneTicket = []
+        let moyenneEleve= 0
+        let sommeTotale= 0
+        // on recupere l'eleve
+        for(let j = 0; j< ticket.length; j++){
+          
+          let res= await getMoyenneByTicketAndEleveId(ticket[j].id,eleve[i].id)
+           tabMoyenneTicket.push(res[0].moyenneAnnuelle)
+          } 
+          eleve[i].moyenneAnnuelle= calculeMoyenneTableau(tabMoyenneTicket)
+        }
+        res.status(200).json(eleve)
+    })
     .catch(error => res.status(400).json(error))
+}
+function calculeMoyenneTableau(array){
+  let somme= 0;
+  let moyenne =0
+   for(let j=0; j< array.length; j++){
+    somme+= parseFloat(array[j])
+   } 
+   let nbTicket = array.length
+   if(nbTicket > 0 ){
+    moyenne = somme/nbTicket
+   }
+   
+  //  .toFixed(2) indique que la division sera faite à un centieme pres
+   return Math.ceil(moyenne * 100) / 100;
+}
+async function getMoyenneByTicketAndEleveId(ticketId,  eleveId) {
+  const obj={
+    eleveId: eleveId,
+    ticketId: ticketId,
+  }
+  
+ let tab = await Note.getMoyenneByTicketAndEleveId(obj)
+ return tab;
 }
 
 function makeClassement(req, res, next) {

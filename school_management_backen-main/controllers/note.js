@@ -30,6 +30,8 @@ function selectAllNote(req, res, next) {
     .catch(error => res.status(400).json(error))
 }
 
+
+
 function selectNoteById(req, res, next) {
   const id = req.params.id
   Note.selectNoteById(id)
@@ -37,6 +39,15 @@ function selectNoteById(req, res, next) {
     .catch(error => res.status(400).json(error))
 }
 
+function calculeMoyenneParClasseEtSession(req, res, next) {
+  const obj={
+    classeId : req.body.classeId,
+    sessionId : req.body.sessionId
+  }
+  Note.calculeMoyenneParClasseEtSession(obj)
+    .then(note => res.status(200).json(note))
+    .catch(error => res.status(400).json(error))
+}
 
 async function addNote(req, res, next) {
   let tabNoteToAdd= req.body
@@ -138,6 +149,7 @@ function deleteNote(req, res, next) {
 
 module.exports = {
   noteSelectBy,
+  calculeMoyenneParClasseEtSession,
   selectAllNote,
   selectNoteById,
   addNote,
